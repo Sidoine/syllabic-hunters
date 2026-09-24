@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+@theme {
+  --font-read: "Andika", "Comic Sans MS", "Trebuchet MS", sans-serif;
+  --font-display: "Fredoka", "Andika", "Trebuchet MS", sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  color: #fff;
+  background: #1a0b3a;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+.bg-night {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(255, 79, 216, 0.35), transparent 60%),
+    radial-gradient(900px 600px at 110% 10%, rgba(64, 224, 255, 0.28), transparent 60%),
+    radial-gradient(900px 700px at 50% 120%, rgba(160, 90, 255, 0.45), transparent 60%),
+    linear-gradient(180deg, #1b0b40 0%, #2a0f5c 50%, #16083a 100%);
+}
+
+.neon-text {
+  text-shadow:
+    0 0 6px rgba(255, 120, 230, 0.9),
+    0 0 18px rgba(255, 80, 220, 0.6),
+    0 0 30px rgba(120, 200, 255, 0.4);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.card-kawaii {
+  background: linear-gradient(180deg, #fff 0%, #fff4fc 100%);
+  color: #3b1a66;
+  border: 4px solid #ffc2ef;
+  box-shadow:
+    0 6px 0 #d57bd0,
+    0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.btn-pop {
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s;
+}
+.btn-pop:active {
+  transform: translateY(4px) scale(0.97);
+}
+.btn-pop:hover {
+  filter: brightness(1.06);
+}
+
+.font-read {
+  font-family: var(--font-read);
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.anim-float { animation: floaty 3s ease-in-out infinite; }
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-8deg); }
+  40% { transform: rotate(7deg); }
+  60% { transform: rotate(-5deg); }
+  80% { transform: rotate(3deg); }
+}
+.anim-wobble { animation: wobble 0.5s ease; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+.anim-shake { animation: shake 0.45s ease; }
+
+@keyframes popIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  70% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.anim-pop { animation: popIn 0.45s cubic-bezier(.2,1.4,.4,1) both; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+.star-twinkle { animation: twinkle 2.4s ease-in-out infinite; }
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 120, 230, 0.7); }
+  50% { box-shadow: 0 0 0 14px rgba(255, 120, 230, 0); }
+}
+.anim-glow { animation: glowPulse 1.6s ease-out infinite; }
+
+@keyframes slideL {
+  from { transform: translateX(-60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideR {
+  from { transform: translateX(60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.anim-slideL { animation: slideL 0.5s ease both; }
+.anim-slideR { animation: slideR 0.5s ease both; }
+
+@keyframes burst {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+}
+.particle { animation: burst 0.9s ease-out forwards; }
+
+@keyframes demonDrift {
+  0%, 100% { transform: translate(0, 0) rotate(-3deg); }
+  25% { transform: translate(12px, -14px) rotate(3deg); }
+  50% { transform: translate(-6px, -24px) rotate(-2deg); }
+  75% { transform: translate(-14px, -8px) rotate(2deg); }
+}
+.anim-drift { animation: demonDrift 4s ease-in-out infinite; }
+
+@keyframes poof {
+  0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+  50% { transform: scale(1.3) rotate(15deg); opacity: 0.8; filter: brightness(3); }
+  100% { transform: scale(0) rotate(90deg); opacity: 0; }
+}
+.anim-poof { animation: poof 0.6s ease-in forwards; }
+
+@keyframes fuseL {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(40%); }
+}
+@keyframes fuseR {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-40%); }
+}
+.anim-fuseL { animation: fuseL 0.5s ease-in forwards; }
+.anim-fuseR { animation: fuseR 0.5s ease-in forwards; }
+
+.syl-a { color: #e8288f; }
+.syl-b { color: #1c7fe0; }
+.syl-muet { color: #a79bbd; }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 8px; }
