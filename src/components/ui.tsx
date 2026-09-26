@@ -346,7 +346,7 @@ export function MissionFrame({
   const who = hero ?? h;
   const seq = useMemo(
     () => (Array.isArray(speakText) ? speakText : [speakText]),
-    [Array.isArray(speakText) ? speakText.join("\u0000") : speakText],
+    [speakText],
   );
   const hasReadInitial = useRef(false);
   useEffect(() => {
