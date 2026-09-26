@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "biome lint .",
     "preview": "vite preview",
-    "server": "tsx server/index.ts",
+    "start": "tsx server/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
