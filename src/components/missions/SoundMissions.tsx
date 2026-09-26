@@ -125,6 +125,8 @@ export function FusionMission({ mission, onDone }: MissionProps) {
     if (!found.includes(syl)) setFound((f) => [...f, syl]);
     await new Promise((r) => setTimeout(r, 550));
     await speak(sayOf(syl));
+    await new Promise((r) => setTimeout(r, 1200));
+    setFusing((current) => (current === syl ? null : current));
   };
 
   if (phase === "learn") {

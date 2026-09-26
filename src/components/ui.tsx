@@ -3,6 +3,7 @@ import {
   type ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -343,11 +344,17 @@ export function MissionFrame({
 }) {
   const { autoRead, hero: h } = useGame();
   const who = hero ?? h;
-  const seq = Array.isArray(speakText) ? speakText : [speakText];
+  const seq = useMemo(
+    () => (Array.isArray(speakText) ? speakText : [speakText]),
+    [Array.isArray(speakText) ? speakText.join("\u0000") : speakText],
+  );
+  const hasReadInitial = useRef(false);
   useEffect(() => {
+    const texts = !hasReadInitial.current && autoRead ? seq : seq.slice(1);
+    if (!texts.length) return;
     const t = setTimeout(() => {
-      if (autoRead) speakSeq(seq);
-      else if (seq.length > 1) speakSeq(seq.slice(1));
+      hasReadInitial.current = true;
+      speakSeq(texts);
     }, 350);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
