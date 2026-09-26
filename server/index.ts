@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import express, { type Request, type Response } from "express";
 import bcrypt from "bcryptjs";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { initializeDatabase, pool } from "./db";
+import { initializeDatabase, pool } from "./db.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3001);

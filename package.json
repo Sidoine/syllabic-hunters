@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run server\" \"vite\"",
-    "build": "vite build",
+    "dev": "concurrently \"tsx server/index.ts\" \"vite\"",
+    "build": "npm run build:server && vite build",
+    "build:server": "tsc -p tsconfig.server.json",
     "lint": "biome lint .",
     "preview": "vite preview",
-    "start": "tsx server/index.ts",
+    "start": "node dist-server/index.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
