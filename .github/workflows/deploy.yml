@@ -1,0 +1,51 @@
+name: Deploy to Dokku
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dokku-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DOKKU_HOST: sidoine.net
+  DOKKU_APP: hunters
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run typecheck
+        run: npm run typecheck
+
+      - name: Run lint
+        run: npm run lint
+
+  deploy:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Push to dokku
+        uses: dokku/github-action@master
+        with:
+          git_remote_url: "ssh://dokku@${{ env.DOKKU_HOST }}:22/${{ env.DOKKU_APP }}"
+          ssh_private_key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}

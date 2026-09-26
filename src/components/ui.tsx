@@ -1,21 +1,21 @@
 import {
   createContext,
+  type ReactNode,
   useContext,
   useEffect,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
-import hana from "../assets/hana.png";
-import yuki from "../assets/yuki.png";
-import momo from "../assets/momo.png";
-import mochi from "../assets/mochi.png";
-import king from "../assets/king.png";
 import demon from "../assets/demon.png";
-import { speak, speakSeq } from "../lib/speech";
-import { sfx } from "../lib/sfx";
-import { cleanPart, type Word } from "../data/words";
+import hana from "../assets/hana.png";
+import king from "../assets/king.png";
+import mochi from "../assets/mochi.png";
+import momo from "../assets/momo.png";
+import yuki from "../assets/yuki.png";
 import type { Speaker } from "../data/story";
+import { cleanPart, type Word } from "../data/words";
+import { sfx } from "../lib/sfx";
+import { speak, speakSeq } from "../lib/speech";
 import { pick } from "../lib/utils";
 
 export const IMAGES = { hana, yuki, momo, mochi, king, demon };
@@ -25,8 +25,8 @@ export const SPEAKER_INFO: Record<
   { name: string; img: string; color: string }
 > = {
   hana: { name: "Hana", img: hana, color: "#ff4fa3" },
-  yuki: { name: "Yuki", img: yuki, color: "#34c3ff" },
-  momo: { name: "Momo", img: momo, color: "#b36bff" },
+  yuki: { name: "Luna", img: yuki, color: "#34c3ff" },
+  momo: { name: "Mia", img: momo, color: "#b36bff" },
   mochi: { name: "Mochi", img: mochi, color: "#ffffff" },
   king: { name: "Roi Chuuut", img: king, color: "#6b3cff" },
   boss: { name: "Démon", img: demon, color: "#6b3cff" },
@@ -141,18 +141,18 @@ export function SyllableWord({
       className={`font-read font-bold inline-flex items-baseline ${className}`}
     >
       {word.parts.map((p, i) => {
-        if (i === hideIndex) return <span key={i}>{hideContent}</span>;
+        if (i === hideIndex) return <span key={p}>{hideContent}</span>;
         const cls = plain ? "text-purple-900" : i % 2 === 0 ? "syl-a" : "syl-b";
         const segs = p.split(/(\[[^\]]+\])/).filter(Boolean);
         return (
-          <span key={i} className={cls}>
-            {segs.map((s, j) =>
+          <span key={p} className={cls}>
+            {segs.map((s) =>
               s.startsWith("[") ? (
-                <span key={j} className="syl-muet">
+                <span key={`${p}-${s}`} className="syl-muet">
                   {cleanPart(s)}
                 </span>
               ) : (
-                <span key={j}>{s}</span>
+                <span key={`${p}-${s}`}>{s}</span>
               ),
             )}
           </span>
@@ -188,9 +188,9 @@ export function StarField() {
   ).current;
   return (
     <div className="pointer-events-none fixed inset-0 overflow-hidden">
-      {stars.map((st, i) => (
+      {stars.map((st) => (
         <span
-          key={i}
+          key={`${st.x}-${st.y}-${st.d}`}
           className="star-twinkle absolute text-white/70"
           style={{
             left: `${st.x}%`,
@@ -332,7 +332,6 @@ export function MissionFrame({
   total,
   children,
   hero,
-  readKey,
 }: {
   instruction: ReactNode;
   speakText: string | string[];
@@ -345,7 +344,6 @@ export function MissionFrame({
   const { autoRead, hero: h } = useGame();
   const who = hero ?? h;
   const seq = Array.isArray(speakText) ? speakText : [speakText];
-  const key = seq.join("|");
   useEffect(() => {
     const t = setTimeout(() => {
       if (autoRead) speakSeq(seq);
@@ -353,12 +351,13 @@ export function MissionFrame({
     }, 350);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [readKey ?? round, key]);
+  }, [seq, autoRead]);
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-4xl mx-auto px-3">
       <div className="flex gap-1.5">
         {Array.from({ length: total }, (_, i) => (
           <span
+            // biome-ignore lint/suspicious/noArrayIndexKey: Les étapes sont une liste positionnelle fixe.
             key={i}
             className={`w-4 h-4 rounded-full border-2 border-white transition-all ${
               i < round

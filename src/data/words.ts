@@ -6,11 +6,11 @@
 // syllabe que si on l'entend vraiment (ex : « rose » -> ro,_ car le s se lit z).
 
 export interface Word {
-  word: string;
-  emoji: string;
-  parts: string[]; // syllabes écrites (avec [muet])
-  sounds: string[]; // syllabes orales simples
-  say: string;
+	word: string;
+	emoji: string;
+	parts: string[]; // syllabes écrites (avec [muet])
+	sounds: string[]; // syllabes orales simples
+	say: string;
 }
 
 const RAW = `
@@ -188,31 +188,35 @@ dodo|😴|do-do|do,do
 `;
 
 export const WORDS: Word[] = RAW.trim()
-  .split("\n")
-  .map((line) => {
-    const [word, emoji, parts, sounds, say] = line.split("|");
-    return {
-      word,
-      emoji,
-      parts: parts.split("-"),
-      sounds: sounds.split(","),
-      say: say || word,
-    };
-  })
-  // domino : emoji peu lisible, retiré des images
-  .filter((w) => w.word !== "domino");
+	.split("\n")
+	.map((line) => {
+		const [word, emoji, parts, sounds, say] = line.split("|");
+		return {
+			word,
+			emoji,
+			parts: parts.split("-"),
+			sounds: sounds.split(","),
+			say: say || word,
+		};
+	})
+	// domino : emoji peu lisible, retiré des images
+	.filter((w) => w.word !== "domino");
 
-export const WORD_MAP: Record<string, Word> = Object.fromEntries(WORDS.map((w) => [w.word, w]));
+export const WORD_MAP: Record<string, Word> = Object.fromEntries(
+	WORDS.map((w) => [w.word, w]),
+);
 
 /** Partie écrite sans crochets (ex: "cha[t]" -> "chat") */
 export const cleanPart = (p: string) => p.replace(/[[\]]/g, "");
 
 /** Mots où l'on entend la syllabe */
-export const wordsWithSound = (syl: string) => WORDS.filter((w) => w.sounds.includes(syl));
+export const wordsWithSound = (syl: string) =>
+	WORDS.filter((w) => w.sounds.includes(syl));
 
 /** Mots qui commencent par le son */
-export const wordsStartingWith = (syl: string) => WORDS.filter((w) => w.sounds[0] === syl);
+export const wordsStartingWith = (syl: string) =>
+	WORDS.filter((w) => w.sounds[0] === syl);
 
 /** Mots contenant la syllabe écrite telle quelle (pour « le mot brisé ») */
 export const wordsWithWrittenSyllable = (syl: string) =>
-  WORDS.filter((w) => w.parts.some((p, i) => p === syl && w.sounds[i] === syl));
+	WORDS.filter((w) => w.parts.some((p, i) => p === syl && w.sounds[i] === syl));

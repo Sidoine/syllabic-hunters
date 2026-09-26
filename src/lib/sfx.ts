@@ -8,7 +8,10 @@ export const setSfxEnabled = (v: boolean) => {
 
 function ac() {
   if (!ctx) {
-    const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    const AC =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext;
     if (!AC) return null;
     ctx = new AC();
   }
@@ -16,7 +19,13 @@ function ac() {
   return ctx;
 }
 
-function tone(freq: number, start: number, dur: number, type: OscillatorType = "sine", vol = 0.18) {
+function tone(
+  freq: number,
+  start: number,
+  dur: number,
+  type: OscillatorType = "sine",
+  vol = 0.18,
+) {
   const c = ac();
   if (!c || !enabled) return;
   const o = c.createOscillator();
@@ -48,10 +57,14 @@ export const sfx = {
     tone(600, 0.05, 0.15, "triangle", 0.12);
   },
   fuse: () => {
-    [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.06, 0.2, "sine", 0.12));
+    [523, 659, 784, 1047].forEach((f, i) => {
+      tone(f, i * 0.06, 0.2, "sine", 0.12);
+    });
   },
   win: () => {
-    [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(f, i * 0.12, 0.3, "triangle", 0.14));
+    [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => {
+      tone(f, i * 0.12, 0.3, "triangle", 0.14);
+    });
   },
   flip: () => tone(660, 0, 0.07, "sine", 0.1),
 };

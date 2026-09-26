@@ -1,39 +1,75 @@
 import { useState } from "react";
 import { BigButton, IMAGES } from "../components/ui";
-import type { Save } from "../lib/storage";
 import { speak } from "../lib/speech";
+import type { Save } from "../lib/storage";
 
-export function TitleScreen({ save, onStart, onSettings }: { save: Save; onStart: (name: string, hero: Save["hero"]) => void; onSettings: () => void }) {
+export function TitleScreen({
+  save,
+  onStart,
+  onSettings,
+}: {
+  save: Save;
+  onStart: (name: string, hero: Save["hero"]) => void;
+  onSettings: () => void;
+}) {
   const [name, setName] = useState(save.name);
   const [hero, setHero] = useState<Save["hero"]>(save.hero);
   const hasSave = Object.keys(save.stars).length > 0;
   const heroes: { id: Save["hero"]; label: string; color: string }[] = [
     { id: "hana", label: "Hana", color: "#ff4fa3" },
-    { id: "yuki", label: "Yuki", color: "#34c3ff" },
-    { id: "momo", label: "Momo", color: "#b36bff" },
+    { id: "yuki", label: "Luna", color: "#34c3ff" },
+    { id: "momo", label: "Mia", color: "#b36bff" },
   ];
   return (
     <div className="min-h-full flex flex-col items-center justify-center px-4 py-8 gap-5">
       <div className="text-center">
-        <div className="text-lg sm:text-xl tracking-[0.3em] text-cyan-200 font-bold">★ LUMI STARS ★</div>
+        <div className="text-lg sm:text-xl tracking-[0.3em] text-cyan-200 font-bold">
+          ★ LUMI STARS ★
+        </div>
         <h1 className="text-6xl sm:text-8xl font-bold neon-text leading-none">
           <span className="font-read">B-A BA</span>
           <br />
-          <span className="bg-gradient-to-r from-pink-300 via-yellow-200 to-cyan-300 bg-clip-text text-transparent">Hunters</span>
+          <span className="bg-gradient-to-r from-pink-300 via-yellow-200 to-cyan-300 bg-clip-text text-transparent">
+            Hunters
+          </span>
         </h1>
-        <p className="mt-2 text-lg sm:text-xl text-pink-100">Les chasseuses de syllabes contre le Roi Chuuut !</p>
+        <p className="mt-2 text-lg sm:text-xl text-pink-100">
+          Les chasseuses de syllabes contre le Roi Chuuut !
+        </p>
       </div>
 
       <div className="flex items-end justify-center -space-x-6">
-        <img src={IMAGES.yuki} alt="Yuki" className="w-28 sm:w-40 anim-float" style={{ animationDelay: "0.4s" }} />
-        <img src={IMAGES.hana} alt="Hana" className="w-36 sm:w-52 anim-float z-10" />
-        <img src={IMAGES.momo} alt="Momo" className="w-28 sm:w-40 anim-float" style={{ animationDelay: "0.8s" }} />
-        <img src={IMAGES.mochi} alt="Mochi" className="w-20 sm:w-28 anim-float self-start" style={{ animationDelay: "1.2s" }} />
+        <img
+          src={IMAGES.yuki}
+          alt="Luna"
+          className="w-28 sm:w-40 anim-float"
+          style={{ animationDelay: "0.4s" }}
+        />
+        <img
+          src={IMAGES.hana}
+          alt="Hana"
+          className="w-36 sm:w-52 anim-float z-10"
+        />
+        <img
+          src={IMAGES.momo}
+          alt="Mia"
+          className="w-28 sm:w-40 anim-float"
+          style={{ animationDelay: "0.8s" }}
+        />
+        <img
+          src={IMAGES.mochi}
+          alt="Mochi"
+          className="w-20 sm:w-28 anim-float self-start"
+          style={{ animationDelay: "1.2s" }}
+        />
       </div>
 
       <div className="glass rounded-3xl p-4 w-full max-w-md flex flex-col gap-3">
-        <label className="font-bold text-lg">Ton prénom :</label>
+        <label htmlFor="player-name" className="font-bold text-lg">
+          Ton prénom :
+        </label>
         <input
+          id="player-name"
           value={name}
           onChange={(e) => setName(e.target.value.slice(0, 16))}
           placeholder="Écris ton prénom"
@@ -51,7 +87,11 @@ export function TitleScreen({ save, onStart, onSettings }: { save: Save; onStart
               }}
               className={`btn-pop rounded-2xl p-1 border-4 ${hero === h.id ? "border-yellow-300 scale-110 bg-white/20" : "border-transparent opacity-70"}`}
             >
-              <img src={IMAGES[h.id]} alt={h.label} className="w-16 h-20 object-contain" />
+              <img
+                src={IMAGES[h.id]}
+                alt={h.label}
+                className="w-16 h-20 object-contain"
+              />
               <div className="font-bold" style={{ color: h.color }}>
                 {h.label}
               </div>
@@ -60,10 +100,18 @@ export function TitleScreen({ save, onStart, onSettings }: { save: Save; onStart
         </div>
       </div>
 
-      <BigButton color="yellow" className="text-2xl px-10 py-4 anim-glow" onClick={() => onStart(name.trim(), hero)}>
+      <BigButton
+        color="yellow"
+        className="text-2xl px-10 py-4 anim-glow"
+        onClick={() => onStart(name.trim(), hero)}
+      >
         {hasSave ? "Continuer l'aventure ▶" : "Commencer l'aventure ▶"}
       </BigButton>
-      <button type="button" onClick={onSettings} className="text-white/70 underline">
+      <button
+        type="button"
+        onClick={onSettings}
+        className="text-white/70 underline"
+      >
         ⚙️ Espace parents (voix, réglages)
       </button>
     </div>

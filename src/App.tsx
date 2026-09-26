@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
-import { CHAPTERS, MISSIONS, type Mission } from "./data/story";
 import { GameContext, StarField } from "./components/ui";
-import { clearSave, defaultSave, loadSave, writeSave, type Save, type Settings } from "./lib/storage";
-import { configureSpeech, stopSpeech } from "./lib/speech";
+import { CHAPTERS, MISSIONS, type Mission } from "./data/story";
 import { setSfxEnabled } from "./lib/sfx";
+import { configureSpeech, stopSpeech } from "./lib/speech";
+import {
+  clearSave,
+  defaultSave,
+  loadSave,
+  type Save,
+  type Settings,
+  writeSave,
+} from "./lib/storage";
 import { starsFor } from "./lib/utils";
-import { TitleScreen } from "./screens/Title";
-import { ChapterScreen, MapScreen, chapterMissions } from "./screens/Map";
 import { DialogScreen } from "./screens/Dialog";
+import { ChapterScreen, chapterMissions, MapScreen } from "./screens/Map";
 import { MissionScreen, ResultScreen, SettingsModal } from "./screens/Misc";
+import { TitleScreen } from "./screens/Title";
 
 type Screen =
   | { name: "title" }
@@ -28,13 +35,16 @@ export default function App() {
   }, [save]);
 
   useEffect(() => {
-    configureSpeech({ voiceURI: save.settings.voiceURI, rate: save.settings.rate });
+    configureSpeech({
+      voiceURI: save.settings.voiceURI,
+      rate: save.settings.rate,
+    });
     setSfxEnabled(save.settings.sfx);
   }, [save.settings]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [screen]);
+  }, []);
 
   const go = (s: Screen) => {
     stopSpeech();
@@ -46,15 +56,20 @@ export default function App() {
     else go({ name: "chapter", ch });
   };
 
-  const startMission = (m: Mission) => go({ name: "mission", id: m.id, run: Date.now() });
+  const startMission = (m: Mission) =>
+    go({ name: "mission", id: m.id, run: Date.now() });
 
   const finishMission = (m: Mission, errors: number, rounds: number) => {
     const stars = starsFor(errors, rounds);
-    setSave((s) => ({ ...s, stars: { ...s.stars, [m.id]: Math.max(s.stars[m.id] ?? 0, stars) } }));
+    setSave((s) => ({
+      ...s,
+      stars: { ...s.stars, [m.id]: Math.max(s.stars[m.id] ?? 0, stars) },
+    }));
     go({ name: "result", id: m.id, stars });
   };
 
-  const updateSettings = (settings: Settings) => setSave((s) => ({ ...s, settings }));
+  const updateSettings = (settings: Settings) =>
+    setSave((s) => ({ ...s, settings }));
 
   let content: React.ReactNode = null;
   switch (screen.name) {
@@ -65,14 +80,22 @@ export default function App() {
           onSettings={() => setShowSettings(true)}
           onStart={(name, hero) => {
             setSave((s) => ({ ...s, name, hero }));
-            if (!save.seenIntro[0]) go({ name: "dialog", ch: 0, kind: "intro" });
+            if (!save.seenIntro[0])
+              go({ name: "dialog", ch: 0, kind: "intro" });
             else go({ name: "map" });
           }}
         />
       );
       break;
     case "map":
-      content = <MapScreen save={save} onChapter={openChapter} onBack={() => go({ name: "title" })} onSettings={() => setShowSettings(true)} />;
+      content = (
+        <MapScreen
+          save={save}
+          onChapter={openChapter}
+          onBack={() => go({ name: "title" })}
+          onSettings={() => setShowSettings(true)}
+        />
+      );
       break;
     case "chapter":
       content = (
@@ -92,13 +115,21 @@ export default function App() {
         <DialogScreen
           key={screen.ch + screen.kind}
           lines={lines}
-          title={screen.kind === "intro" ? `${ch.title} · ${ch.place}` : "Victoire !"}
+          title={
+            screen.kind === "intro" ? `${ch.title} · ${ch.place}` : "Victoire !"
+          }
           onEnd={() => {
             if (screen.kind === "intro") {
-              setSave((s) => ({ ...s, seenIntro: { ...s.seenIntro, [screen.ch]: true } }));
+              setSave((s) => ({
+                ...s,
+                seenIntro: { ...s.seenIntro, [screen.ch]: true },
+              }));
               go({ name: "chapter", ch: screen.ch });
             } else {
-              setSave((s) => ({ ...s, seenOutro: { ...s.seenOutro, [screen.ch]: true } }));
+              setSave((s) => ({
+                ...s,
+                seenOutro: { ...s.seenOutro, [screen.ch]: true },
+              }));
               const next = screen.ch + 1;
               if (next < CHAPTERS.length) openChapter(next);
               else go({ name: "map" });
@@ -109,12 +140,21 @@ export default function App() {
       break;
     }
     case "mission": {
-      const m = MISSIONS.find((x) => x.id === screen.id)!;
-      content = <MissionScreen key={screen.run} mission={m} onDone={(e, r) => finishMission(m, e, r)} onQuit={() => go({ name: "chapter", ch: m.chapter })} />;
+      const m = MISSIONS.find((x) => x.id === screen.id);
+      if (!m) break;
+      content = (
+        <MissionScreen
+          key={screen.run}
+          mission={m}
+          onDone={(e, r) => finishMission(m, e, r)}
+          onQuit={() => go({ name: "chapter", ch: m.chapter })}
+        />
+      );
       break;
     }
     case "result": {
-      const m = MISSIONS.find((x) => x.id === screen.id)!;
+      const m = MISSIONS.find((x) => x.id === screen.id);
+      if (!m) break;
       const list = chapterMissions(m.chapter);
       const idx = list.findIndex((x) => x.id === m.id);
       const isLast = idx === list.length - 1;
@@ -136,7 +176,13 @@ export default function App() {
   }
 
   return (
-    <GameContext.Provider value={{ autoRead: save.settings.autoRead, hero: save.hero, name: save.name }}>
+    <GameContext.Provider
+      value={{
+        autoRead: save.settings.autoRead,
+        hero: save.hero,
+        name: save.name,
+      }}
+    >
       <div className="bg-night min-h-full relative overflow-x-hidden">
         <StarField />
         <div className="relative z-10 min-h-screen">{content}</div>

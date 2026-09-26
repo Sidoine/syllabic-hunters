@@ -4,12 +4,19 @@ let preferredURI: string | null = null;
 let rate = 0.85;
 let listeners: (() => void)[] = [];
 
-const synth: SpeechSynthesis | null = typeof window !== "undefined" && "speechSynthesis" in window ? window.speechSynthesis : null;
+const synth: SpeechSynthesis | null =
+  typeof window !== "undefined" && "speechSynthesis" in window
+    ? window.speechSynthesis
+    : null;
 
 function loadVoices() {
   if (!synth) return;
-  voices = synth.getVoices().filter((v) => v.lang.toLowerCase().startsWith("fr"));
-  listeners.forEach((l) => l());
+  voices = synth
+    .getVoices()
+    .filter((v) => v.lang.toLowerCase().startsWith("fr"));
+  listeners.forEach((l) => {
+    l();
+  });
 }
 if (synth) {
   loadVoices();
@@ -25,7 +32,10 @@ export const onVoicesChanged = (fn: () => void) => {
   };
 };
 
-export function configureSpeech(opts: { voiceURI?: string | null; rate?: number }) {
+export function configureSpeech(opts: {
+  voiceURI?: string | null;
+  rate?: number;
+}) {
   if (opts.voiceURI !== undefined) preferredURI = opts.voiceURI;
   if (opts.rate !== undefined) rate = opts.rate;
 }
@@ -40,7 +50,10 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
     let s = 0;
     if (v.lang === "fr-FR") s += 10;
     if (/google/i.test(v.name)) s += 5;
-    if (/(amélie|amelie|thomas|audrey|marie|denise|hortense|julie)/i.test(v.name)) s += 4;
+    if (
+      /(amélie|amelie|thomas|audrey|marie|denise|hortense|julie)/i.test(v.name)
+    )
+      s += 4;
     if (/natural|online|premium|enhanced/i.test(v.name)) s += 6;
     return s;
   };
@@ -51,13 +64,19 @@ let speakToken = 0;
 let seqToken = 0;
 
 /** Parle (interrompt toute séquence en cours). */
-export function speak(text: string, opts: { rate?: number; pitch?: number } = {}) {
+export function speak(
+  text: string,
+  opts: { rate?: number; pitch?: number } = {},
+) {
   seqToken++;
   return rawSpeak(text, opts);
 }
 
 /** Parle et résout quand c'est fini (ou après un délai de sécurité). */
-function rawSpeak(text: string, opts: { rate?: number; pitch?: number } = {}): Promise<void> {
+function rawSpeak(
+  text: string,
+  opts: { rate?: number; pitch?: number } = {},
+): Promise<void> {
   return new Promise((resolve) => {
     if (!synth || !text) return resolve();
     const token = ++speakToken;

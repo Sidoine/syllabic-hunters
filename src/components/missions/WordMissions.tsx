@@ -1,11 +1,26 @@
 import { useMemo, useState } from "react";
 import { SAY, sayOf } from "../../data/syllables";
 import { cleanPart, WORDS, type Word } from "../../data/words";
-import { speak } from "../../lib/speech";
 import { sfx } from "../../lib/sfx";
+import { speak } from "../../lib/speech";
 import { cycle, sample, shuffle, uniq } from "../../lib/utils";
-import { BigButton, FeedbackLayer, MissionFrame, SpeakButton, SylTile, SyllableWord, useFeedback } from "../ui";
-import { confusables, missingCandidates, poolOf, soundWords, wordsForTargets, type MissionProps } from "./helpers";
+import {
+  BigButton,
+  FeedbackLayer,
+  MissionFrame,
+  SpeakButton,
+  SyllableWord,
+  SylTile,
+  useFeedback,
+} from "../ui";
+import {
+  confusables,
+  type MissionProps,
+  missingCandidates,
+  poolOf,
+  soundWords,
+  wordsForTargets,
+} from "./helpers";
 
 // ======================= Images ensorcelées =======================
 export function FindImagesMission({ mission, onDone }: MissionProps) {
@@ -29,7 +44,7 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
         (w) =>
           !w.sounds.includes(t) &&
           !w.parts.some((p) => cleanPart(p).includes(t)) &&
-          (!start || !cleanPart(w.parts[0]).startsWith(firstLetter))
+          (!start || !cleanPart(w.parts[0]).startsWith(firstLetter)),
       );
       const cards = shuffle([...good, ...sample(others, 6 - good.length)]);
       return { t, cards, good: good.map((g) => g.word) };
@@ -80,7 +95,8 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
       instruction={
         <>
           Trouve les <b>{r.good.length}</b> images où {verb}{" "}
-          <b className="font-read text-3xl text-yellow-200">{r.t}</b>. Touche 🔊 pour écouter le nom.
+          <b className="font-read text-3xl text-yellow-200">{r.t}</b>. Touche 🔊
+          pour écouter le nom.
         </>
       }
       speakText={[`Trouve les ${r.good.length} images où ${verb}`, sayOf(r.t)]}
@@ -89,7 +105,9 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
     >
       <FeedbackLayer fb={fb} />
       <div className="flex items-center gap-3 mb-3">
-        <div className="card-kawaii rounded-3xl px-6 py-1 font-read font-bold text-6xl">{r.t}</div>
+        <div className="card-kawaii rounded-3xl px-6 py-1 font-read font-bold text-6xl">
+          {r.t}
+        </div>
         <SpeakButton text={sayOf(r.t)} size="md" />
         <div className="text-2xl font-bold">
           {found.length} / {r.good.length} 💎
@@ -100,18 +118,29 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
           const isFound = found.includes(w.word);
           const isBad = bad.includes(w.word);
           return (
+            // biome-ignore lint/a11y/useSemanticElements: Ce conteneur inclut le bouton vocal imbriqué.
             <div
               key={ri + w.word}
               role="button"
+              tabIndex={0}
               onClick={() => tapCard(w)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") tapCard(w);
+              }}
               className={`btn-pop relative card-kawaii rounded-3xl h-36 sm:h-40 flex flex-col items-center justify-center cursor-pointer ${
                 isFound ? "!bg-lime-100 !border-lime-400 anim-pop" : ""
               } ${isBad ? "opacity-40 grayscale anim-shake" : ""}`}
             >
               <span className="text-6xl sm:text-7xl">{w.emoji}</span>
               {isFound && <SyllableWord word={w} className="text-2xl mt-1" />}
-              {isFound && <span className="absolute top-1 left-2 text-2xl">✅</span>}
-              <SpeakButton text={w.say} size="sm" className="!absolute top-1 right-1" />
+              {isFound && (
+                <span className="absolute top-1 left-2 text-2xl">✅</span>
+              )}
+              <SpeakButton
+                text={w.say}
+                size="sm"
+                className="!absolute top-1 right-1"
+              />
             </div>
           );
         })}
@@ -124,11 +153,17 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
 export function MissingMission({ mission, onDone }: MissionProps) {
   const rounds = useMemo(() => {
     let cands = missingCandidates(mission.targets);
-    if (uniq(cands.map((c) => c.word.word)).length < 3) cands = [...cands, ...missingCandidates(mission.review.slice(-12))];
-    const byWord = shuffle(cands).filter((c, i, arr) => arr.findIndex((x) => x.word.word === c.word.word) === i);
+    if (uniq(cands.map((c) => c.word.word)).length < 3)
+      cands = [...cands, ...missingCandidates(mission.review.slice(-12))];
+    const byWord = shuffle(cands).filter(
+      (c, i, arr) => arr.findIndex((x) => x.word.word === c.word.word) === i,
+    );
     const chosen = cycle(byWord, 5);
     const pool = poolOf(mission);
-    return chosen.map((c) => ({ ...c, choices: shuffle([c.syl, ...confusables(c.syl, pool, 2)]) }));
+    return chosen.map((c) => ({
+      ...c,
+      choices: shuffle([c.syl, ...confusables(c.syl, pool, 2)]),
+    }));
   }, [mission]);
   const [ri, setRi] = useState(0);
   const [states, setStates] = useState<Record<string, "good" | "bad">>({});
@@ -160,12 +195,18 @@ export function MissingMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Un démon a cassé le mot ! Quelle syllabe manque ?"
-      speakText={["Un démon a cassé le mot ! Écoute le mot, et trouve la syllabe qui manque.", r.word.say]}
+      speakText={[
+        "Un démon a cassé le mot ! Écoute le mot, et trouve la syllabe qui manque.",
+        r.word.say,
+      ]}
       round={ri}
       total={rounds.length}
     >
       <FeedbackLayer fb={fb} />
-      <div key={ri} className="anim-pop card-kawaii rounded-[2rem] px-6 py-4 flex flex-col items-center gap-2 my-2">
+      <div
+        key={ri}
+        className="anim-pop card-kawaii rounded-[2rem] px-6 py-4 flex flex-col items-center gap-2 my-2"
+      >
         <div className="flex items-center gap-4">
           <span className="text-8xl">{r.word.emoji}</span>
           <SpeakButton text={r.word.say} size="md" />
@@ -174,12 +215,23 @@ export function MissingMission({ mission, onDone }: MissionProps) {
           word={r.word}
           className="text-6xl"
           hideIndex={solved ? undefined : r.index}
-          hideContent={<span className="inline-block min-w-20 mx-1 border-b-8 border-dashed border-fuchsia-400 text-transparent">__</span>}
+          hideContent={
+            <span className="inline-block min-w-20 mx-1 border-b-8 border-dashed border-fuchsia-400 text-transparent">
+              __
+            </span>
+          }
         />
       </div>
       <div className="flex flex-wrap justify-center gap-4 mt-3">
         {r.choices.map((s) => (
-          <SylTile key={ri + s} syl={s} state={states[s]} hint={badCount >= 2 && s === r.syl} onClick={() => choose(s)} size="md" />
+          <SylTile
+            key={ri + s}
+            syl={s}
+            state={states[s]}
+            hint={badCount >= 2 && s === r.syl}
+            onClick={() => choose(s)}
+            size="md"
+          />
         ))}
       </div>
     </MissionFrame>
@@ -189,14 +241,30 @@ export function MissingMission({ mission, onDone }: MissionProps) {
 // ======================= La forge des mots =======================
 export function BuildMission({ mission, onDone }: MissionProps) {
   const rounds = useMemo(() => {
-    let words = wordsForTargets(mission.targets, 3).filter((w) => w.parts.length >= 2);
-    if (words.length < 4) words = [...words, ...wordsForTargets(mission.review.slice(-12), 3).filter((w) => w.parts.length >= 2)];
+    let words = wordsForTargets(mission.targets, 3).filter(
+      (w) => w.parts.length >= 2,
+    );
+    if (words.length < 4)
+      words = [
+        ...words,
+        ...wordsForTargets(mission.review.slice(-12), 3).filter(
+          (w) => w.parts.length >= 2,
+        ),
+      ];
     const chosen = sample(uniq(words), 4);
     const pool = poolOf(mission);
     return chosen.map((w) => {
-      const t = w.sounds.find((s) => mission.targets.includes(s)) ?? w.sounds.find((s) => s !== "_") ?? pool[0];
-      const distract = confusables(t, pool, 3).filter((d) => !w.parts.map(cleanPart).includes(d))[0];
-      const tiles = shuffle([...w.parts.map((p, i) => ({ id: `p${i}`, part: p })), ...(distract ? [{ id: "d", part: distract }] : [])]);
+      const t =
+        w.sounds.find((s) => mission.targets.includes(s)) ??
+        w.sounds.find((s) => s !== "_") ??
+        pool[0];
+      const distract = confusables(t, pool, 3).filter(
+        (d) => !w.parts.map(cleanPart).includes(d),
+      )[0];
+      const tiles = shuffle([
+        ...w.parts.map((p, i) => ({ id: `p${i}`, part: p })),
+        ...(distract ? [{ id: "d", part: distract }] : []),
+      ]);
       return { w, tiles };
     });
   }, [mission]);
@@ -235,12 +303,17 @@ export function BuildMission({ mission, onDone }: MissionProps) {
     }
   };
 
-  const placedParts = placed.map((id) => r.tiles.find((t) => t.id === id)!.part);
+  const placedParts = placed.map(
+    (id) => r.tiles.find((t) => t.id === id)?.part,
+  );
 
   return (
     <MissionFrame
       instruction="Écris le mot ! Touche les syllabes dans le bon ordre."
-      speakText={["Écris le mot ! Touche les syllabes dans le bon ordre.", r.w.say]}
+      speakText={[
+        "Écris le mot ! Touche les syllabes dans le bon ordre.",
+        r.w.say,
+      ]}
       round={ri}
       total={rounds.length}
     >
@@ -252,11 +325,14 @@ export function BuildMission({ mission, onDone }: MissionProps) {
         <SpeakButton text={r.w.say} size="lg" />
       </div>
       <div className="flex gap-2 my-3">
-        {r.w.parts.map((_, i) => (
+        {r.w.parts.map((_part, i) => (
           <div
+            // biome-ignore lint/suspicious/noArrayIndexKey: Les emplacements de syllabes sont positionnels.
             key={i}
             className={`min-w-24 h-24 px-3 rounded-2xl border-4 flex items-center justify-center font-read font-bold text-5xl ${
-              placedParts[i] ? `card-kawaii ${i % 2 ? "!text-sky-600" : "!text-pink-600"}` : "border-dashed border-white/60"
+              placedParts[i]
+                ? `card-kawaii ${i % 2 ? "!text-sky-600" : "!text-pink-600"}`
+                : "border-dashed border-white/60"
             }`}
           >
             {placedParts[i] ? <PartText part={placedParts[i]} /> : ""}
@@ -284,7 +360,15 @@ function PartText({ part }: { part: string }) {
   const segs = part.split(/(\[[^\]]+\])/).filter(Boolean);
   return (
     <span>
-      {segs.map((s, j) => (s.startsWith("[") ? <span key={j} className="syl-muet">{cleanPart(s)}</span> : <span key={j}>{s}</span>))}
+      {segs.map((s) =>
+        s.startsWith("[") ? (
+          <span key={`${part}-${s}`} className="syl-muet">
+            {cleanPart(s)}
+          </span>
+        ) : (
+          <span key={`${part}-${s}`}>{s}</span>
+        ),
+      )}
     </span>
   );
 }
@@ -292,17 +376,26 @@ function PartText({ part }: { part: string }) {
 // ======================= Lecture secrète =======================
 function similarWords(w: Word, pool: Word[], n: number): Word[] {
   const others = pool.filter((x) => x.word !== w.word && x.emoji !== w.emoji);
-  const share = others.filter((x) => x.sounds.some((s) => s !== "_" && w.sounds.includes(s)) || x.parts[0][0] === w.parts[0][0]);
+  const share = others.filter(
+    (x) =>
+      x.sounds.some((s) => s !== "_" && w.sounds.includes(s)) ||
+      x.parts[0][0] === w.parts[0][0],
+  );
   const out = sample(share, n);
-  for (const x of shuffle(others)) if (out.length < n && !out.includes(x)) out.push(x);
+  for (const x of shuffle(others))
+    if (out.length < n && !out.includes(x)) out.push(x);
   return out;
 }
 
 export function ReadWordMission({ mission, onDone }: MissionProps) {
   const rounds = useMemo(() => {
     let words = wordsForTargets(mission.targets);
-    if (words.length < 5) words = uniq([...words, ...wordsForTargets(mission.review.slice(-12))]);
-    return cycle(sample(words, 5), 5).map((w) => ({ w, choices: shuffle([w, ...similarWords(w, WORDS, 2)]) }));
+    if (words.length < 5)
+      words = uniq([...words, ...wordsForTargets(mission.review.slice(-12))]);
+    return cycle(sample(words, 5), 5).map((w) => ({
+      w,
+      choices: shuffle([w, ...similarWords(w, WORDS, 2)]),
+    }));
   }, [mission]);
   const [ri, setRi] = useState(0);
   const [bad, setBad] = useState<string[]>([]);
@@ -337,24 +430,40 @@ export function ReadWordMission({ mission, onDone }: MissionProps) {
       total={rounds.length}
     >
       <FeedbackLayer fb={fb} />
-      <div key={ri} className="anim-pop card-kawaii rounded-[2rem] px-8 py-4 my-2 flex items-center gap-4">
+      <div
+        key={ri}
+        className="anim-pop card-kawaii rounded-[2rem] px-8 py-4 my-2 flex items-center gap-4"
+      >
         <span className="text-4xl">📜</span>
         <SyllableWord word={r.w} className="text-6xl sm:text-7xl" />
       </div>
       <div className="flex gap-2 mb-2 items-center text-white/80">
-        {r.w.parts.map((p, i) =>
+        {r.w.parts.map((p) =>
           SAY[p] ? (
-            <button key={i} type="button" onClick={() => speak(SAY[p])} className="glass rounded-full px-3 py-1 font-read text-xl">
+            <button
+              key={p}
+              type="button"
+              onClick={() => speak(SAY[p])}
+              className="glass rounded-full px-3 py-1 font-read text-xl"
+            >
               {p} 🔈
             </button>
           ) : (
-            <span key={i} className="rounded-full px-3 py-1 font-read text-xl bg-white/5">
+            <span
+              key={p}
+              className="rounded-full px-3 py-1 font-read text-xl bg-white/5"
+            >
               <PartText part={p} />
             </span>
-          )
+          ),
         )}
         {(bad.length > 0 || helped) && (
-          <SpeakButton text={r.w.say} size="sm" onSpoken={() => setHelped(true)} label="Écouter le mot" />
+          <SpeakButton
+            text={r.w.say}
+            size="sm"
+            onSpoken={() => setHelped(true)}
+            label="Écouter le mot"
+          />
         )}
       </div>
       <div className="flex flex-wrap justify-center gap-4 mt-2">
@@ -377,8 +486,12 @@ export function ReadWordMission({ mission, onDone }: MissionProps) {
 export function ListenWordMission({ mission, onDone }: MissionProps) {
   const rounds = useMemo(() => {
     let words = wordsForTargets(mission.targets);
-    if (words.length < 5) words = uniq([...words, ...wordsForTargets(mission.review.slice(-12))]);
-    return cycle(sample(words, 5), 5).map((w) => ({ w, choices: shuffle([w, ...similarWords(w, WORDS, 2)]) }));
+    if (words.length < 5)
+      words = uniq([...words, ...wordsForTargets(mission.review.slice(-12))]);
+    return cycle(sample(words, 5), 5).map((w) => ({
+      w,
+      choices: shuffle([w, ...similarWords(w, WORDS, 2)]),
+    }));
   }, [mission]);
   const [ri, setRi] = useState(0);
   const [bad, setBad] = useState<string[]>([]);
@@ -409,7 +522,10 @@ export function ListenWordMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Écoute le mot mystère et trouve comment il s'écrit."
-      speakText={["Écoute le mot mystère, et trouve comment il s'écrit.", r.w.say]}
+      speakText={[
+        "Écoute le mot mystère, et trouve comment il s'écrit.",
+        r.w.say,
+      ]}
       round={ri}
       total={rounds.length}
     >
@@ -432,7 +548,10 @@ export function ListenWordMission({ mission, onDone }: MissionProps) {
           </button>
         ))}
       </div>
-      <p className="text-white/60 mt-4 text-sm">Les couleurs montrent les syllabes. Les lettres grises ne se prononcent pas.</p>
+      <p className="text-white/60 mt-4 text-sm">
+        Les couleurs montrent les syllabes. Les lettres grises ne se prononcent
+        pas.
+      </p>
     </MissionFrame>
   );
 }

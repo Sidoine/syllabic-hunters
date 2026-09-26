@@ -7,20 +7,24 @@ export function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-export const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
+export const pick = <T>(arr: T[]): T =>
+  arr[Math.floor(Math.random() * arr.length)];
 
 export function sample<T>(arr: T[], n: number): T[] {
   return shuffle(arr).slice(0, n);
 }
 
-export const uniq = <T,>(arr: T[]) => Array.from(new Set(arr));
+export const uniq = <T>(arr: T[]) => Array.from(new Set(arr));
 
 /** Répète/mélange une liste pour obtenir n éléments en évitant les doublons consécutifs */
 export function cycle<T>(arr: T[], n: number): T[] {
   const out: T[] = [];
   while (out.length < n && arr.length) {
     const s = shuffle(arr);
-    if (out.length && s[0] === out[out.length - 1] && s.length > 1) s.push(s.shift()!);
+    if (out.length && s[0] === out[out.length - 1] && s.length > 1) {
+      const first = s.shift();
+      if (first !== undefined) s.push(first);
+    }
     out.push(...s);
   }
   return out.slice(0, n);

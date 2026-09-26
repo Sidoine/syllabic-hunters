@@ -2,11 +2,17 @@ import { useMemo, useRef, useState } from "react";
 import { CHAPTERS } from "../../data/story";
 import { sayOf } from "../../data/syllables";
 import { cleanPart, type Word } from "../../data/words";
-import { speak } from "../../lib/speech";
 import { sfx } from "../../lib/sfx";
+import { speak } from "../../lib/speech";
 import { cycle, sample, shuffle } from "../../lib/utils";
 import { FeedbackLayer, IMAGES, MissionFrame, useFeedback } from "../ui";
-import { confusables, isVowel, poolOf, soundWords, type MissionProps } from "./helpers";
+import {
+  confusables,
+  isVowel,
+  type MissionProps,
+  poolOf,
+  soundWords,
+} from "./helpers";
 
 // ======================= Cartes jumelles =======================
 interface MemCard {
@@ -20,10 +26,15 @@ export function MemoryMission({ mission, onDone }: MissionProps) {
   const cards = useMemo(() => {
     const pickWord = (s: string): Word | undefined => {
       const ws = soundWords(s, true);
-      const written = ws.filter((w) => cleanPart(w.parts[0]).startsWith(s) || isVowel(s));
+      const written = ws.filter(
+        (w) => cleanPart(w.parts[0]).startsWith(s) || isVowel(s),
+      );
       return sample(written.length ? written : ws, 1)[0];
     };
-    const wanted = mission.targets.length > 8 ? 6 : Math.min(6, Math.max(4, mission.targets.length));
+    const wanted =
+      mission.targets.length > 8
+        ? 6
+        : Math.min(6, Math.max(4, mission.targets.length));
     const pairs: { s: string; w: Word }[] = [];
     for (const s of shuffle(mission.targets)) {
       const w = pickWord(s);
@@ -36,9 +47,9 @@ export function MemoryMission({ mission, onDone }: MissionProps) {
     }
     return shuffle(
       pairs.flatMap((p) => [
-        { id: "s" + p.s, kind: "syl" as const, key: p.s },
-        { id: "i" + p.s, kind: "img" as const, key: p.s, word: p.w },
-      ])
+        { id: `s${p.s}`, kind: "syl" as const, key: p.s },
+        { id: `i${p.s}`, kind: "img" as const, key: p.s, word: p.w },
+      ]),
     );
   }, [mission]);
   const [open, setOpen] = useState<string[]>([]);
@@ -53,10 +64,17 @@ export function MemoryMission({ mission, onDone }: MissionProps) {
     sfx.flip();
     const no = [...open, c.id];
     setOpen(no);
-    speak(c.kind === "syl" ? sayOf(c.key) : c.word!.say);
+    if (c.kind === "syl") speak(sayOf(c.key));
+    else if (c.word) speak(c.word.say);
     if (no.length === 2) {
       busy.current = true;
-      const [a, b] = no.map((id) => cards.find((x) => x.id === id)!);
+      const selected = cards.filter((card) => no.includes(card.id));
+      if (selected.length !== 2) {
+        busy.current = false;
+        setOpen([]);
+        return;
+      }
+      const [a, b] = selected;
       await new Promise((r) => setTimeout(r, 1100));
       if (a.key === b.key && a.kind !== b.kind) {
         const nm = [...matched, a.key];
@@ -86,7 +104,9 @@ export function MemoryMission({ mission, onDone }: MissionProps) {
       readKey="memory"
     >
       <FeedbackLayer fb={fb} />
-      <div className={`grid gap-3 ${cards.length > 8 ? "grid-cols-3 sm:grid-cols-4" : "grid-cols-3 sm:grid-cols-4"}`}>
+      <div
+        className={`grid gap-3 ${cards.length > 8 ? "grid-cols-3 sm:grid-cols-4" : "grid-cols-3 sm:grid-cols-4"}`}
+      >
         {cards.map((c) => {
           const visible = open.includes(c.id) || matched.includes(c.key);
           return (
@@ -99,18 +119,26 @@ export function MemoryMission({ mission, onDone }: MissionProps) {
                   ? `card-kawaii ${matched.includes(c.key) ? "!bg-lime-100 !border-lime-400" : ""}`
                   : "bg-gradient-to-br from-fuchsia-500 via-purple-600 to-indigo-600 border-white/80 shadow-[0_6px_0_#3b1a66]"
               }`}
-              style={{ transform: visible ? "rotateY(0deg)" : "rotateY(180deg)" }}
+              style={{
+                transform: visible ? "rotateY(0deg)" : "rotateY(180deg)",
+              }}
             >
               {visible ? (
                 c.kind === "syl" ? (
-                  <span className="font-read font-bold text-5xl" style={{ transform: "rotateY(0)" }}>
+                  <span
+                    className="font-read font-bold text-5xl"
+                    style={{ transform: "rotateY(0)" }}
+                  >
                     {c.key}
                   </span>
                 ) : (
-                  <span className="text-6xl">{c.word!.emoji}</span>
+                  <span className="text-6xl">{c.word?.emoji}</span>
                 )
               ) : (
-                <span className="text-4xl" style={{ transform: "rotateY(180deg)" }}>
+                <span
+                  className="text-4xl"
+                  style={{ transform: "rotateY(180deg)" }}
+                >
                   ⭐
                 </span>
               )}
@@ -130,7 +158,10 @@ export function BattleMission({ mission, onDone }: MissionProps) {
   const waves = useMemo(() => {
     const pool = poolOf(mission);
     const n = isVowel(mission.targets[0]) ? 3 : 3;
-    return cycle(mission.targets, HP + 4).map((t) => ({ t, demons: shuffle([t, ...confusables(t, pool, n)]) }));
+    return cycle(mission.targets, HP + 4).map((t) => ({
+      t,
+      demons: shuffle([t, ...confusables(t, pool, n)]),
+    }));
   }, [mission, HP]);
   const [wi, setWi] = useState(0);
   const [hp, setHp] = useState(HP);
@@ -171,11 +202,18 @@ export function BattleMission({ mission, onDone }: MissionProps) {
   };
 
   const hue = chapter.hue;
-  const positions = ["left-[4%] top-[10%]", "right-[4%] top-[6%]", "left-[18%] bottom-[4%]", "right-[16%] bottom-[8%]"];
+  const positions = [
+    "left-[4%] top-[10%]",
+    "right-[4%] top-[6%]",
+    "left-[18%] bottom-[4%]",
+    "right-[16%] bottom-[8%]",
+  ];
 
   return (
     <MissionFrame
-      instruction={<>Écoute et touche le démon qui porte la bonne syllabe ! 🔊</>}
+      instruction={
+        <>Écoute et touche le démon qui porte la bonne syllabe ! 🔊</>
+      }
       speakText={["Touche le démon", sayOf(w.t)]}
       round={HP - hp}
       total={HP}
@@ -184,14 +222,21 @@ export function BattleMission({ mission, onDone }: MissionProps) {
       <FeedbackLayer fb={fb} />
       {/* Boss */}
       <div className="flex items-center gap-3 w-full max-w-xl">
-        <div key={bossHit} className={`relative ${bossHit ? "anim-shake" : ""}`}>
+        <div
+          key={bossHit}
+          className={`relative ${bossHit ? "anim-shake" : ""}`}
+        >
           <img
             src={isFinal ? IMAGES.king : IMAGES.demon}
             alt=""
             className="w-24 h-24 object-contain anim-float"
-            style={isFinal ? {} : { filter: `hue-rotate(${hue}deg) saturate(1.3)` }}
+            style={
+              isFinal ? {} : { filter: `hue-rotate(${hue}deg) saturate(1.3)` }
+            }
           />
-          <span className="absolute -top-2 -right-2 text-4xl">{chapter.bossEmoji}</span>
+          <span className="absolute -top-2 -right-2 text-4xl">
+            {chapter.bossEmoji}
+          </span>
         </div>
         <div className="flex-1">
           <div className="font-bold text-lg neon-text">{chapter.boss}</div>
@@ -227,11 +272,20 @@ export function BattleMission({ mission, onDone }: MissionProps) {
             style={{ animationDelay: poofed === s ? "0s" : `${i * 0.7}s` }}
           >
             <div className={`relative ${laugh === s ? "anim-wobble" : ""}`}>
-              <img src={IMAGES.demon} alt="" className="w-28 h-28 sm:w-32 sm:h-32 object-contain" style={{ filter: `hue-rotate(${(hue + i * 70) % 360}deg)` }} />
+              <img
+                src={IMAGES.demon}
+                alt=""
+                className="w-28 h-28 sm:w-32 sm:h-32 object-contain"
+                style={{ filter: `hue-rotate(${(hue + i * 70) % 360}deg)` }}
+              />
               <span className="absolute left-1/2 -translate-x-1/2 -bottom-3 card-kawaii rounded-2xl px-3 font-read font-bold text-4xl whitespace-nowrap">
                 {s}
               </span>
-              {laugh === s && <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-2xl font-bold text-yellow-200">hihi !</span>}
+              {laugh === s && (
+                <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-2xl font-bold text-yellow-200">
+                  hihi !
+                </span>
+              )}
             </div>
           </button>
         ))}
