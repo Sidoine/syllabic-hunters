@@ -1,19 +1,31 @@
 import { useState } from "react";
 import { BigButton, IMAGES } from "../components/ui";
+import { login, register, type AuthUser } from "../lib/api";
 import { speak } from "../lib/speech";
 import type { Save } from "../lib/storage";
 
 export function TitleScreen({
   save,
+  user,
+  onAuthenticated,
+  onLogout,
   onStart,
   onSettings,
 }: {
   save: Save;
+  user: AuthUser | null;
+  onAuthenticated: (user: AuthUser) => Promise<void>;
+  onLogout: () => Promise<void>;
   onStart: (name: string, hero: Save["hero"]) => void;
   onSettings: () => void;
 }) {
   const [name, setName] = useState(save.name);
   const [hero, setHero] = useState<Save["hero"]>(save.hero);
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authBusy, setAuthBusy] = useState(false);
   const hasSave = Object.keys(save.stars).length > 0;
   const heroes: { id: Save["hero"]; label: string; color: string }[] = [
     { id: "hana", label: "Hana", color: "#ff4fa3" },
@@ -107,6 +119,96 @@ export function TitleScreen({
       >
         {hasSave ? "Continuer l'aventure ▶" : "Commencer l'aventure ▶"}
       </BigButton>
+
+      <div className="glass rounded-3xl p-4 w-full max-w-md">
+        {user ? (
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="font-bold">Sauvegarde synchronisée</div>
+              <div className="text-sm text-white/70">{user.email}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => void onLogout()}
+              className="rounded-xl border-2 border-white/40 px-3 py-2 font-bold"
+            >
+              Déconnexion
+            </button>
+          </div>
+        ) : (
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={async (event) => {
+              event.preventDefault();
+              setAuthBusy(true);
+              setAuthError("");
+              try {
+                const result =
+                  authMode === "login"
+                    ? await login(email, password)
+                    : await register(email, password);
+                await onAuthenticated(result.user);
+              } catch (error) {
+                setAuthError(
+                  error instanceof Error
+                    ? error.message
+                    : "Connexion impossible.",
+                );
+              } finally {
+                setAuthBusy(false);
+              }
+            }}
+          >
+            <div className="flex items-center justify-between">
+              <strong>
+                {authMode === "login"
+                  ? "Retrouver ma sauvegarde"
+                  : "Créer un compte"}
+              </strong>
+              <button
+                type="button"
+                className="text-sm underline"
+                onClick={() =>
+                  setAuthMode(authMode === "login" ? "register" : "login")
+                }
+              >
+                {authMode === "login"
+                  ? "Créer un compte"
+                  : "J'ai déjà un compte"}
+              </button>
+            </div>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Email"
+              className="rounded-xl border-2 border-pink-200 bg-white px-3 py-2 text-purple-900 placeholder:text-slate-500 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50"
+            />
+            <input
+              type="password"
+              required
+              minLength={8}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Mot de passe (8 caractères minimum)"
+              className="rounded-xl border-2 border-pink-200 bg-white px-3 py-2 text-purple-900 placeholder:text-slate-500 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-300/50"
+            />
+            {authError && <p className="text-rose-200 text-sm">{authError}</p>}
+            <button
+              type="submit"
+              disabled={authBusy}
+              className="rounded-xl bg-cyan-300 text-purple-950 px-4 py-2 font-bold disabled:opacity-50"
+            >
+              {authBusy
+                ? "Connexion..."
+                : authMode === "login"
+                  ? "Se connecter"
+                  : "S'inscrire"}
+            </button>
+          </form>
+        )}
+      </div>
       <button
         type="button"
         onClick={onSettings}

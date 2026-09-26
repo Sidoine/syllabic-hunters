@@ -4,6 +4,13 @@ import { CHAPTERS, MISSIONS, type Mission } from "./data/story";
 import { setSfxEnabled } from "./lib/sfx";
 import { configureSpeech, stopSpeech } from "./lib/speech";
 import {
+  getCurrentUser,
+  loadRemoteSave,
+  logout,
+  saveRemoteSave,
+  type AuthUser,
+} from "./lib/api";
+import {
   clearSave,
   defaultSave,
   loadSave,
@@ -25,14 +32,56 @@ type Screen =
   | { name: "mission"; id: string; run: number }
   | { name: "result"; id: string; stars: number };
 
+function mergeSaves(local: Save, remote: Save): Save {
+  const stars = { ...remote.stars };
+  for (const [id, value] of Object.entries(local.stars)) {
+    stars[id] = Math.max(stars[id] ?? 0, value);
+  }
+  return {
+    ...remote,
+    name: local.name || remote.name,
+    hero: local.hero,
+    stars,
+    seenIntro: { ...remote.seenIntro, ...local.seenIntro },
+    seenOutro: { ...remote.seenOutro, ...local.seenOutro },
+    settings: local.settings,
+  };
+}
+
 export default function App() {
   const [save, setSave] = useState<Save>(() => loadSave());
   const [screen, setScreen] = useState<Screen>({ name: "title" });
   const [showSettings, setShowSettings] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     writeSave(save);
-  }, [save]);
+    if (authReady && user) void saveRemoteSave(save).catch(() => undefined);
+  }, [save, authReady, user]);
+
+  useEffect(() => {
+    getCurrentUser()
+      .then(async ({ user: currentUser }) => {
+        setUser(currentUser);
+        const remote = await loadRemoteSave();
+        const remoteSave = remote.save;
+        if (remoteSave) {
+          setSave((current) => mergeSaves(current, remoteSave));
+        }
+      })
+      .catch(() => undefined)
+      .finally(() => setAuthReady(true));
+  }, []);
+
+  const authenticate = async (nextUser: AuthUser) => {
+    setAuthReady(false);
+    const remote = await loadRemoteSave();
+    const remoteSave = remote.save;
+    if (remoteSave) setSave((current) => mergeSaves(current, remoteSave));
+    setUser(nextUser);
+    setAuthReady(true);
+  };
 
   useEffect(() => {
     configureSpeech({
@@ -77,6 +126,12 @@ export default function App() {
       content = (
         <TitleScreen
           save={save}
+          user={user}
+          onAuthenticated={authenticate}
+          onLogout={async () => {
+            await logout();
+            setUser(null);
+          }}
           onSettings={() => setShowSettings(true)}
           onStart={(name, hero) => {
             setSave((s) => ({ ...s, name, hero }));

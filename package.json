@@ -4,26 +4,36 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"npm run server\" \"vite\"",
     "build": "vite build",
     "lint": "biome lint .",
     "preview": "vite preview",
+    "server": "tsx server/index.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "clsx": "2.1.1",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "http-proxy-middleware": "^4.2.0",
+    "pg": "^8.23.0",
     "react": "19.2.6",
     "react-dom": "19.2.6",
     "tailwind-merge": "3.4.0"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "4.1.17",
     "@biomejs/biome": "2.5.14",
+    "@tailwindcss/vite": "4.1.17",
+    "@types/express": "^5.0.6",
     "@types/node": "22.19.17",
+    "@types/pg": "^8.23.1",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
+    "concurrently": "^10.0.5",
     "tailwindcss": "4.1.17",
+    "tsx": "^4.23.15",
     "typescript": "5.9.3",
     "vite": "7.3.2",
     "vite-plugin-singlefile": "2.3.0"
