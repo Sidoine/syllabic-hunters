@@ -344,9 +344,11 @@ export function MissionFrame({
 }) {
   const { autoRead, hero: h } = useGame();
   const who = hero ?? h;
+  // Keep the sequence stable when callers recreate an equivalent text array.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: The content key intentionally prevents duplicate speech on rerenders.
   const seq = useMemo(
     () => (Array.isArray(speakText) ? speakText : [speakText]),
-    [speakText],
+    [Array.isArray(speakText) ? speakText.join("\u0000") : speakText],
   );
   const hasReadInitial = useRef(false);
   useEffect(() => {
