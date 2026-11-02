@@ -1,0 +1,964 @@
+[
+  {
+    "name": "cheer-bravo",
+    "text": "Bravo !",
+    "tone": "cheer",
+    "seed": 2
+  },
+  {
+    "name": "cheer-super",
+    "text": "Super !",
+    "tone": "cheer",
+    "seed": 2
+  },
+  {
+    "name": "cheer-genial",
+    "text": "Génial !",
+    "tone": "cheer",
+    "seed": 2
+  },
+  {
+    "name": "cheer-oui-cest-ca",
+    "text": "Oui, c'est ça !",
+    "tone": "cheer",
+    "seed": 2
+  },
+  {
+    "name": "cheer-trop-forte",
+    "text": "Trop forte !",
+    "tone": "cheer",
+    "seed": 2
+  },
+  {
+    "name": "cheer-magnifique",
+    "text": "Magnifique !",
+    "tone": "cheer",
+    "seed": 2
+  },
+  {
+    "name": "cheer-bien-joue",
+    "text": "Bravo, bien joué !",
+    "tone": "cheer",
+    "seed": 2
+  },
+  {
+    "name": "read-praise",
+    "text": "Bravo, tu lis très bien !",
+    "tone": "praise",
+    "seed": 2
+  },
+  {
+    "name": "try-essaie-encore",
+    "text": "Essaie encore !",
+    "tone": "encourage",
+    "seed": 2
+  },
+  {
+    "name": "try-presque-reessaie",
+    "text": "Presque ! Réessaie.",
+    "tone": "encourage",
+    "seed": 2
+  },
+  {
+    "name": "try-oups-encore",
+    "text": "Oups ! Encore une fois.",
+    "tone": "encourage",
+    "seed": 2
+  },
+  {
+    "name": "playful-rate",
+    "text": "Hihihi ! Raté !",
+    "tone": "playful",
+    "seed": 2
+  },
+  {
+    "name": "story-mochi-au-secours-le-roi-chuuut-a-vole-tous-les-sons-du",
+    "text": "Au secours! Le Roi Chuuut a volé tous les sons du monde!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé."
+  },
+  {
+    "name": "story-king-chuuut-plus-de-chansons-plus-de-mots-le-silence-",
+    "text": "Chuuut! Plus de chansons, plus de mots! Le silence pour toujours! Mouahaha!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix masculine grave, théâtrale, parlant un français natif de Paris sans accent étranger.",
+    "tone_text": "Ton de méchant de dessin animé, dramatique, exagéré et ricanant."
+  },
+  {
+    "name": "story-yuki-pour-les-battre-il-faut-apprendre-les-sons-on-co",
+    "text": "Pour les battre, il faut apprendre les sons. On commence par les voyelles : a, i, oh, u, é et où!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle."
+  },
+  {
+    "name": "story-hana-maintenant-on-va-coller-des-lettres-aux-voyelles",
+    "text": "Maintenant, on va coller des lettres aux voyelles pour faire des syllabes. C'est ça, le B-a bas!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive."
+  },
+  {
+    "name": "story-king-nooon-toute-cette-musique-c-est-trop-joli-bon-d-",
+    "text": "Nooon! Toute cette musique... c'est... trop joli! Bon d'accord, j'arrête de faire chuuut!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix masculine grave, théâtrale, parlant un français natif de Paris sans accent étranger.",
+    "tone_text": "Ton de méchant de dessin animé, dramatique, exagéré et ricanant."
+  },
+  {
+    "name": "mission-vowels",
+    "text": "Touche chaque voyelle pour écouter sa chanson. Attention, o et u ensemble font le son ou : deux lettres, un seul son !",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-fusion-quiz",
+    "text": "Écoute bien. Quelle voyelle faut-il coller ?",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-listen-syllable",
+    "text": "Écoute bien, et touche la syllabe que tu entends.",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-see-sound",
+    "text": "Regarde la syllabe. Touche les bulles pour les écouter, puis choisis celle qui chante la bonne syllabe.",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-memory",
+    "text": "Retourne deux cartes. Trouve une syllabe et l'image qui commence par ce son !",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-missing",
+    "text": "Un démon a cassé le mot ! Écoute le mot, et trouve la syllabe qui manque.",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-build",
+    "text": "Écris le mot ! Touche les syllabes dans le bon ordre.",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-read-word",
+    "text": "Lis le mot secret toute seule, syllabe par syllabe. Puis touche la bonne image.",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "mission-listen-word",
+    "text": "Écoute le mot mystère, et trouve comment il s'écrit.",
+    "tone": "calm",
+    "seed": 2,
+    "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante."
+  },
+  {
+    "name": "story-hana-bonjour-alix-je-suis-hana-des-lumi-stars-nous-ch",
+    "text": "Bonjour Alix! Je suis Hana, des Lumi Stars. Nous chassons les démons avec la musique!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive."
+  },
+  {
+    "name": "story-momo-bravo-alix-les-voyelles-chantent-a-nouveau",
+    "text": "Bravo Alix! Les voyelles chantent à nouveau!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse."
+  },
+  {
+    "name": "story-hana-alix-tu-connais-maintenant-plein-de-syllabes-cha",
+    "text": "Alix, tu connais maintenant plein de syllabes. Chantons ensemble pour battre le Roi Chuuut!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive."
+  },
+  {
+    "name": "story-hana-alix-tu-es-une-vraie-star-de-la-lecture-les-lumi",
+    "text": "Alix, tu es une vraie star de la lecture! Les Lumi Stars sont fières de toi!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive."
+  },
+  {
+    "name": "story-king-grrr-tu-as-libere-toutes-les-lettres",
+    "text": "Grrr! Tu as libéré toutes les lettres! Mais tu ne gagneras pas le Grand Concert!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix masculine grave, théâtrale, parlant un français natif de Paris sans accent étranger.",
+    "tone_text": "Ton de méchant de dessin animé, dramatique, exagéré et ricanant."
+  },
+  {
+    "name": "story-mochi-tu-peux-rejouer-toutes-les-missions",
+    "text": "Tu peux rejouer toutes les missions pour gagner encore plus d'étoiles!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé."
+  },
+  {
+    "name": "story-mochi-un-demon-lezard-a-cache-la-lettre-l-dans-le-parc-a78351",
+    "text": "Un démon lézard a caché la lettre L dans le parc!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-yuki-la-lettre-l-chante-avec-sa-langue-avec-a-elle-fait-la-a-2e72f2",
+    "text": "la lettre L chante avec sa langue. Avec a, elle fait la. Avec i, elle fait lit!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-hana-lezardo-est-battu-la-lit-lot-lu-les-loup-tu-connais-la-af9bd7",
+    "text": "Lézardo est battu! la, lit, lot, lu, les, loup : tu connais la lettre L!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-momo-mmmm-ca-sent-bon-au-marche-mais-maitre-moustache-a-vole-0c128a",
+    "text": "Mmmm... ça sent bon au marché! Mais Maître Moustache a volé la lettre M!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-hana-m-fait-comme-quand-c-est-delicieux-avec-a-ma-47e620",
+    "text": "M fait comme quand c'est délicieux. Avec a : ma!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-momo-miam-ma-mie-mot-mue-mes-mou-la-lettre-m-est-liberee-cec98f",
+    "text": "Miam! ma, mie, mot, mue, mes, mou : la lettre M est libérée!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-yuki-rrrr-tu-entends-c-est-rakoro-qui-grogne-pres-de-la-rivi-1475fc",
+    "text": "Rrrr! tu entends? C'est Rakoro qui grogne près de la rivière!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-mochi-r-roule-dans-la-gorge-avec-a-ca-fait-rat-df8e1c",
+    "text": "R roule dans la gorge. Avec a, ça fait rat!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-yuki-rakoro-s-est-enfui-rat-riz-rot-rue-re-roue-super-31cfa3",
+    "text": "Rakoro s'est enfui! rat, riz, rot, rue, ré, roue : super!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-hana-ssss-serpentine-le-serpent-siffle-dans-notre-studio-a962b1",
+    "text": "Ssss... Serpentine le serpent siffle dans notre studio!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-momo-s-siffle-comme-un-serpent-avec-a-sa-306c4a",
+    "text": "S siffle comme un serpent. Avec a : sa!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-hana-serpentine-ne-siffle-plus-sa-si-seau-su-ses-sou-bravo-8c010f",
+    "text": "Serpentine ne siffle plus! sa, si, seau, su, ses, sou : bravo!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-mochi-un-pirate-poulpe-a-vole-la-lettre-p-dans-son-bateau-56d1ac",
+    "text": "Un pirate-poulpe a volé la lettre P dans son bateau!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-yuki-p-fait-un-petit-bruit-qui-eclate-comme-une-bulle-avec-a-9773dc",
+    "text": "P fait un petit bruit qui éclate comme une bulle. Avec a : pas!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-momo-plouf-pirata-poulpe-tombe-a-l-eau-pas-pie-pot-pu-pe-pou-35b257",
+    "text": "Plouf! Pirata Poulpe tombe à l'eau! pas, pie, pot, pu, pé, pou!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-hana-tornado-toto-fait-tourner-la-tour-de-la-tele-265a08",
+    "text": "Tornado Toto fait tourner la Tour de la Télé!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-mochi-t-tape-comme-un-tambour-avec-a-ta-55f489",
+    "text": "T tape comme un tambour. Avec a : ta!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-yuki-la-tornade-s-arrete-ta-ti-tot-tu-the-tout-genial-2a47f4",
+    "text": "la tornade s'arrête! ta, ti, tôt, tu, thé, tout : génial!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-momo-un-ninja-se-cache-dans-les-nuages-il-a-vole-la-lettre-n-392ba6",
+    "text": "Un ninja se cache dans les nuages! Il a volé la lettre N!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-yuki-n-chante-dans-le-nez-avec-a-na-f033c4",
+    "text": "N chante dans le nez. Avec a : na!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-hana-le-ninja-est-demasque-na-nid-nos-nu-ne-nous-fccfa0",
+    "text": "Le ninja est démasqué! na, nid, nos, nu, né, nous!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-mochi-dragonito-crache-du-feu-sur-les-diamants-5fd957",
+    "text": "Dragonito crache du feu sur les diamants!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-hana-d-tape-avec-la-langue-derriere-les-dents-avec-a-da-bf5110",
+    "text": "D tape avec la langue derrière les dents. Avec a : da!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-momo-dragonito-fait-dodo-da-dit-dos-du-de-doux-bien-joue-2a9dc3",
+    "text": "Dragonito fait dodo! da, dit, dos, du, dé, doux : bien joué!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-yuki-baba-boubou-enferme-la-musique-dans-des-bulles-58cc91",
+    "text": "Baba Boubou enferme la musique dans des bulles!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-mochi-b-fait-avec-les-levres-qui-se-collent-avec-a-bas-comme-11b201",
+    "text": "B fait avec les lèvres qui se collent. Avec a : bas! Comme B-a bas!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-hana-les-bulles-eclatent-bas-bi-beau-bu-be-bout-tu-es-une-ch-cbc790",
+    "text": "Les bulles éclatent! bas, bi, beau, bu, bé, bout : tu es une championne!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-momo-fifi-fantome-fait-peur-aux-fees-de-la-foret-648abc",
+    "text": "Fifi Fantôme fait peur aux fées de la forêt!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-yuki-f-souffle-comme-le-vent-avec-a-fa-abbfbb",
+    "text": "F souffle comme le vent. Avec a : fa!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-yuki-pfiou-fifi-s-envole-fa-fi-faux-fut-fee-fou-2564ec",
+    "text": "Pfiou! Fifi s'envole! fa, fi, faux, fut, fée, fou!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-hana-vampirou-s-est-installe-dans-le-volcan-violet-b9ae43",
+    "text": "Vampirou s'est installé dans le volcan violet!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-mochi-v-vibre-comme-une-abeille-avec-a-va-df8ed7",
+    "text": "V vibre comme une abeille. Avec a : va!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-momo-vampirou-va-se-coucher-va-vie-veau-vu-ve-vous-bravo-d22161",
+    "text": "Vampirou va se coucher! va, vie, veau, vu, vé, vous : bravo!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-yuki-attention-c-et-h-ensemble-chantent-comme-pour-dire-chut-67551a",
+    "text": "Attention : C et H ensemble chantent, comme pour dire chut!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-momo-deux-lettres-un-seul-son-avec-a-chat-comme-chat-161ba4",
+    "text": "Deux lettres, un seul son! Avec a : chat, comme chat!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-hana-chachat-noir-ronronne-maintenant-chat-chi-chaud-chu-che-6dca04",
+    "text": "Chachat Noir ronronne maintenant! chat, chi, chaud, chu, chez, chou!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-mochi-jojo-le-jongleur-a-vole-tous-les-jouets-de-la-jungle-54058f",
+    "text": "Jojo le Jongleur a volé tous les jouets de la jungle!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "story-hana-j-fait-comme-un-moteur-doux-avec-a-ja-2595e1",
+    "text": "J fait comme un moteur doux. Avec a : ja!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-yuki-les-jouets-sont-sauves-ja-j-y-jo-jus-j-ai-joue-8ab385",
+    "text": "Les jouets sont sauvés! ja, j'y, jo, jus, j'ai, joue!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-yuki-attention-c-est-la-grotte-aux-pieges-c-et-g-sont-des-le-2681b9",
+    "text": "Attention, c'est la grotte aux pièges! C et G sont des lettres farceuses!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, posée et légèrement grave.",
+    "tone_text": "Ton calme, précis et déterminé, avec une intonation naturelle.",
+    "speaker": "yuki"
+  },
+  {
+    "name": "story-hana-devant-a-oh-u-et-ou-c-chante-comme-dans-cadeau-et-g-cha-1591c2",
+    "text": "Devant a, oh, u et où, C chante comme dans cadeau, et G chante comme dans gâteau. cas, co, cu, cou... gars, go, goût!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, lumineuse, assurée et chaleureuse.",
+    "tone_text": "Ton héroïque et encourageant, avec une intonation expressive.",
+    "speaker": "hana"
+  },
+  {
+    "name": "story-momo-mais-devant-i-et-e-ils-changent-de-voix-alors-ici-on-re-2c0da6",
+    "text": "Mais devant i et e, ils changent de voix! Alors ici, on reste avec a, oh, u et où.",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, enjouée, pétillante et souriante.",
+    "tone_text": "Ton joyeux et très expressif, avec une intonation malicieuse.",
+    "speaker": "momo"
+  },
+  {
+    "name": "story-mochi-capitaine-gorgo-est-vaincu-tu-as-dejoue-les-pieges-8ba05e",
+    "text": "Capitaine Gorgo est vaincu! tu as déjoué les pièges!",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de petite créature féminine, très mignonne et aiguë, parlant un français natif de Paris.",
+    "tone_text": "Ton adorable, animé et espiègle, avec une intonation de dessin animé.",
+    "speaker": "mochi"
+  },
+  {
+    "name": "math-number-00-zero",
+    "text": "zéro",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-01-un",
+    "text": "un",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-02-deux",
+    "text": "deux",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-03-trois",
+    "text": "trois",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-04-quatre",
+    "text": "quatre",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-05-cinq",
+    "text": "cinq",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-06-six",
+    "text": "six",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-07-sept",
+    "text": "sept",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-08-huit",
+    "text": "huit",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-09-neuf",
+    "text": "neuf",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-10-dix",
+    "text": "dix",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-11-onze",
+    "text": "onze",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-12-douze",
+    "text": "douze",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-13-treize",
+    "text": "treize",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-14-quatorze",
+    "text": "quatorze",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-15-quinze",
+    "text": "quinze",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-16-seize",
+    "text": "seize",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-17-dix-sept",
+    "text": "dix-sept",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-18-dix-huit",
+    "text": "dix-huit",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-19-dix-neuf",
+    "text": "dix-neuf",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-number-20-vingt",
+    "text": "vingt",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-op-plus",
+    "text": "plusse",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-op-moins",
+    "text": "moins",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-prompt-result",
+    "text": "font combien ?",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-prompt-missing",
+    "text": "Quel nombre manque ?",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-prompt-plus-missing",
+    "text": "plus combien font",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-prompt-minus-missing",
+    "text": "moins combien font",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-title-calculs-eclairs",
+    "text": "Calculs é-clère !",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-title-nombre-mystere",
+    "text": "Le nombre mystère",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-title-histoires",
+    "text": "Petites histoires de calcul",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-luna-gagne",
+    "text": "Luna gagne",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-etoiles-puis",
+    "text": "étoiles, puis",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-addition-end",
+    "text": "étoiles. Combien en gagne-t-elle en tout ?",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-mia-a",
+    "text": "Mia a",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-mia-offre",
+    "text": "étoiles. Elle en offre",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-subtraction-end",
+    "text": "étoiles. Combien lui en reste-t-il ?",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-hana-a",
+    "text": "Hana a",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-story-complement-end",
+    "text": "étoiles. Combien lui en manque-t-il pour en avoir dix ?",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-praise-perfect",
+    "text": "Parfait !",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-praise-three-stars",
+    "text": "Trois étoiles !",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-praise-two-stars",
+    "text": "Deux étoiles !",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-praise-complete",
+    "text": "Mission réussie !",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "math-praise-replay",
+    "text": "Tu peux rejouer pour gagner plus d’étoiles.",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
+    "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette."
+  },
+  {
+    "name": "battle-instruction-touch-demon",
+    "text": "Écoute et touche le démon qui porte la bonne syllabe !",
+    "tone": "calm",
+    "seed": 2,
+    "voice_text": "Voix de jeune femme native du français de Paris, claire, énergique et naturelle.",
+    "tone_text": "Ton vif et encourageant, comme une consigne de jeu adressée à une enfant."
+  }
+]

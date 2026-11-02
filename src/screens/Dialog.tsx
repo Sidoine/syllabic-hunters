@@ -34,9 +34,9 @@ export function DialogScreen({
 	bossImgStyle?: React.CSSProperties;
 }) {
 	const [i, setI] = useState(0);
-	const { name, autoRead } = useGame();
+	const { autoRead } = useGame();
 	const line = lines[i];
-	const text = line.text.replace(/\{nom\}/g, name || "petite star");
+	const text = line.text;
 	const info = SPEAKER_INFO[line.who];
 	const left = line.who !== "king" && line.who !== "boss";
 

@@ -179,6 +179,7 @@ export default function App() {
           save={save}
           onReading={() => go({ name: "map" })}
           onMath={() => go({ name: "math-map" })}
+          onProfile={() => go({ name: "title" })}
           onSettings={() => setShowSettings(true)}
         />
       );

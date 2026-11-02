@@ -17,7 +17,7 @@ const projectRoot = path.resolve(
   "..",
 );
 const distDirectory = path.join(projectRoot, "dist");
-const viteUrl = process.env.VITE_URL ?? "http://localhost:5173";
+const viteUrl = process.env.VITE_URL ?? "http://localhost:5174";
 
 app.use(express.json({ limit: "32kb" }));
 

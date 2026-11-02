@@ -192,8 +192,9 @@ export function SettingsModal({
         )}
         {speechSupported() && voices.length === 0 && (
           <p className="bg-amber-100 rounded-xl p-2 mb-3">
-            ⚠️ Aucune voix française détectée. Installez une voix française dans
-            les réglages de l'appareil (ou utilisez Chrome / Edge / Safari).
+            ⚠️ Aucune voix française de synthèse détectée. Les phrases
+            enregistrées seront lues, mais les mots et contenus variables
+            nécessitent une voix française installée sur l'appareil.
           </p>
         )}
 

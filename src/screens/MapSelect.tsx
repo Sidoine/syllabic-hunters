@@ -1,4 +1,4 @@
-import { UI_ICONS } from "../components/ui";
+import { IMAGES, UI_ICONS } from "../components/ui";
 import { MATH_MISSIONS } from "../data/math";
 import { MISSIONS } from "../data/story";
 import type { Save } from "../lib/storage";
@@ -7,11 +7,13 @@ export function MapSelectScreen({
 	save,
 	onReading,
 	onMath,
+		onProfile,
 	onSettings,
 }: {
 	save: Save;
 	onReading: () => void;
 	onMath: () => void;
+	onProfile: () => void;
 	onSettings: () => void;
 }) {
 	const readingStars = MISSIONS.reduce(
@@ -34,14 +36,25 @@ export function MapSelectScreen({
 					</div>
 					<h1 className="text-3xl sm:text-4xl font-bold neon-text">Choisis ta carte</h1>
 				</div>
-				<button
-					type="button"
-					onClick={onSettings}
-					aria-label="Réglages"
-					className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
-				>
-					<img src={UI_ICONS.settings} alt="" className="w-9 h-9 object-contain" />
-				</button>
+				<div className="flex shrink-0 items-center gap-2">
+					<button
+						type="button"
+						onClick={onProfile}
+						aria-label="Modifier le prénom et l'avatar"
+						className="btn-pop glass flex h-12 items-center justify-center gap-1 rounded-full px-2 text-sm font-bold sm:gap-2 sm:px-3"
+					>
+						<img src={IMAGES[save.hero]} alt="" className="h-9 w-9 object-contain" />
+						<span>Profil</span>
+					</button>
+					<button
+						type="button"
+						onClick={onSettings}
+						aria-label="Réglages"
+						className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
+					>
+						<img src={UI_ICONS.settings} alt="" className="w-9 h-9 object-contain" />
+					</button>
+				</div>
 			</header>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

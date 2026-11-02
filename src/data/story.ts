@@ -140,7 +140,7 @@ const RAW_CHAPTERS = [
 			},
 			{
 				who: "hana",
-				text: "Bonjour {nom} ! Je suis Hana, des Lumi Stars. Nous chassons les démons avec la musique !",
+				text: "Bonjour Alix ! Je suis Hana, des Lumi Stars. Nous chassons les démons avec la musique !",
 			},
 			{
 				who: "yuki",
@@ -148,7 +148,7 @@ const RAW_CHAPTERS = [
 			},
 		],
 		[
-			{ who: "momo", text: "Bravo {nom} ! Les voyelles chantent à nouveau !" },
+			{ who: "momo", text: "Bravo Alix ! Les voyelles chantent à nouveau !" },
 			{
 				who: "hana",
 				text: "Maintenant, on va coller des lettres aux voyelles pour faire des syllabes. C'est ça, le B-A BA !",
@@ -505,7 +505,7 @@ const RAW_CHAPTERS = [
 			},
 			{
 				who: "hana",
-				text: "{nom}, tu connais maintenant plein de syllabes. Chantons ensemble pour battre le Roi Chuuut !",
+				text: "Alix, tu connais maintenant plein de syllabes. Chantons ensemble pour battre le Roi Chuuut !",
 			},
 		],
 		[
@@ -515,7 +515,7 @@ const RAW_CHAPTERS = [
 			},
 			{
 				who: "hana",
-				text: "{nom}, tu es une vraie star de la lecture ! Les Lumi Stars sont fières de toi !",
+				text: "Alix, tu es une vraie star de la lecture ! Les Lumi Stars sont fières de toi !",
 			},
 			{
 				who: "mochi",

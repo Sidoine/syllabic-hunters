@@ -22,7 +22,7 @@ export interface MathMission {
 
 export interface MathQuestion {
 	display: string;
-	spoken: string;
+	spokenParts: string[];
 	answer: number;
 	choices: number[];
 }
@@ -90,6 +90,16 @@ const MODES: { title: string; mode: MathMode }[] = [
 	{ title: "Petites histoires de calcul", mode: "story" },
 ];
 
+const NUMBER_WORDS = [
+	"zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
+	"dix", "onze", "douze", "treize", "quatorze", "quinze", "seize", "dix-sept",
+	"dix-huit", "dix-neuf", "vingt",
+];
+
+function numberWord(value: number) {
+	return NUMBER_WORDS[value] ?? String(value);
+}
+
 export const MATH_MISSIONS: MathMission[] = MATH_CHAPTERS.flatMap((chapter) =>
 	MODES.map(({ title, mode }, index) => ({
 		id: `math-c${chapter.id}-m${index + 1}`,
@@ -140,42 +150,49 @@ function makeEquation(chapter: MathChapter) {
 }
 
 function choicesFor(answer: number, limit: number) {
-	const choices = new Set([answer]);
+	const distractors = new Set<number>();
 	for (const delta of [1, -1, 2, -2, 3, -3, 4, -4]) {
 		const choice = answer + delta;
-		if (choice >= 0 && choice <= limit) choices.add(choice);
+		if (choice >= 0 && choice <= limit) distractors.add(choice);
+		if (distractors.size === 3) break;
 	}
-	while (choices.size < 4) choices.add(randomInt(limit));
-	return shuffle([...choices]).slice(0, 4);
+	const remaining = Array.from({ length: limit + 1 }, (_, n) => n).filter(
+		(choice) => choice !== answer && !distractors.has(choice),
+	);
+	while (distractors.size < 3 && remaining.length > 0) {
+		const index = randomInt(remaining.length - 1);
+		distractors.add(remaining.splice(index, 1)[0]);
+	}
+	return shuffle([answer, ...distractors]);
 }
 
 function questionFor(mission: MathMission): MathQuestion {
 	const chapter = MATH_CHAPTERS[mission.chapter];
 	const { first, second, answer, operator, limit } = makeEquation(chapter);
 	let display: string;
-	let spoken: string;
+	let spokenParts: string[];
 	if (mission.mode === "story") {
 		if (chapter.skill === "complement") {
 			display = `Hana a ${first} étoiles. Combien lui en manque-t-il pour en avoir 10 ?`;
-			spoken = display;
+			spokenParts = ["Hana a", numberWord(first), "étoiles. Combien lui en manque-t-il pour en avoir dix ?"];
 		} else if (operator === "−") {
 			display = `Mia a ${first} étoiles. Elle en offre ${second}. Combien lui en reste-t-il ?`;
-			spoken = display;
+			spokenParts = ["Mia a", numberWord(first), "étoiles. Elle en offre", numberWord(second), "étoiles. Combien lui en reste-t-il ?"];
 		} else {
 			display = `Luna gagne ${first} étoiles, puis ${second}. Combien en gagne-t-elle en tout ?`;
-			spoken = display;
+			spokenParts = ["Luna gagne", numberWord(first), "étoiles, puis", numberWord(second), "étoiles. Combien en gagne-t-elle en tout ?"];
 		}
 	} else if (mission.mode === "missing") {
 		if (operator === "−") {
 			display = `${first} − ? = ${answer}`;
-			spoken = `Quel nombre manque ? ${first} moins combien font ${answer} ?`;
+			spokenParts = ["Quel nombre manque ?", numberWord(first), "moins combien font", numberWord(answer)];
 		} else {
 			display = `${first} + ? = ${answer}`;
-			spoken = `Quel nombre manque ? ${first} plus combien font ${answer} ?`;
+			spokenParts = ["Quel nombre manque ?", numberWord(first), "plus combien font", numberWord(answer)];
 		}
 	} else {
 		display = `${first} ${operator} ${second} = ?`;
-		spoken = `${first} ${operator === "+" ? "plus" : "moins"} ${second} ?`;
+		spokenParts = [numberWord(first), operator === "+" ? "plus" : "moins", numberWord(second), "font combien ?"];
 	}
 	const correct =
 		mission.mode === "missing" ||
@@ -184,7 +201,7 @@ function questionFor(mission: MathMission): MathQuestion {
 			: answer;
 	return {
 		display,
-		spoken,
+		spokenParts,
 		answer: correct,
 		choices: choicesFor(correct, limit),
 	};

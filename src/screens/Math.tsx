@@ -9,7 +9,7 @@ import {
 	type MathMission,
 } from "../data/math";
 import type { Save } from "../lib/storage";
-import { speak } from "../lib/speech";
+import { speakSeq } from "../lib/speech";
 
 export function isMathMissionUnlocked(save: Save, mission: MathMission) {
 	if (save.settings.unlockAll) return true;
@@ -208,9 +208,10 @@ export function MathMissionExercise({
 			</header>
 			<MissionFrame
 				instruction={question.display}
-				speakText={[mission.title, question.spoken]}
+				speakText={[mission.title, ...question.spokenParts]}
 				round={round}
 				total={questionsPerMission}
+				speakPause={120}
 			>
 				<FeedbackLayer fb={feedback} />
 				<div className="card-kawaii rounded-[2rem] px-5 py-7 my-2 flex items-center justify-center min-h-36 w-full text-center">
@@ -267,12 +268,16 @@ export function MathResultScreen({
 	onMap: () => void;
 	onReplay: () => void;
 }) {
-	const { hero, name } = useGame();
+	const { hero } = useGame();
 	useEffect(() => {
-		const message = stars === 3 ? `Parfait ${name} ! Trois étoiles !` : stars === 2 ? `Bravo ${name} ! Deux étoiles !` : `Mission réussie ${name} ! Tu peux rejouer pour gagner plus d'étoiles.`;
-		const timer = window.setTimeout(() => speak(message), 400);
+		const phrases = stars === 3
+			? ["Parfait !", "Trois étoiles !"]
+			: stars === 2
+				? ["Bravo !", "Deux étoiles !"]
+				: ["Mission réussie !", "Tu peux rejouer pour gagner plus d'étoiles."];
+		const timer = window.setTimeout(() => void speakSeq(phrases), 400);
 		return () => window.clearTimeout(timer);
-	}, [name, stars]);
+	}, [stars]);
 	return (
 		<div className="min-h-full flex flex-col items-center justify-center gap-5 px-4 py-8 text-center">
 			<div className="text-2xl text-cyan-200 font-bold">Calcul réussi !</div>

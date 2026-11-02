@@ -214,7 +214,7 @@ export function BattleMission({ mission, onDone }: MissionProps) {
       instruction={
         <>Écoute et touche le démon qui porte la bonne syllabe ! 🔊</>
       }
-      speakText={["Touche le démon", sayOf(w.t)]}
+      speakText={["Écoute et touche le démon qui porte la bonne syllabe !", sayOf(w.t)]}
       round={HP - hp}
       total={HP}
       readKey={wi}

@@ -381,6 +381,7 @@ export function MissionFrame({
   total,
   children,
   hero,
+  speakPause,
 }: {
   instruction: ReactNode;
   speakText: string | string[];
@@ -388,6 +389,7 @@ export function MissionFrame({
   total: number;
   children: ReactNode;
   hero?: Speaker;
+  speakPause?: number;
   readKey?: string | number;
 }) {
   const { autoRead, hero: h } = useGame();
@@ -404,7 +406,7 @@ export function MissionFrame({
     if (!texts.length) return;
     const t = setTimeout(() => {
       hasReadInitial.current = true;
-      speakSeq(texts);
+      speakSeq(texts, speakPause);
     }, 350);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -438,7 +440,7 @@ export function MissionFrame({
         <button
           type="button"
           aria-label="Réécouter la consigne"
-          onClick={() => speakSeq(seq)}
+          onClick={() => speakSeq(seq, speakPause)}
           className="btn-pop rounded-full bg-gradient-to-b from-cyan-300 to-sky-500 border-4 border-white shadow-[0_5px_0_#1b6fa8] w-12 h-12 text-xl shrink-0"
         >
           🔊
