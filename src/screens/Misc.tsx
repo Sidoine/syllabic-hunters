@@ -17,9 +17,8 @@ import {
   MissingMission,
   ReadWordMission,
 } from "../components/missions/WordMissions";
-import { BigButton, IMAGES, Stars, useGame } from "../components/ui";
+import { BigButton, IMAGES, MISSION_ICONS, Stars, UI_ICONS, useGame } from "../components/ui";
 import type { Mission } from "../data/story";
-import { MISSION_INFO } from "../data/story";
 import { sfx } from "../lib/sfx";
 import {
   getFrenchVoices,
@@ -66,12 +65,14 @@ export function MissionScreen({
             stopSpeech();
             onQuit();
           }}
+          aria-label="Quitter la mission"
           className="btn-pop glass rounded-full w-12 h-12 text-2xl shrink-0"
         >
-          ✖
+          <img src={UI_ICONS.close} alt="" className="w-9 h-9 object-contain" />
         </button>
-        <div className="flex-1 text-center font-bold text-xl sm:text-2xl neon-text">
-          {mission.icon} {mission.title}
+        <div className="flex-1 flex items-center justify-center gap-2 text-center font-bold text-xl sm:text-2xl neon-text">
+          <img src={MISSION_ICONS[mission.type]} alt="" className="w-10 h-10 object-contain shrink-0" />
+          {mission.title}
         </div>
         <div className="w-12" />
       </header>
@@ -112,8 +113,9 @@ export function ResultScreen({
       <div className="text-2xl text-cyan-200 font-bold">
         {mission.type === "battle" ? "Démon vaincu !" : "Mission accomplie !"}
       </div>
-      <div className="text-4xl sm:text-5xl font-bold neon-text">
-        {MISSION_INFO[mission.type].icon} {mission.title}
+      <div className="flex items-center justify-center gap-2 text-4xl sm:text-5xl font-bold neon-text">
+        <img src={MISSION_ICONS[mission.type]} alt="" className="w-14 h-14 sm:w-16 sm:h-16 object-contain shrink-0" />
+        {mission.title}
       </div>
       <div className="anim-pop">
         <Stars n={stars} size="text-7xl" />
@@ -136,10 +138,10 @@ export function ResultScreen({
           {isLastOfChapter ? "Fin du chapitre ▶" : "Mission suivante ▶"}
         </BigButton>
         <BigButton color="cyan" onClick={onReplay}>
-          Rejouer 🔁
+          <span className="flex items-center gap-2"><img src={UI_ICONS.replay} alt="" className="w-9 h-9 object-contain" /> Rejouer</span>
         </BigButton>
         <BigButton color="purple" onClick={onMap}>
-          Carte 🗺️
+          <span className="flex items-center gap-2"><img src={UI_ICONS.map} alt="" className="w-9 h-9 object-contain" /> Carte</span>
         </BigButton>
       </div>
     </div>
@@ -176,9 +178,9 @@ export function SettingsModal({
     >
       <div className="card-kawaii rounded-3xl p-5 max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-2xl font-bold">⚙️ Espace parents</h2>
-          <button type="button" onClick={onClose} className="text-3xl">
-            ✖
+          <h2 className="flex items-center gap-2 text-2xl font-bold"><img src={UI_ICONS.settings} alt="" className="w-10 h-10 object-contain" /> Espace parents</h2>
+          <button type="button" onClick={onClose} aria-label="Fermer les réglages" className="btn-pop rounded-full w-11 h-11">
+            <img src={UI_ICONS.close} alt="" className="w-9 h-9 object-contain" />
           </button>
         </div>
 

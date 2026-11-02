@@ -53,13 +53,28 @@ body {
 }
 
 .btn-pop {
-  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    filter 0.16s ease;
 }
-.btn-pop:active {
-  transform: translateY(4px) scale(0.97);
+.btn-pop:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.035);
+  filter: brightness(1.12) saturate(1.08);
+  box-shadow:
+    0 6px 0 rgba(0, 0, 0, 0.22),
+    0 0 0 2px rgba(255, 255, 255, 0.82),
+    0 0 20px rgba(255, 99, 208, 0.55);
 }
-.btn-pop:hover {
-  filter: brightness(1.06);
+.btn-pop:focus-visible:not(:disabled) {
+  outline: 3px solid rgba(255, 225, 120, 0.95);
+  outline-offset: 3px;
+}
+.btn-pop:active:not(:disabled) {
+  transform: translateY(2px) scale(0.97);
+}
+.btn-pop:disabled:hover {
+  filter: none;
 }
 
 .font-read {

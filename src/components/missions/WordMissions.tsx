@@ -424,8 +424,8 @@ export function ReadWordMission({ mission, onDone }: MissionProps) {
 
   return (
     <MissionFrame
-      instruction="Lis le mot secret tout seul, syllabe par syllabe, puis touche la bonne image."
-      speakText="Lis le mot secret tout seul, syllabe par syllabe. Puis touche la bonne image."
+      instruction="Lis le mot secret toute seule, syllabe par syllabe, puis touche la bonne image."
+      speakText="Lis le mot secret toute seule, syllabe par syllabe. Puis touche la bonne image."
       round={ri}
       total={rounds.length}
     >

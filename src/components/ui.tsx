@@ -8,18 +8,66 @@ import {
   useState,
 } from "react";
 import demon from "../assets/demon.png";
+import battleIcon from "../assets/missions/battle.png";
+import buildIcon from "../assets/missions/build.png";
+import findImagesIcon from "../assets/missions/find-images.png";
+import fusionIcon from "../assets/missions/fusion.png";
+import listenSylIcon from "../assets/missions/listen-syl.png";
+import listenWordIcon from "../assets/missions/listen-word.png";
+import memoryIcon from "../assets/missions/memory.png";
+import missingIcon from "../assets/missions/missing.png";
+import readWordIcon from "../assets/missions/read-word.png";
+import seeSoundIcon from "../assets/missions/see-sound.png";
+import vowelsIcon from "../assets/missions/vowels.png";
+import bookIcon from "../assets/ui/book.png";
+import closeIcon from "../assets/ui/close.png";
+import crownIcon from "../assets/ui/crown.png";
+import homeIcon from "../assets/ui/home.png";
+import lockIcon from "../assets/ui/lock.png";
+import mathIcon from "../assets/ui/math.png";
+import mapIcon from "../assets/ui/map.png";
+import replayIcon from "../assets/ui/replay.png";
+import settingsIcon from "../assets/ui/settings.png";
+import starIcon from "../assets/ui/star.png";
 import hana from "../assets/hana.png";
 import king from "../assets/king.png";
 import mochi from "../assets/mochi.png";
 import momo from "../assets/momo.png";
 import yuki from "../assets/yuki.png";
-import type { Speaker } from "../data/story";
+import type { MissionType, Speaker } from "../data/story";
 import { cleanPart, type Word } from "../data/words";
 import { sfx } from "../lib/sfx";
 import { speak, speakSeq } from "../lib/speech";
 import { pick } from "../lib/utils";
 
 export const IMAGES = { hana, yuki, momo, mochi, king, demon };
+
+export const MISSION_ICONS: Record<MissionType, string> = {
+	vowels: vowelsIcon,
+	fusion: fusionIcon,
+	"listen-syl": listenSylIcon,
+	"see-sound": seeSoundIcon,
+	"find-images": findImagesIcon,
+	missing: missingIcon,
+	build: buildIcon,
+	"read-word": readWordIcon,
+	"listen-word": listenWordIcon,
+	memory: memoryIcon,
+	battle: battleIcon,
+};
+
+export const UI_ICONS = {
+	book: bookIcon,
+	close: closeIcon,
+	crown: crownIcon,
+	home: homeIcon,
+	lock: lockIcon,
+	math: mathIcon,
+	map: mapIcon,
+	replay: replayIcon,
+	settings: settingsIcon,
+	star: starIcon,
+};
 
 export const SPEAKER_INFO: Record<
   Speaker,
@@ -262,7 +310,7 @@ const CHEERS = [
   "Super !",
   "Génial !",
   "Oui, c'est ça !",
-  "Trop fort !",
+  "Trop forte !",
   "Magnifique !",
 ];
 const TRY = [

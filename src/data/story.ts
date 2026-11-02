@@ -25,7 +25,6 @@ export interface Mission {
 	chapter: number;
 	type: MissionType;
 	title: string;
-	icon: string;
 	targets: string[]; // syllabes travaillées
 	review: string[]; // syllabes déjà vues (distracteurs)
 	consonants: string[];
@@ -49,61 +48,50 @@ export interface Chapter {
 
 export const MISSION_INFO: Record<
 	MissionType,
-	{ title: string; icon: string; help: string }
+	{ title: string; help: string }
 > = {
 	vowels: {
 		title: "Les voyelles magiques",
-		icon: "🎵",
 		help: "Touche chaque voyelle pour entendre sa chanson.",
 	},
 	fusion: {
 		title: "Fusion magique",
-		icon: "✨",
 		help: "Colle la lettre et la voyelle pour créer une syllabe !",
 	},
 	"listen-syl": {
 		title: "L'oreille d'or",
-		icon: "👂",
 		help: "Écoute le son et trouve la bonne syllabe.",
 	},
 	"see-sound": {
 		title: "Le micro magique",
-		icon: "🎤",
 		help: "Regarde la syllabe et trouve le bon son.",
 	},
 	"find-images": {
 		title: "Images ensorcelées",
-		icon: "🔮",
 		help: "Trouve toutes les images où l'on entend le son.",
 	},
 	missing: {
 		title: "Le mot brisé",
-		icon: "🧩",
 		help: "Il manque un morceau ! Trouve la syllabe perdue.",
 	},
 	build: {
 		title: "La forge des mots",
-		icon: "🔨",
 		help: "Remets les syllabes dans l'ordre pour écrire le mot.",
 	},
 	"read-word": {
 		title: "Lecture secrète",
-		icon: "📜",
 		help: "Lis le mot et trouve la bonne image.",
 	},
 	"listen-word": {
 		title: "Le mot mystère",
-		icon: "🎧",
 		help: "Écoute le mot et trouve comment il s'écrit.",
 	},
 	memory: {
 		title: "Cartes jumelles",
-		icon: "🃏",
 		help: "Retrouve les paires : une syllabe et une image qui commence par ce son.",
 	},
 	battle: {
 		title: "Combat de démons",
-		icon: "⚔️",
 		help: "Écoute le son et touche le démon qui porte la bonne syllabe !",
 	},
 };
@@ -376,7 +364,7 @@ const RAW_CHAPTERS = [
 		[
 			{
 				who: "hana",
-				text: "Les bulles éclatent ! Ba, bi, bo, bu, bé, bou : tu es un champion !",
+				text: "Les bulles éclatent ! Ba, bi, bo, bu, bé, bou : tu es une championne !",
 			},
 		],
 	),
@@ -566,7 +554,6 @@ function buildMissions(): Mission[] {
 			chapter: ch,
 			type,
 			title: info.title,
-			icon: info.icon,
 			targets,
 			review,
 			consonants,

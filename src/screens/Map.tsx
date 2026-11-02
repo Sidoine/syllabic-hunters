@@ -1,4 +1,4 @@
-import { BigButton, IMAGES, Stars } from "../components/ui";
+import { BigButton, IMAGES, MISSION_ICONS, Stars, UI_ICONS } from "../components/ui";
 import { CHAPTERS, type Chapter, MISSIONS, type Mission } from "../data/story";
 import { syllablesOf, VOWELS } from "../data/syllables";
 import type { Save } from "../lib/storage";
@@ -40,25 +40,28 @@ export function MapScreen({
 				<button
 					type="button"
 					onClick={onBack}
-					className="btn-pop glass rounded-full w-12 h-12 text-2xl"
+					aria-label="Choisir une carte"
+					className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
 				>
-					🏠
+					<img src={UI_ICONS.home} alt="" className="w-9 h-9 object-contain" />
 				</button>
 				<div className="text-center">
 					<div className="text-xl sm:text-2xl font-bold neon-text">
 						Carte des concerts
 					</div>
 					<div className="text-sm text-pink-100">
-						{save.name ? `${save.name} · ` : ""}⭐ {total} · 🎤 {doneCount}/
-						{MISSIONS.length} missions
+						{save.name ? `${save.name} · ` : ""}
+						<img src={UI_ICONS.star} alt="" className="inline-block align-[-3px] w-5 h-5" /> {total} ·
+						<img src={MISSION_ICONS["see-sound"]} alt="" className="inline-block align-[-3px] w-5 h-5" /> {doneCount}/{MISSIONS.length} missions
 					</div>
 				</div>
 				<button
 					type="button"
 					onClick={onSettings}
-					className="btn-pop glass rounded-full w-12 h-12 text-2xl"
+					aria-label="Réglages"
+					className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
 				>
-					⚙️
+					<img src={UI_ICONS.settings} alt="" className="w-9 h-9 object-contain" />
 				</button>
 			</header>
 
@@ -119,9 +122,19 @@ function ChapterNode({
 			}}
 		>
 			<div className="w-16 h-16 rounded-full bg-white flex items-center justify-center font-read font-bold text-3xl text-purple-800 shrink-0 relative">
-				{unlocked ? (isFinal ? "👑" : chapter.label) : "🔒"}
+				{unlocked ? (
+					isFinal ? (
+						<img src={UI_ICONS.crown} alt="Dernier chapitre" className="w-12 h-12 object-contain" />
+					) : (
+						<span className={chapter.id === 0 ? "whitespace-nowrap text-xl tracking-tight" : ""}>
+							{chapter.label}
+						</span>
+					)
+				) : (
+					<img src={UI_ICONS.lock} alt="Verrouillé" className="w-8 h-8 object-contain" />
+				)}
 				{stars.done && (
-					<span className="absolute -top-2 -right-2 text-xl">🏆</span>
+					<span className="absolute -top-2 -right-2"><img src={UI_ICONS.crown} alt="Chapitre terminé" className="w-7 h-7 object-contain" /></span>
 				)}
 			</div>
 			<div className="flex-1">
@@ -171,9 +184,10 @@ export function ChapterScreen({
 				<button
 					type="button"
 					onClick={onBack}
-					className="btn-pop glass rounded-full w-12 h-12 text-2xl shrink-0"
+					aria-label="Retour au plan"
+					className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
 				>
-					◀
+					<img src={UI_ICONS.map} alt="" className="w-9 h-9 object-contain" />
 				</button>
 				<div className="flex-1">
 					<div className="text-2xl sm:text-3xl font-bold neon-text">
@@ -186,7 +200,7 @@ export function ChapterScreen({
 					onClick={onStory}
 					className="btn-pop glass rounded-full px-3 h-12 text-sm font-bold"
 				>
-					📖 Histoire
+					<span className="flex items-center gap-2"><img src={UI_ICONS.book} alt="" className="w-9 h-9 object-contain" /> Histoire</span>
 				</button>
 			</header>
 
@@ -227,8 +241,12 @@ export function ChapterScreen({
 									: "bg-white/5 border-white/10 opacity-50"
 							} ${unlocked && !stars ? "anim-glow" : ""}`}
 						>
-							<div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-3xl shrink-0">
-								{unlocked ? m.icon : "🔒"}
+							<div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0">
+								{unlocked ? (
+									<img src={MISSION_ICONS[m.type]} alt="" className="w-12 h-12 object-contain" />
+								) : (
+									<img src={UI_ICONS.lock} alt="Mission verrouillée" className="w-9 h-9 object-contain" />
+								)}
 							</div>
 							<div className="flex-1">
 								<div className="text-xs text-white/70">Mission {i + 1}</div>
@@ -242,7 +260,7 @@ export function ChapterScreen({
 				})}
 			</div>
 			<BigButton color="purple" onClick={onBack} className="self-center mt-2">
-				Retour à la carte 🗺️
+				<span className="flex items-center gap-2"><img src={UI_ICONS.map} alt="" className="w-8 h-8 object-contain" /> Retour à la carte</span>
 			</BigButton>
 		</div>
 	);

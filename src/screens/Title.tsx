@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BigButton, IMAGES } from "../components/ui";
+import { BigButton, IMAGES, UI_ICONS } from "../components/ui";
 import { login, register, type AuthUser } from "../lib/api";
 import { speak } from "../lib/speech";
 import type { Save } from "../lib/storage";
@@ -14,7 +14,10 @@ export function TitleScreen({
 }: {
   save: Save;
   user: AuthUser | null;
-  onAuthenticated: (user: AuthUser) => Promise<void>;
+  onAuthenticated: (
+    user: AuthUser,
+    profile: { name: string; hero: Save["hero"] },
+  ) => Promise<void>;
   onLogout: () => Promise<void>;
   onStart: (name: string, hero: Save["hero"]) => void;
   onSettings: () => void;
@@ -147,7 +150,10 @@ export function TitleScreen({
                   authMode === "login"
                     ? await login(email, password)
                     : await register(email, password);
-                await onAuthenticated(result.user);
+                await onAuthenticated(result.user, {
+                  name: name.trim(),
+                  hero,
+                });
               } catch (error) {
                 setAuthError(
                   error instanceof Error
@@ -212,9 +218,10 @@ export function TitleScreen({
       <button
         type="button"
         onClick={onSettings}
-        className="text-white/70 underline"
+        className="flex items-center gap-2 text-white/70 underline"
       >
-        ⚙️ Espace parents (voix, réglages)
+        <img src={UI_ICONS.settings} alt="" className="w-8 h-8 object-contain" />
+        Espace parents (voix, réglages)
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GameContext, StarField } from "./components/ui";
 import { CHAPTERS, MISSIONS, type Mission } from "./data/story";
+import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathMission } from "./data/math";
 import { setSfxEnabled } from "./lib/sfx";
 import { configureSpeech, stopSpeech } from "./lib/speech";
 import {
@@ -22,11 +23,18 @@ import { starsFor } from "./lib/utils";
 import { DialogScreen } from "./screens/Dialog";
 import { ChapterScreen, chapterMissions, MapScreen } from "./screens/Map";
 import { MissionScreen, ResultScreen, SettingsModal } from "./screens/Misc";
+import { MapSelectScreen } from "./screens/MapSelect";
+import { MathChapterScreen, MathMapScreen, MathMissionExercise, MathResultScreen } from "./screens/Math";
 import { TitleScreen } from "./screens/Title";
 
 type Screen =
   | { name: "title" }
+  | { name: "maps" }
   | { name: "map" }
+  | { name: "math-map" }
+  | { name: "math-chapter"; ch: number }
+  | { name: "math-mission"; id: string; run: number }
+  | { name: "math-result"; id: string; stars: number }
   | { name: "chapter"; ch: number }
   | { name: "dialog"; ch: number; kind: "intro" | "outro" }
   | { name: "mission"; id: string; run: number }
@@ -39,8 +47,10 @@ function mergeSaves(local: Save, remote: Save): Save {
   }
   return {
     ...remote,
-    name: local.name || remote.name,
-    hero: local.hero,
+    // The account save owns the player's identity. Local progress can still
+    // add stars and story flags without replacing its name or character.
+    name: remote.name || local.name,
+    hero: remote.hero,
     stars,
     seenIntro: { ...remote.seenIntro, ...local.seenIntro },
     seenOutro: { ...remote.seenOutro, ...local.seenOutro },
@@ -69,18 +79,27 @@ export default function App() {
         if (remoteSave) {
           setSave((current) => mergeSaves(current, remoteSave));
         }
+        setScreen({ name: "maps" });
       })
       .catch(() => undefined)
       .finally(() => setAuthReady(true));
   }, []);
 
-  const authenticate = async (nextUser: AuthUser) => {
+  const authenticate = async (
+    nextUser: AuthUser,
+    profile: { name: string; hero: Save["hero"] },
+  ) => {
     setAuthReady(false);
     const remote = await loadRemoteSave();
     const remoteSave = remote.save;
-    if (remoteSave) setSave((current) => mergeSaves(current, remoteSave));
+    setSave((current) =>
+      remoteSave
+        ? mergeSaves(current, remoteSave)
+        : { ...current, name: profile.name, hero: profile.hero },
+    );
     setUser(nextUser);
     setAuthReady(true);
+    setScreen({ name: "maps" });
   };
 
   useEffect(() => {
@@ -117,6 +136,18 @@ export default function App() {
     go({ name: "result", id: m.id, stars });
   };
 
+  const startMathMission = (mission: MathMission) =>
+    go({ name: "math-mission", id: mission.id, run: Date.now() });
+
+  const finishMathMission = (mission: MathMission, errors: number, rounds: number) => {
+    const stars = starsFor(errors, rounds);
+    setSave((current) => ({
+      ...current,
+      stars: { ...current.stars, [mission.id]: Math.max(current.stars[mission.id] ?? 0, stars) },
+    }));
+    go({ name: "math-result", id: mission.id, stars });
+  };
+
   const updateSettings = (settings: Settings) =>
     setSave((s) => ({ ...s, settings }));
 
@@ -137,8 +168,18 @@ export default function App() {
             setSave((s) => ({ ...s, name, hero }));
             if (!save.seenIntro[0])
               go({ name: "dialog", ch: 0, kind: "intro" });
-            else go({ name: "map" });
+            else go({ name: "maps" });
           }}
+        />
+      );
+      break;
+    case "maps":
+      content = (
+        <MapSelectScreen
+          save={save}
+          onReading={() => go({ name: "map" })}
+          onMath={() => go({ name: "math-map" })}
+          onSettings={() => setShowSettings(true)}
         />
       );
       break;
@@ -147,8 +188,17 @@ export default function App() {
         <MapScreen
           save={save}
           onChapter={openChapter}
-          onBack={() => go({ name: "title" })}
+          onBack={() => go({ name: "maps" })}
           onSettings={() => setShowSettings(true)}
+        />
+      );
+      break;
+    case "math-map":
+      content = (
+        <MathMapScreen
+          save={save}
+          onChapter={(ch) => go({ name: "math-chapter", ch })}
+          onBack={() => go({ name: "maps" })}
         />
       );
       break;
@@ -160,6 +210,16 @@ export default function App() {
           onMission={startMission}
           onBack={() => go({ name: "map" })}
           onStory={() => go({ name: "dialog", ch: screen.ch, kind: "intro" })}
+        />
+      );
+      break;
+    case "math-chapter":
+      content = (
+        <MathChapterScreen
+          save={save}
+          chapter={MATH_CHAPTERS[screen.ch]}
+          onMission={startMathMission}
+          onBack={() => go({ name: "math-map" })}
         />
       );
       break;
@@ -207,6 +267,19 @@ export default function App() {
       );
       break;
     }
+    case "math-mission": {
+      const mission = MATH_MISSIONS.find((item) => item.id === screen.id);
+      if (!mission) break;
+      content = (
+        <MathMissionExercise
+          key={screen.run}
+          mission={mission}
+          onDone={(errors, rounds) => finishMathMission(mission, errors, rounds)}
+          onQuit={() => go({ name: "math-chapter", ch: mission.chapter })}
+        />
+      );
+      break;
+    }
     case "result": {
       const m = MISSIONS.find((x) => x.id === screen.id);
       if (!m) break;
@@ -223,6 +296,28 @@ export default function App() {
           onNext={() => {
             if (isLast) go({ name: "dialog", ch: m.chapter, kind: "outro" });
             else startMission(list[idx + 1]);
+          }}
+        />
+      );
+      break;
+    }
+    case "math-result": {
+      const mission = MATH_MISSIONS.find((item) => item.id === screen.id);
+      if (!mission) break;
+      const list = mathChapterMissions(mission.chapter);
+      const idx = list.findIndex((item) => item.id === mission.id);
+      const isLastOfChapter = idx === list.length - 1;
+      content = (
+        <MathResultScreen
+          mission={mission}
+          stars={screen.stars}
+          isLastOfChapter={isLastOfChapter}
+          onMap={() => go({ name: "math-map" })}
+          onReplay={() => startMathMission(mission)}
+          onNext={() => {
+            const next = list[idx + 1];
+            if (next) startMathMission(next);
+            else go({ name: "math-map" });
           }}
         />
       );

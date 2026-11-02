@@ -222,7 +222,7 @@ export function FusionMission({ mission, onDone }: MissionProps) {
             className="mt-4 anim-glow"
             onClick={() => setPhase("quiz")}
           >
-            Je suis prêt pour le test ! ⚡
+            Je suis prête pour le test ! ⚡
           </BigButton>
         )}
       </MissionFrame>
