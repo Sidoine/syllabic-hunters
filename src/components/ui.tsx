@@ -409,8 +409,7 @@ export function MissionFrame({
       speakSeq(texts, speakPause);
     }, 350);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seq, autoRead]);
+  }, [seq, autoRead, speakPause]);
   return (
     <div className="flex flex-col items-center gap-4 w-full max-w-4xl mx-auto px-3">
       <div className="flex gap-1.5">
