@@ -47,6 +47,8 @@ export type StageMarkerData = {
 	confirming: boolean;
 };
 
+export type MapLoadProgress = { loaded: number; total: number; complete: boolean };
+
 function markerColor(marker: StageMarkerData) {
 	if (!marker.unlocked) return "#8a6240";
 	if (marker.current) return "#dfaa35";
@@ -371,20 +373,71 @@ function makePathRibbon(
 	scene.add(ribbon);
 }
 
-function loadMapAsset(scene: THREE.Scene, url: string, x: number, z: number, height: number, rotation = 0) {
-	const loader = new GLTFLoader();
-	loader.load(url, (gltf) => {
-		const model = gltf.scene;
-		const bounds = new THREE.Box3().setFromObject(model);
-		placeModel(scene, model, bounds, x, z, height, rotation);
-	});
-}
+type AssetPlacement = [number, number, number, number?, number?, number?];
+type LazyAssetLayer = { url: string; placements: AssetPlacement[]; loaded: Set<number>; pending: Set<number>; loading: boolean; placing: boolean; failed?: boolean; source?: THREE.Group; bounds?: THREE.Box3; onInitialReady?: () => void };
 
-function loadModelCluster(scene: THREE.Scene, url: string, placements: [number, number, number, number, number?, number?][]) {
-	const loader = new GLTFLoader();
-	loader.load(url, (gltf) => {
-		const bounds = new THREE.Box3().setFromObject(gltf.scene);
-		for (const [x, z, height, rotation, stretchX = 1, stretchZ = 1] of placements) placeModel(scene, gltf.scene, bounds, x, z, height, rotation, stretchX, stretchZ);
+function addVisibleLayerAssets(scene: THREE.Scene, layer: LazyAssetLayer, isNearViewport: (x: number, z: number) => boolean, onInitialLayerReady: () => void, isInitialLayer: boolean, onLoad: () => void, isDisposed: () => boolean) {
+	if (isInitialLayer && !layer.onInitialReady) layer.onInitialReady = onInitialLayerReady;
+	for (const index of layer.pending) {
+		const [x, z] = layer.placements[index];
+		if (!isNearViewport(x, z)) layer.pending.delete(index);
+	}
+	layer.placements.forEach(([x, z], index) => {
+		if (!layer.loaded.has(index) && isNearViewport(x, z)) layer.pending.add(index);
+	});
+	const placeNextBatch = () => {
+		if (isDisposed() || layer.placing) return;
+		if (!layer.pending.size && layer.source) {
+			if (layer.onInitialReady) {
+				const done = layer.onInitialReady;
+				layer.onInitialReady = undefined;
+				done();
+			}
+			return;
+		}
+		const source = layer.source;
+		const bounds = layer.bounds;
+		if (!source || !bounds) return;
+		layer.placing = true;
+		const indices = [...layer.pending].slice(0, 8);
+		indices.forEach((index) => {
+			layer.pending.delete(index);
+			const [x, z, height, rotation = 0, stretchX = 1, stretchZ = 1] = layer.placements[index];
+			placeModel(scene, source, bounds, x, z, height, rotation, stretchX, stretchZ);
+			layer.loaded.add(index);
+		});
+		onLoad();
+		if (layer.pending.size) requestAnimationFrame(() => { layer.placing = false; placeNextBatch(); });
+		else { layer.placing = false; placeNextBatch(); }
+	};
+	placeNextBatch();
+	if (layer.source || layer.loading || layer.failed || !layer.pending.size) return;
+	layer.loading = true;
+	const finishInitialLayer = () => {
+		if (!layer.onInitialReady) return;
+		const done = layer.onInitialReady;
+		layer.onInitialReady = undefined;
+		done();
+	};
+	const timeout = window.setTimeout(() => {
+		if (!layer.loading) return;
+		layer.loading = false;
+		layer.failed = true;
+		finishInitialLayer();
+	}, 10000);
+	new GLTFLoader().load(layer.url, (gltf) => {
+		window.clearTimeout(timeout);
+		if (isDisposed()) return;
+		layer.source = gltf.scene;
+		layer.bounds = new THREE.Box3().setFromObject(gltf.scene);
+		layer.loading = false;
+		layer.failed = false;
+		placeNextBatch();
+	}, undefined, () => {
+		window.clearTimeout(timeout);
+		layer.loading = false;
+		layer.failed = true;
+		finishInitialLayer();
 	});
 }
 
@@ -460,11 +513,13 @@ export function IsoWorldScene({
 	stageMarkers,
 	hero,
 	onStageClick,
+	onLoadProgress,
 }: {
 	containerRef: React.RefObject<HTMLDivElement | null>;
 	stageMarkers: StageMarkerData[];
 	hero: "hana" | "yuki" | "momo";
 	onStageClick: (region: "reading" | "math", index: number) => void;
+	onLoadProgress: (progress: MapLoadProgress) => void;
 }) {
 	const hostRef = useRef<HTMLDivElement>(null);
 	const stageMarkersRef = useRef(stageMarkers);
@@ -473,6 +528,8 @@ export function IsoWorldScene({
 	heroRef.current = hero;
 	const stageClickRef = useRef(onStageClick);
 	stageClickRef.current = onStageClick;
+	const loadProgressRef = useRef(onLoadProgress);
+	loadProgressRef.current = onLoadProgress;
 	const refreshRef = useRef<(() => void) | null>(null);
 	useEffect(() => { refreshRef.current?.(); });
 	useEffect(() => {
@@ -507,8 +564,16 @@ export function IsoWorldScene({
 		mountainGlow.position.set(49, 9, 14);
 		scene.add(mountainGlow);
 		const textureLoader = new THREE.TextureLoader();
-		const forestGround = textureLoader.load("/textures/forest-ground.png");
-		const mountainGround = textureLoader.load("/textures/mountain-ground.png");
+		let forestGround = new THREE.Texture();
+		let mountainGround = new THREE.Texture();
+		const forestGroundReady = new Promise<void>((resolve) => {
+			const texture = textureLoader.load("/textures/forest-ground.png", () => resolve(), undefined, () => resolve());
+			forestGround = texture;
+		});
+		const mountainGroundReady = new Promise<void>((resolve) => {
+			const texture = textureLoader.load("/textures/mountain-ground.png", () => resolve(), undefined, () => resolve());
+			mountainGround = texture;
+		});
 		for (const texture of [forestGround, mountainGround]) {
 			texture.wrapS = THREE.RepeatWrapping;
 			texture.wrapT = THREE.RepeatWrapping;
@@ -527,6 +592,17 @@ export function IsoWorldScene({
 		const markerObjects = stageMarkersRef.current.map((marker) => createStageMarker(scene, marker, markerBadges));
 		const heroAnchor = new THREE.Group();
 		scene.add(heroAnchor);
+		const initialLayers = new Set<LazyAssetLayer>();
+		let progressInitialized = false;
+		let progressLoaded = 0;
+		let progressTotal = 6;
+		const publishProgress = () => loadProgressRef.current({ loaded: progressLoaded, total: progressTotal, complete: progressLoaded >= progressTotal });
+		const completeProgressItem = () => {
+			if (disposed || progressLoaded >= progressTotal) return;
+			progressLoaded += 1;
+			publishProgress();
+		};
+		loadProgressRef.current({ loaded: 0, total: progressTotal, complete: false });
 		let loadedHero = "";
 		let disposed = false;
 		let heroPositionInitialized = false;
@@ -554,7 +630,7 @@ export function IsoWorldScene({
 				const bounds = new THREE.Box3().setFromObject(gltf.scene);
 				const size = bounds.getSize(new THREE.Vector3());
 				const center = bounds.getCenter(new THREE.Vector3());
-				if (size.y <= 0) return;
+				if (size.y <= 0) { completeProgressItem(); return; }
 				const model = gltf.scene.clone(true);
 				const scale = 2.25 / size.y;
 				model.scale.setScalar(scale);
@@ -566,39 +642,47 @@ export function IsoWorldScene({
 					}
 				});
 				heroAnchor.add(model);
+				completeProgressItem();
 				render();
-			});
+			}, undefined, completeProgressItem);
 		};
-		// ImageGen textures cover the rolling terrain; generated Trellis 2 props are repeated as shared map assets.
-		loadMapAsset(scene, "/models/reading-tree.glb", 2, 12, 4.4);
-		loadMapAsset(scene, "/models/reading-bookstone.glb", 4, 9, 2.8);
-		loadMapAsset(scene, "/models/math-abacus.glb", 45, 10, 3.1);
-		loadMapAsset(scene, "/models/math-crystals.glb", 56, 8, 3.6);
-		loadModelCluster(scene, "/models/forest-tree.glb", scatterProps("forest", 46, 71, 3.0));
+		const assetLayers = new Map<string, LazyAssetLayer>();
+		const addLayer = (url: string, placements: AssetPlacement[]) => {
+			const layer = assetLayers.get(url) ?? { url, placements: [], loaded: new Set<number>(), pending: new Set<number>(), loading: false, placing: false };
+			layer.placements.push(...placements);
+			assetLayers.set(url, layer);
+		};
+		const one = (x: number, z: number, height: number, rotation = 0): AssetPlacement[] => [[x, z, height, rotation]];
+		// Each model type is requested only when at least one of its instances is near the viewport.
+		addLayer("/models/reading-tree.glb", one(2, 12, 4.4));
+		addLayer("/models/reading-bookstone.glb", one(4, 9, 2.8));
+		addLayer("/models/math-abacus.glb", one(45, 10, 3.1));
+		addLayer("/models/math-crystals.glb", one(56, 8, 3.6));
+		addLayer("/models/forest-tree.glb", scatterProps("forest", 46, 71, 3.0));
 		// A dense grove sits between the close reading stages and the trail loops around it on both sides.
-		loadModelCluster(scene, "/models/forest-tree.glb", [
+		addLayer("/models/forest-tree.glb", [
 			[2, 18, 3.8, 0.2, 1.05, 1.05], [4, 20, 3.7, -0.4, 1.05, 1.05],
 			[3, 23, 3.8, 0.5, 1.05, 1.1], [5, 25, 3.6, -0.2, 1.05, 1],
 		]);
-		loadModelCluster(scene, "/models/forest-understory.glb", [
+		addLayer("/models/forest-understory.glb", [
 			[2.5, 20.5, 1.05, 0.3, 1.05, 1.05], [4.5, 22.5, 1.1, 1.1, 1.05, 1.05],
 			[3, 26, 1.05, -0.4, 1.05, 1.05],
 		]);
-		loadModelCluster(scene, "/models/mountain-fir.glb", scatterProps("mountain", 32, 197, 3.0));
-		loadModelCluster(scene, "/models/map-forest-flower-patch.glb", [
+		addLayer("/models/mountain-fir.glb", scatterProps("mountain", 32, 197, 3.0));
+		addLayer("/models/map-forest-flower-patch.glb", [
 			...scatterProps("forest", 48, 7541, 2.0, 0.8, 1.5),
 			...scatterProps("mountain", 16, 7549, 2.2, 0.7, 1.25),
 		]);
-		loadModelCluster(scene, "/models/forest-understory.glb", [
+		addLayer("/models/forest-understory.glb", [
 			...scatterProps("forest", 78, 431, 2.25),
 			...scatterProps("mountain", 34, 839, 2.1),
 		]);
-		loadModelCluster(scene, "/models/mossy-boulders.glb", [
+		addLayer("/models/mossy-boulders.glb", [
 			...scatterProps("forest", 20, 1301, 3.2),
 			...scatterProps("mountain", 30, 1307, 3.1),
 		]);
-		loadMapAsset(scene, "/models/storybook-cottage.glb", 4, 45, 3.2);
-		loadMapAsset(scene, "/models/mountain-observatory.glb", 55, 43, 3.8);
+		addLayer("/models/storybook-cottage.glb", one(4, 45, 3.2));
+		addLayer("/models/mountain-observatory.glb", one(55, 43, 3.8));
 		// This TRELLIS.2 segment has an open channel along local Z. Orient its open
 		// ends along the winding course and overlap neighboring banks slightly.
 		const creekPlacements: [number, number, number, number, number, number][] = [];
@@ -617,18 +701,18 @@ export function IsoWorldScene({
 				riverBankPlacements.push([x, z, 1.15, rotation + (side * 0.15), 1.1, 0.9]);
 			}
 		}
-		loadModelCluster(scene, "/models/map-riverbank-rock-cluster.glb", riverBankPlacements);
+		addLayer("/models/map-riverbank-rock-cluster.glb", riverBankPlacements);
 		// The reading trail crosses the creek on the southern loop; this bridge
 		// keeps that route walkable and sits directly in the 3D scene.
 		for (const [bridgeX, bridgeZ] of MAP_BRIDGE_POSITIONS) {
-			loadMapAsset(scene, "/models/map-woodland-footbridge.glb", bridgeX, bridgeZ, 2.7, 0.48);
+			addLayer("/models/map-woodland-footbridge.glb", one(bridgeX, bridgeZ, 2.7, 0.48));
 		}
 		for (let distance = 0; distance <= creekCurve.getLength(); distance += 4.1) {
 			const point = creekCurve.getPointAt(distance / creekCurve.getLength());
 			const tangent = creekCurve.getTangentAt(distance / creekCurve.getLength());
 			creekPlacements.push([point.x, point.z, 0.75, Math.atan2(tangent.x, tangent.z), 1, 0.55]);
 		}
-		loadModelCluster(scene, "/models/creek-open-segment-v2.glb", creekPlacements);
+		addLayer("/models/creek-open-segment-v2.glb", creekPlacements);
 
 		const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 220);
 		const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "low-power" });
@@ -722,6 +806,7 @@ export function IsoWorldScene({
 		renderer.domElement.addEventListener("pointerleave", onCanvasPointerLeave);
 		renderer.domElement.addEventListener("click", onCanvasClick);
 
+		const viewportBounds = { centerX: 0, centerZ: 0, halfWidth: 0, halfDepth: 0 };
 		const render = () => {
 			const width = host.clientWidth || window.innerWidth;
 			const height = host.clientHeight || window.innerHeight;
@@ -733,6 +818,26 @@ export function IsoWorldScene({
 			// selected stage at the center of the viewport during map scrolling.
 			camera.position.set(centerX, 21.5, centerZ + 16);
 			camera.lookAt(centerX, 0, centerZ);
+			viewportBounds.centerX = centerX;
+			viewportBounds.centerZ = centerZ;
+			viewportBounds.halfWidth = width / (2 * WORLD_SCALE) + 3.5;
+			viewportBounds.halfDepth = height / (2 * WORLD_SCALE * WORLD_PITCH) + 4.5;
+			const isNearViewport = (x: number, z: number) => Math.abs(x - viewportBounds.centerX) <= viewportBounds.halfWidth && Math.abs(z - viewportBounds.centerZ) <= viewportBounds.halfDepth;
+			if (!progressInitialized) {
+				for (const layer of assetLayers.values()) {
+					if (layer.placements.some(([x, z]) => isNearViewport(x, z))) initialLayers.add(layer);
+				}
+				progressTotal += initialLayers.size;
+				progressInitialized = true;
+				publishProgress();
+				void forestGroundReady.then(completeProgressItem);
+				void mountainGroundReady.then(completeProgressItem);
+			}
+			for (const layer of assetLayers.values()) {
+				addVisibleLayerAssets(scene, layer, isNearViewport, () => {
+					if (initialLayers.delete(layer)) completeProgressItem();
+				}, initialLayers.has(layer), render, () => disposed);
+			}
 			for (const marker of markerObjects) {
 				const data = stateForMarker(marker);
 				if (data) updateStageMarker(marker, data, marker === hoveredMarker, markerBadges);
@@ -766,9 +871,10 @@ export function IsoWorldScene({
 			render();
 		};
 		Object.values(markerBadges).forEach((image) => {
-			image.addEventListener("load", refreshMarkerBadges, { once: true });
-			image.addEventListener("error", refreshMarkerBadges, { once: true });
-			if (image.complete) refreshMarkerBadges();
+			const onBadgeReady = () => { refreshMarkerBadges(); completeProgressItem(); };
+			image.addEventListener("load", onBadgeReady, { once: true });
+			image.addEventListener("error", onBadgeReady, { once: true });
+			if (image.complete) onBadgeReady();
 		});
 		refreshRef.current = render;
 		const observer = new ResizeObserver(render);

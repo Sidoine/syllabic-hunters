@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { IMAGES, UI_ICONS } from "../components/ui";
 import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathChapter } from "../data/math";
 import { CHAPTERS, MISSIONS, type Chapter } from "../data/story";
@@ -8,6 +8,7 @@ import { chapterMissions, isMissionUnlocked } from "./Map";
 import { MATH_STOPS, READING_STOPS } from "./map-layout";
 import {
 	IsoWorldScene,
+	type MapLoadProgress,
 	type StageMarkerData,
 	WORLD_PIXEL_HEIGHT,
 	WORLD_PIXEL_WIDTH,
@@ -42,6 +43,24 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 		: { region: "math", chapter: incompleteMath < 0 ? MATH_CHAPTERS.length - 1 : incompleteMath };
 	const selected = selection ?? initialSelection;
 	const [armed, setArmed] = useState(false);
+	const [mapLoadProgress, setMapLoadProgress] = useState<MapLoadProgress>({ loaded: 0, total: 1, complete: false });
+	const [showMapLoading, setShowMapLoading] = useState(true);
+	const mapLoadingStartedAt = useRef<number | null>(null);
+	const onMapLoadProgress = useCallback((progress: MapLoadProgress) => {
+		if (mapLoadingStartedAt.current === null) {
+			mapLoadingStartedAt.current = Date.now();
+			setShowMapLoading(true);
+		}
+		setMapLoadProgress(progress);
+	}, []);
+	useEffect(() => {
+		if (!mapLoadProgress.complete) return;
+		const minimumVisibleMs = 1800;
+		const startedAt = mapLoadingStartedAt.current ?? Date.now();
+		const remainingMs = Math.max(0, minimumVisibleMs - (Date.now() - startedAt));
+		const timer = window.setTimeout(() => setShowMapLoading(false), remainingMs);
+		return () => window.clearTimeout(timer);
+	}, [mapLoadProgress.complete]);
 	const centerOnStage = useCallback((region: MapRegion, chapter: number, behavior: ScrollBehavior = "smooth") => {
 		const panel = scrollRef.current;
 		if (!panel) return;
@@ -52,7 +71,7 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 			behavior,
 		});
 	}, []);
-	useEffect(() => {
+	useLayoutEffect(() => {
 		centerOnStage(selected.region, selected.chapter, "auto");
 	}, [centerOnStage, selected.region, selected.chapter]);
 
@@ -146,7 +165,7 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 				onPointerCancel={() => { dragRef.current = null; }}
 			>
 				<div className="relative" style={{ width: WORLD_PIXEL_WIDTH, height: WORLD_PIXEL_HEIGHT }}>
-					<IsoWorldScene containerRef={scrollRef} stageMarkers={stageMarkers} hero={save.hero} onStageClick={onSceneStageClick} />
+					<IsoWorldScene containerRef={scrollRef} stageMarkers={stageMarkers} hero={save.hero} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
 					<nav className="sr-only" aria-label="Étapes accessibles de la carte">
 					{CHAPTERS.map((chapter) => {
 						const first = MISSIONS.find((mission) => mission.chapter === chapter.id);
@@ -195,6 +214,18 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 				</div>
 			</header>
 			<div className="pointer-events-none absolute bottom-3 right-3 z-30 rounded-full glass bg-[#24163c]/75 px-3 py-1.5 text-[10px] sm:bottom-5 sm:right-5 sm:text-xs">Fais glisser la carte ↔ ↕ pour explorer</div>
+			{showMapLoading && <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#101b22]/90 px-6 backdrop-blur-md" role="status" aria-live="polite">
+				<div className="w-full max-w-sm rounded-[1.75rem] border border-white/20 bg-slate-950/75 p-6 text-center shadow-[0_20px_70px_rgba(0,0,0,0.55)]">
+					<div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-amber-100/50 bg-gradient-to-br from-fuchsia-500/40 to-cyan-400/30 text-3xl shadow-[0_0_28px_rgba(227,71,168,0.35)]" aria-hidden="true">✦</div>
+					<p className="text-xs font-bold tracking-[0.18em] text-cyan-100">LE MONDE DES DÉCOUVERTES</p>
+					<p className="mt-2 text-lg font-extrabold text-white">Préparation de la carte…</p>
+					<p className="mt-1 text-sm text-white/65">Chargement des éléments autour de toi</p>
+					<div className="mt-5 h-3 overflow-hidden rounded-full border border-white/20 bg-black/40" role="progressbar" aria-label="Chargement de la carte" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(mapLoadProgress.loaded / Math.max(1, mapLoadProgress.total) * 100)}>
+						<div className="h-full rounded-full bg-gradient-to-r from-fuchsia-400 via-pink-300 to-cyan-300 shadow-[0_0_18px_rgba(255,123,218,0.65)] transition-[width] duration-300" style={{ width: `${Math.min(100, Math.round(mapLoadProgress.loaded / Math.max(1, mapLoadProgress.total) * 100))}%` }} />
+					</div>
+					<p className="mt-2 text-xs font-semibold tabular-nums text-white/60">{Math.min(100, Math.round(mapLoadProgress.loaded / Math.max(1, mapLoadProgress.total) * 100))}%</p>
+				</div>
+			</div>}
 		</main>
 	);
 }
