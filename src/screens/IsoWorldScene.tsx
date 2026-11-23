@@ -4,11 +4,11 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import readingMarkerBadge from "../assets/ui/map-marker-reading.webp";
 import mathMarkerBadge from "../assets/ui/map-marker-math.webp";
 import lockedMarkerBadge from "../assets/ui/map-marker-locked.webp";
-import { MATH_STOPS, READING_STOPS } from "./map-layout";
+import { MAP_BRIDGE_POSITIONS, MAP_RIVER_POINTS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, READING_STOPS } from "./map-layout";
 
 
-export const WORLD_WIDTH = 60;
-export const WORLD_DEPTH = 52;
+export const WORLD_WIDTH = MAP_WORLD_WIDTH;
+export const WORLD_DEPTH = MAP_WORLD_DEPTH;
 export const WORLD_SCALE = 52;
 export const WORLD_PITCH = 0.82;
 export const WORLD_PIXEL_WIDTH = WORLD_WIDTH * WORLD_SCALE;
@@ -19,10 +19,12 @@ const worldPath = (stops: readonly (readonly [number, number])[]) => stops.map((
 	const worldZ = y * WORLD_DEPTH;
 	return new THREE.Vector3(worldX, 0, worldZ);
 });
+const sharedMapStart = new THREE.Vector3(MAP_SHARED_START[0], 0, MAP_SHARED_START[1]);
+const readingRoadPoints = [sharedMapStart, ...worldPath(READING_STOPS)];
+const mathRoadPoints = [sharedMapStart.clone(), ...worldPath(MATH_STOPS)];
 const missionRoadCurves = [
-	new THREE.CatmullRomCurve3(worldPath(READING_STOPS), false, "centripetal"),
-	new THREE.CatmullRomCurve3(worldPath(MATH_STOPS), false, "centripetal"),
-	new THREE.CatmullRomCurve3([worldPath(READING_STOPS)[0], worldPath(MATH_STOPS)[0]], false, "centripetal"),
+	new THREE.CatmullRomCurve3(readingRoadPoints, false, "centripetal"),
+	new THREE.CatmullRomCurve3(mathRoadPoints, false, "centripetal"),
 ];
 const missionRoadSamples = missionRoadCurves.flatMap((curve) => curve.getPoints(240));
 
@@ -177,6 +179,8 @@ function scatterProps(region: "forest" | "mountain", count: number, seed: number
 		if (landmarks.some(([lx, lz]) => Math.hypot(x - lx, z - lz) < 4.2)) continue;
 		// Reserve space around the whole curved trail, not only around its stage pins.
 		if (distanceToMissionRoad(x, z) < Math.max(2.5, radius + 0.8)) continue;
+		const stops = [...READING_STOPS, ...MATH_STOPS];
+		if (stops.some(([u, v]) => Math.hypot(x - u * WORLD_WIDTH, z - v * WORLD_DEPTH) < Math.max(3.2, radius + 0.8))) continue;
 		placements.push([x, z, minHeight + random() * (maxHeight - minHeight), random() * Math.PI * 2, 0.72 + random() * 0.7, 0.72 + random() * 0.7]);
 	}
 	return placements;
@@ -442,9 +446,9 @@ function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGr
 	scene.add(terrain);
 	const roadTexture = makePathTexture();
 	const roadSurface = new THREE.MeshStandardMaterial({ color: "#ffffff", map: roadTexture, roughness: 1 });
-	const readingPath = worldPath(READING_STOPS).map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
-	const mathPath = worldPath(MATH_STOPS).map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
-	const paths = [readingPath, mathPath, [readingPath[0], mathPath[0]]];
+	const readingPath = readingRoadPoints.map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
+	const mathPath = mathRoadPoints.map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
+	const paths = [readingPath, mathPath];
 	for (const points of paths) {
 		makePathRibbon(scene, points, 0.9, roadSurface, 0.09, 2.0);
 	}
@@ -566,11 +570,20 @@ export function IsoWorldScene({
 			});
 		};
 		// ImageGen textures cover the rolling terrain; generated Trellis 2 props are repeated as shared map assets.
-		loadMapAsset(scene, "/models/reading-tree.glb", 8, 14, 4.4);
-		loadMapAsset(scene, "/models/reading-bookstone.glb", 15, 24, 2.8);
+		loadMapAsset(scene, "/models/reading-tree.glb", 2, 12, 4.4);
+		loadMapAsset(scene, "/models/reading-bookstone.glb", 4, 9, 2.8);
 		loadMapAsset(scene, "/models/math-abacus.glb", 45, 10, 3.1);
 		loadMapAsset(scene, "/models/math-crystals.glb", 56, 8, 3.6);
 		loadModelCluster(scene, "/models/forest-tree.glb", scatterProps("forest", 46, 71, 3.0));
+		// A dense grove sits between the close reading stages and the trail loops around it on both sides.
+		loadModelCluster(scene, "/models/forest-tree.glb", [
+			[2, 18, 3.8, 0.2, 1.05, 1.05], [4, 20, 3.7, -0.4, 1.05, 1.05],
+			[3, 23, 3.8, 0.5, 1.05, 1.1], [5, 25, 3.6, -0.2, 1.05, 1],
+		]);
+		loadModelCluster(scene, "/models/forest-understory.glb", [
+			[2.5, 20.5, 1.05, 0.3, 1.05, 1.05], [4.5, 22.5, 1.1, 1.1, 1.05, 1.05],
+			[3, 26, 1.05, -0.4, 1.05, 1.05],
+		]);
 		loadModelCluster(scene, "/models/mountain-fir.glb", scatterProps("mountain", 32, 197, 3.0));
 		loadModelCluster(scene, "/models/map-forest-flower-patch.glb", [
 			...scatterProps("forest", 48, 7541, 2.0, 0.8, 1.5),
@@ -589,12 +602,7 @@ export function IsoWorldScene({
 		// This TRELLIS.2 segment has an open channel along local Z. Orient its open
 		// ends along the winding course and overlap neighboring banks slightly.
 		const creekPlacements: [number, number, number, number, number, number][] = [];
-		const creekCurve = new THREE.CatmullRomCurve3([
-			new THREE.Vector3(-5, 0, 31), new THREE.Vector3(4, 0, 36), new THREE.Vector3(14, 0, 30),
-			new THREE.Vector3(23, 0, 35), new THREE.Vector3(31, 0, 47), new THREE.Vector3(40, 0, 49),
-			new THREE.Vector3(47, 0, 44), new THREE.Vector3(49, 0, 37), new THREE.Vector3(56, 0, 32),
-			new THREE.Vector3(65, 0, 36),
-		], false, "centripetal");
+		const creekCurve = new THREE.CatmullRomCurve3(MAP_RIVER_POINTS.map(([x, z]) => new THREE.Vector3(x, 0, z)), false, "centripetal");
 		const riverBankPlacements: [number, number, number, number, number, number][] = [];
 		for (let distance = 5; distance < creekCurve.getLength(); distance += 7.5) {
 			const t = distance / creekCurve.getLength();
@@ -605,14 +613,16 @@ export function IsoWorldScene({
 			for (const side of [-1, 1]) {
 				const x = point.x + bankOffset.x * side;
 				const z = point.z + bankOffset.z * side;
-				if (Math.hypot(x - 20.5, z - 34.0) < 3.2) continue;
+				if (MAP_BRIDGE_POSITIONS.some(([bridgeX, bridgeZ]) => Math.hypot(x - bridgeX, z - bridgeZ) < 3.2)) continue;
 				riverBankPlacements.push([x, z, 1.15, rotation + (side * 0.15), 1.1, 0.9]);
 			}
 		}
 		loadModelCluster(scene, "/models/map-riverbank-rock-cluster.glb", riverBankPlacements);
 		// The reading trail crosses the creek on the southern loop; this bridge
 		// keeps that route walkable and sits directly in the 3D scene.
-		loadMapAsset(scene, "/models/map-woodland-footbridge.glb", 21.5, 34.0, 2.7, 0.48);
+		for (const [bridgeX, bridgeZ] of MAP_BRIDGE_POSITIONS) {
+			loadMapAsset(scene, "/models/map-woodland-footbridge.glb", bridgeX, bridgeZ, 2.7, 0.48);
+		}
 		for (let distance = 0; distance <= creekCurve.getLength(); distance += 4.1) {
 			const point = creekCurve.getPointAt(distance / creekCurve.getLength());
 			const tangent = creekCurve.getTangentAt(distance / creekCurve.getLength());

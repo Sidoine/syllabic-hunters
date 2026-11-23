@@ -8,6 +8,7 @@
     "build": "npm run build:server && vite build",
     "build:server": "tsc -p tsconfig.server.json",
     "lint": "biome lint .",
+	"test:map": "tsx --test tests/map-layout.test.ts",
     "preview": "vite preview",
     "start": "node dist-server/index.js",
     "typecheck": "tsc --noEmit"
