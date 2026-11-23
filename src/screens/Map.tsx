@@ -1,7 +1,9 @@
-import { BigButton, IMAGES, MISSION_ICONS, Stars, UI_ICONS } from "../components/ui";
-import { CHAPTERS, type Chapter, MISSIONS, type Mission } from "../data/story";
+import { IMAGES, MISSION_ICONS, UI_ICONS } from "../components/ui";
+import { CHAPTERS, MISSION_INFO, type Chapter, MISSIONS, type Mission } from "../data/story";
 import { syllablesOf, VOWELS } from "../data/syllables";
 import type { Save } from "../lib/storage";
+import { MissionPathScreen } from "./MissionPathScreen";
+import { coloringPageForReward } from "../data/coloring";
 
 export function isMissionUnlocked(save: Save, m: Mission) {
 	if (save.settings.unlockAll) return true;
@@ -162,15 +164,21 @@ function ChapterNode({
 export function ChapterScreen({
 	save,
 	chapter,
+	award,
 	onMission,
 	onBack,
 	onStory,
+	onSettings,
+	onReward,
 }: {
 	save: Save;
 	chapter: Chapter;
+	award?: { id: string; stars: number };
 	onMission: (m: Mission) => void;
 	onBack: () => void;
 	onStory: () => void;
+	onSettings: () => void;
+	onReward: () => void;
 }) {
 	const ms = chapterMissions(chapter.id);
 	const syl = chapter.letters.length
@@ -178,90 +186,39 @@ export function ChapterScreen({
 		: chapter.id === 0
 			? VOWELS.map((v) => v.id)
 			: [];
+	const stars = ms.reduce((total, mission) => total + (save.stars[mission.id] ?? 0), 0);
+	const rewardGateIndex = Math.min(ms.length - 1, 4);
+	const rewardUnlocked = rewardGateIndex >= 0 && (save.stars[ms[rewardGateIndex].id] ?? 0) > 0;
 	return (
-		<div className="min-h-full px-3 py-4 max-w-3xl mx-auto flex flex-col gap-4">
-			<header className="flex items-center gap-3">
-				<button
-					type="button"
-					onClick={onBack}
-					aria-label="Retour au plan"
-					className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
-				>
-					<img src={UI_ICONS.map} alt="" className="w-9 h-9 object-contain" />
-				</button>
-				<div className="flex-1">
-					<div className="text-2xl sm:text-3xl font-bold neon-text">
-						{chapter.title}
-					</div>
-					<div className="text-pink-100">{chapter.place}</div>
-				</div>
-				<button
-					type="button"
-					onClick={onStory}
-					className="btn-pop glass rounded-full px-3 h-12 text-sm font-bold"
-				>
-					<span className="flex items-center gap-2"><img src={UI_ICONS.book} alt="" className="w-9 h-9 object-contain" /> Histoire</span>
-				</button>
-			</header>
-
-			{syl.length > 0 && (
-				<div className="glass rounded-3xl p-3 flex flex-wrap gap-2 justify-center">
-					{syl.map((s) => (
-						<span
-							key={s}
-							className="card-kawaii rounded-2xl px-3 py-1 font-read font-bold text-3xl"
-						>
-							{s}
-						</span>
-					))}
-				</div>
-			)}
-			{chapter.tip && (
-				<div className="rounded-3xl p-3 bg-yellow-200 text-purple-900 font-semibold border-4 border-white">
-					💡 {chapter.tip}
-				</div>
-			)}
-
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-				{ms.map((m, i) => {
-					const unlocked = isMissionUnlocked(save, m);
-					const stars = save.stars[m.id] ?? 0;
-					const isBoss = m.type === "battle";
-					return (
-						<button
-							key={m.id}
-							type="button"
-							disabled={!unlocked}
-							onClick={() => onMission(m)}
-							className={`btn-pop flex items-center gap-3 rounded-3xl p-3 border-4 text-left ${
-								unlocked
-									? isBoss
-										? "bg-gradient-to-r from-rose-500 to-purple-700 border-yellow-200"
-										: "bg-white/15 border-white/60"
-									: "bg-white/5 border-white/10 opacity-50"
-							} ${unlocked && !stars ? "anim-glow" : ""}`}
-						>
-							<div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0">
-								{unlocked ? (
-									<img src={MISSION_ICONS[m.type]} alt="" className="w-12 h-12 object-contain" />
-								) : (
-									<img src={UI_ICONS.lock} alt="Mission verrouillée" className="w-9 h-9 object-contain" />
-								)}
-							</div>
-							<div className="flex-1">
-								<div className="text-xs text-white/70">Mission {i + 1}</div>
-								<div className="font-bold text-lg leading-tight">
-									{isBoss ? `${m.title} : ${chapter.boss}` : m.title}
-								</div>
-								<Stars n={stars} size="text-lg" />
-							</div>
-						</button>
-					);
-				})}
-			</div>
-			<BigButton color="purple" onClick={onBack} className="self-center mt-2">
-				<span className="flex items-center gap-2"><img src={UI_ICONS.map} alt="" className="w-8 h-8 object-contain" /> Retour à la carte</span>
-			</BigButton>
-		</div>
+		<MissionPathScreen
+			title={chapter.title}
+			place={chapter.place}
+			hero={save.hero}
+			name={save.name}
+			region="reading"
+			award={award}
+			rewardComplete={Boolean(save.rewards?.[`reading-coloring-${chapter.id}`])}
+			rewardUnlocked={rewardUnlocked}
+			rewardAvailable={!save.rewards?.[`reading-coloring-${chapter.id}`] && coloringPageForReward(save, `reading-coloring-${chapter.id}`) !== null}
+			onReward={onReward}
+			stars={stars}
+			maxStars={ms.length * 3}
+			chapterNote={chapter.tip ?? (syl.length > 0 ? `Sons à explorer : ${syl.join(" · ")}` : undefined)}
+			missions={ms.map((mission) => ({
+				id: mission.id,
+				title: mission.type === "battle" ? `${mission.title} · ${chapter.boss}` : mission.title,
+				help: MISSION_INFO[mission.type].help,
+				icon: MISSION_ICONS[mission.type],
+				stars: save.stars[mission.id] ?? 0,
+				unlocked: isMissionUnlocked(save, mission),
+			}))}
+			onBack={onBack}
+			onStory={onStory}
+			onSettings={onSettings}
+			onStart={(id) => {
+				const mission = ms.find((item) => item.id === id);
+				if (mission) onMission(mission);
+			}}
+		/>
 	);
 }

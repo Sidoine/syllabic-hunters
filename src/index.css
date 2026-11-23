@@ -43,6 +43,34 @@ body {
   -webkit-backdrop-filter: blur(8px);
 }
 
+.mission-nameplate {
+  background: linear-gradient(180deg, rgba(126, 78, 42, 0.96), rgba(66, 39, 26, 0.98));
+  border: 1px solid rgba(250, 213, 154, 0.82);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 245, 218, 0.3),
+    0 3px 0 #3c2417,
+    0 8px 15px rgba(0, 0, 0, 0.36);
+}
+
+.mission-map-step:not(:disabled) {
+	transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+}
+
+.mission-map-step:hover:not(:disabled) {
+	transform: translateY(-5px) scale(1.12);
+	filter: brightness(1.12) saturate(1.14);
+}
+
+.mission-map-step:hover:not(:disabled) .mission-nameplate {
+	background: linear-gradient(180deg, rgba(163, 108, 48, 0.98), rgba(89, 49, 20, 0.99));
+	border-color: rgba(255, 236, 177, 0.98);
+	box-shadow: inset 0 1px 0 rgba(255, 252, 220, 0.65), 0 3px 0 #3c2417, 0 0 16px rgba(255, 213, 105, 0.6);
+}
+
+.mission-map-step:hover:not(:disabled) .mission-next-orbit {
+	animation-duration: 1.4s;
+}
+
 .card-kawaii {
   background: linear-gradient(180deg, #fff 0%, #fff4fc 100%);
   color: #3b1a66;
@@ -77,6 +105,10 @@ body {
   filter: none;
 }
 
+.mission-map-step.btn-pop:hover:not(:disabled) {
+	box-shadow: none;
+}
+
 .font-read {
   font-family: var(--font-read);
 }
@@ -84,6 +116,57 @@ body {
 @keyframes floaty {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+@keyframes mission-award-star {
+	0% {
+		opacity: 0;
+		transform: translate(calc(-50% + var(--star-dx)), calc(-50% + var(--star-dy))) scale(1.45) rotate(-18deg);
+	}
+	18%, 72% { opacity: 1; }
+	100% {
+		opacity: 0;
+		transform: translate(-50%, -50%) scale(0.2) rotate(18deg);
+	}
+}
+
+.mission-award-star {
+	animation: mission-award-star 1.3s cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+.mission-next-orbit {
+	border: 1px solid rgba(255, 224, 133, 0.58);
+	box-shadow: 0 0 12px rgba(255, 198, 62, 0.42), inset 0 0 8px rgba(255, 234, 165, 0.18);
+	animation: mission-next-orbit-spin 3.2s linear infinite;
+}
+
+.mission-next-coin {
+	position: absolute;
+	left: 50%;
+	top: -0.7rem;
+	display: flex;
+	height: 1.55rem;
+	width: 1.55rem;
+	align-items: center;
+	justify-content: center;
+	border: 2px solid #fff0b0;
+	border-radius: 9999px;
+	background: radial-gradient(circle at 32% 28%, #fff4b0 0%, #f6c94f 36%, #c47a17 76%, #7a3c08 100%);
+	box-shadow: 0 2px 8px rgba(40, 20, 0, 0.7), inset 0 0 0 1px rgba(120, 65, 9, 0.6);
+	color: #fff9d5;
+	font-size: 0.8rem;
+	line-height: 1;
+	text-shadow: 0 1px 2px #80420b;
+	transform: translateX(-50%);
+}
+
+@keyframes mission-next-orbit-spin {
+	to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mission-award-star { animation-duration: 0.01ms; }
+	.mission-next-orbit { animation-duration: 10s; }
 }
 .anim-float { animation: floaty 3s ease-in-out infinite; }
 

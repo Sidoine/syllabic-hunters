@@ -10,6 +10,8 @@ import {
 } from "../data/math";
 import type { Save } from "../lib/storage";
 import { speakSeq } from "../lib/speech";
+import { MissionPathScreen } from "./MissionPathScreen";
+import { coloringPageForReward } from "../data/coloring";
 
 export function isMathMissionUnlocked(save: Save, mission: MathMission) {
 	if (save.settings.unlockAll) return true;
@@ -119,13 +121,19 @@ function MathChapterNode({
 export function MathChapterScreen({
 	save,
 	chapter,
+	award,
 	onMission,
 	onBack,
+	onSettings,
+	onReward,
 }: {
 	save: Save;
 	chapter: MathChapter;
+	award?: { id: string; stars: number };
 	onMission: (mission: MathMission) => void;
 	onBack: () => void;
+	onSettings: () => void;
+	onReward: () => void;
 }) {
 	const missions = mathChapterMissions(chapter.id);
 	const instruction =
@@ -136,48 +144,43 @@ export function MathChapterScreen({
 				: chapter.skill === "mixed"
 					? "Additionne ou soustrais pour trouver la bonne réponse."
 					: `Additionne sans dépasser ${chapter.limit}.`;
+	const stars = missions.reduce((total, mission) => total + (save.stars[mission.id] ?? 0), 0);
+	const rewardGateIndex = Math.min(missions.length - 1, 4);
+	const rewardUnlocked = rewardGateIndex >= 0 && (save.stars[missions[rewardGateIndex].id] ?? 0) > 0;
 	return (
-		<div className="min-h-full px-3 py-4 max-w-3xl mx-auto flex flex-col gap-4">
-			<header className="flex items-center gap-3">
-				<button type="button" onClick={onBack} aria-label="Retour à la carte des batailles" className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0">
-					<img src={UI_ICONS.map} alt="" className="w-9 h-9 object-contain" />
-				</button>
-				<div className="flex-1">
-					<div className="text-2xl sm:text-3xl font-bold neon-text">{chapter.title}</div>
-					<div className="text-pink-100">{chapter.place}</div>
-				</div>
-				<img src={UI_ICONS.math} alt="" className="w-12 h-12 object-contain" />
-			</header>
-
-			<div className="glass rounded-3xl p-3 text-center font-semibold text-lg">{instruction}</div>
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-				{missions.map((mission, index) => {
-					const unlocked = isMathMissionUnlocked(save, mission);
-					const stars = save.stars[mission.id] ?? 0;
-					return (
-						<button
-							key={mission.id}
-							type="button"
-							disabled={!unlocked}
-							onClick={() => onMission(mission)}
-							className={`btn-pop flex items-center gap-3 rounded-3xl p-3 border-4 text-left ${unlocked ? "bg-white/15 border-white/60" : "bg-white/5 border-white/10 opacity-50"} ${unlocked && !stars ? "anim-glow" : ""}`}
-						>
-							<div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shrink-0">
-								{unlocked ? <img src={UI_ICONS.math} alt="" className="w-12 h-12 object-contain" /> : <img src={UI_ICONS.lock} alt="Verrouillé" className="w-9 h-9 object-contain" />}
-							</div>
-							<div className="flex-1">
-								<div className="text-xs text-white/70">Mission {index + 1}</div>
-								<div className="font-bold text-lg leading-tight">{mission.title}</div>
-								<Stars n={stars} size="text-lg" />
-							</div>
-						</button>
-					);
-				})}
-			</div>
-			<BigButton color="purple" onClick={onBack} className="self-center mt-2">
-				<span className="flex items-center gap-2"><img src={UI_ICONS.map} alt="" className="w-8 h-8 object-contain" /> Carte des batailles</span>
-			</BigButton>
-		</div>
+		<MissionPathScreen
+			title={chapter.title}
+			place={chapter.place}
+			hero={save.hero}
+			name={save.name}
+			region="math"
+			award={award}
+			onSettings={onSettings}
+			rewardComplete={Boolean(save.rewards?.[`math-coloring-${chapter.id}`])}
+			rewardUnlocked={rewardUnlocked}
+			rewardAvailable={!save.rewards?.[`math-coloring-${chapter.id}`] && coloringPageForReward(save, `math-coloring-${chapter.id}`) !== null}
+			onReward={onReward}
+			stars={stars}
+			maxStars={missions.length * 3}
+			chapterNote={instruction}
+			missions={missions.map((mission) => ({
+				id: mission.id,
+				title: mission.title,
+				help: mission.mode === "missing"
+					? "Trouve le nombre qui manque."
+					: mission.mode === "story"
+						? "Résous le calcul dans cette petite histoire."
+						: `Résous des calculs jusqu’à ${chapter.limit}.`,
+				icon: UI_ICONS.math,
+				stars: save.stars[mission.id] ?? 0,
+				unlocked: isMathMissionUnlocked(save, mission),
+			}))}
+			onBack={onBack}
+			onStart={(id) => {
+				const mission = missions.find((item) => item.id === id);
+				if (mission) onMission(mission);
+			}}
+		/>
 	);
 }
 

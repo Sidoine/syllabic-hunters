@@ -21,21 +21,23 @@ import {
 } from "./lib/storage";
 import { starsFor } from "./lib/utils";
 import { DialogScreen } from "./screens/Dialog";
-import { ChapterScreen, chapterMissions, MapScreen } from "./screens/Map";
+import { ChapterScreen, chapterMissions } from "./screens/Map";
 import { MissionScreen, ResultScreen, SettingsModal } from "./screens/Misc";
-import { MapSelectScreen } from "./screens/MapSelect";
-import { MathChapterScreen, MathMapScreen, MathMissionExercise, MathResultScreen } from "./screens/Math";
+import { MapSelectScreen, type MapStageSelection } from "./screens/MapSelect";
+import { MathChapterScreen, MathMissionExercise, MathResultScreen } from "./screens/Math";
 import { TitleScreen } from "./screens/Title";
+import { VoiceReview } from "./screens/VoiceReview";
+import { ColoringActivity } from "./screens/ColoringActivity";
+import { coloringPageForReward, type ColoringPageId } from "./data/coloring";
 
 type Screen =
   | { name: "title" }
   | { name: "maps" }
-  | { name: "map" }
-  | { name: "math-map" }
-  | { name: "math-chapter"; ch: number }
+  | { name: "math-chapter"; ch: number; award?: { id: string; stars: number } }
   | { name: "math-mission"; id: string; run: number }
   | { name: "math-result"; id: string; stars: number }
-  | { name: "chapter"; ch: number }
+  | { name: "coloring"; id: string; pageId: ColoringPageId; title: string; returnTo: { name: "chapter" | "math-chapter"; ch: number } }
+  | { name: "chapter"; ch: number; award?: { id: string; stars: number } }
   | { name: "dialog"; ch: number; kind: "intro" | "outro" }
   | { name: "mission"; id: string; run: number }
   | { name: "result"; id: string; stars: number };
@@ -52,6 +54,9 @@ function mergeSaves(local: Save, remote: Save): Save {
     name: remote.name || local.name,
     hero: remote.hero,
     stars,
+    rewards: { ...remote.rewards, ...local.rewards },
+    rewardPages: { ...remote.rewardPages, ...local.rewardPages },
+    rewardDrawings: { ...remote.rewardDrawings, ...local.rewardDrawings },
     seenIntro: { ...remote.seenIntro, ...local.seenIntro },
     seenOutro: { ...remote.seenOutro, ...local.seenOutro },
     settings: local.settings,
@@ -62,6 +67,7 @@ export default function App() {
   const [save, setSave] = useState<Save>(() => loadSave());
   const [screen, setScreen] = useState<Screen>({ name: "title" });
   const [showSettings, setShowSettings] = useState(false);
+  const [mapStage, setMapStage] = useState<MapStageSelection | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
 
@@ -129,27 +135,40 @@ export default function App() {
 
   const finishMission = (m: Mission, errors: number, rounds: number) => {
     const stars = starsFor(errors, rounds);
+    const earnedStars = Math.max(0, stars - (save.stars[m.id] ?? 0));
     setSave((s) => ({
       ...s,
       stars: { ...s.stars, [m.id]: Math.max(s.stars[m.id] ?? 0, stars) },
     }));
-    go({ name: "result", id: m.id, stars });
+    go({ name: "chapter", ch: m.chapter, award: earnedStars > 0 ? { id: m.id, stars: earnedStars } : undefined });
   };
 
   const startMathMission = (mission: MathMission) =>
     go({ name: "math-mission", id: mission.id, run: Date.now() });
 
+  const startColoring = (id: string, title: string, returnTo: { name: "chapter" | "math-chapter"; ch: number }) => {
+    const pageId = coloringPageForReward(save, id);
+    if (!pageId || save.rewards?.[id]) return;
+    setSave((current) => ({ ...current, rewardPages: { ...current.rewardPages, [id]: pageId } }));
+    go({ name: "coloring", id, pageId, title, returnTo });
+  };
+
   const finishMathMission = (mission: MathMission, errors: number, rounds: number) => {
     const stars = starsFor(errors, rounds);
+    const earnedStars = Math.max(0, stars - (save.stars[mission.id] ?? 0));
     setSave((current) => ({
       ...current,
       stars: { ...current.stars, [mission.id]: Math.max(current.stars[mission.id] ?? 0, stars) },
     }));
-    go({ name: "math-result", id: mission.id, stars });
+    go({ name: "math-chapter", ch: mission.chapter, award: earnedStars > 0 ? { id: mission.id, stars: earnedStars } : undefined });
   };
 
   const updateSettings = (settings: Settings) =>
     setSave((s) => ({ ...s, settings }));
+
+  if (new URLSearchParams(window.location.search).has("voice-review")) {
+    return <VoiceReview />;
+  }
 
   let content: React.ReactNode = null;
   switch (screen.name) {
@@ -177,29 +196,12 @@ export default function App() {
       content = (
         <MapSelectScreen
           save={save}
-          onReading={() => go({ name: "map" })}
-          onMath={() => go({ name: "math-map" })}
+          selection={mapStage}
+          onSelectStage={setMapStage}
+          onReading={(chapter) => openChapter(chapter)}
+          onMath={(chapter) => go({ name: "math-chapter", ch: chapter })}
           onProfile={() => go({ name: "title" })}
           onSettings={() => setShowSettings(true)}
-        />
-      );
-      break;
-    case "map":
-      content = (
-        <MapScreen
-          save={save}
-          onChapter={openChapter}
-          onBack={() => go({ name: "maps" })}
-          onSettings={() => setShowSettings(true)}
-        />
-      );
-      break;
-    case "math-map":
-      content = (
-        <MathMapScreen
-          save={save}
-          onChapter={(ch) => go({ name: "math-chapter", ch })}
-          onBack={() => go({ name: "maps" })}
         />
       );
       break;
@@ -208,9 +210,12 @@ export default function App() {
         <ChapterScreen
           save={save}
           chapter={CHAPTERS[screen.ch]}
+          award={screen.award}
           onMission={startMission}
-          onBack={() => go({ name: "map" })}
+          onBack={() => go({ name: "maps" })}
           onStory={() => go({ name: "dialog", ch: screen.ch, kind: "intro" })}
+          onSettings={() => setShowSettings(true)}
+          onReward={() => startColoring(`reading-coloring-${screen.ch}`, `Coloriage · ${CHAPTERS[screen.ch].place}`, { name: "chapter", ch: screen.ch })}
         />
       );
       break;
@@ -219,8 +224,27 @@ export default function App() {
         <MathChapterScreen
           save={save}
           chapter={MATH_CHAPTERS[screen.ch]}
+          award={screen.award}
           onMission={startMathMission}
-          onBack={() => go({ name: "math-map" })}
+          onBack={() => go({ name: "maps" })}
+          onSettings={() => setShowSettings(true)}
+          onReward={() => startColoring(`math-coloring-${screen.ch}`, `Coloriage · ${MATH_CHAPTERS[screen.ch].place}`, { name: "math-chapter", ch: screen.ch })}
+        />
+      );
+      break;
+    case "coloring":
+      content = (
+        <ColoringActivity
+          title={screen.title}
+          pageId={screen.pageId}
+          drawingData={save.rewardDrawings?.[screen.id]}
+          completed={Boolean(save.rewards?.[screen.id])}
+          onBack={() => go(screen.returnTo)}
+          onDrawingChange={(drawing) => setSave((current) => ({ ...current, rewardDrawings: { ...current.rewardDrawings, [screen.id]: drawing } }))}
+          onComplete={() => {
+            setSave((current) => ({ ...current, rewards: { ...current.rewards, [screen.id]: true } }));
+            go(screen.returnTo);
+          }}
         />
       );
       break;
@@ -248,7 +272,7 @@ export default function App() {
               }));
               const next = screen.ch + 1;
               if (next < CHAPTERS.length) openChapter(next);
-              else go({ name: "map" });
+              else go({ name: "maps" });
             }
           }}
         />
@@ -292,7 +316,7 @@ export default function App() {
           mission={m}
           stars={screen.stars}
           isLastOfChapter={isLast}
-          onMap={() => go({ name: "map" })}
+          onMap={() => go({ name: "maps" })}
           onReplay={() => startMission(m)}
           onNext={() => {
             if (isLast) go({ name: "dialog", ch: m.chapter, kind: "outro" });
@@ -313,12 +337,12 @@ export default function App() {
           mission={mission}
           stars={screen.stars}
           isLastOfChapter={isLastOfChapter}
-          onMap={() => go({ name: "math-map" })}
+          onMap={() => go({ name: "maps" })}
           onReplay={() => startMathMission(mission)}
           onNext={() => {
             const next = list[idx + 1];
             if (next) startMathMission(next);
-            else go({ name: "math-map" });
+            else go({ name: "maps" });
           }}
         />
       );

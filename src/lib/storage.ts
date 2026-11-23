@@ -10,6 +10,9 @@ export interface Save {
 	name: string;
 	hero: "hana" | "yuki" | "momo";
 	stars: Record<string, number>; // missionId -> meilleures étoiles (1-3)
+	rewards?: Record<string, boolean>; // rewardId -> activité terminée
+	rewardPages?: Record<string, string>; // rewardId -> coloriage unique attribué
+	rewardDrawings?: Record<string, string>; // rewardId -> traits sauvegardés en data URL
 	seenIntro: Record<number, boolean>;
 	seenOutro: Record<number, boolean>;
 	settings: Settings;
@@ -21,6 +24,9 @@ export const defaultSave = (): Save => ({
 	name: "",
 	hero: "hana",
 	stars: {},
+	rewards: {},
+	rewardPages: {},
+	rewardDrawings: {},
 	seenIntro: {},
 	seenOutro: {},
 	settings: {
@@ -41,6 +47,9 @@ export function loadSave(): Save {
 		return {
 			...base,
 			...d,
+			rewards: { ...base.rewards, ...(d.rewards || {}) },
+			rewardPages: { ...base.rewardPages, ...(d.rewardPages || {}) },
+			rewardDrawings: { ...base.rewardDrawings, ...(d.rewardDrawings || {}) },
 			settings: { ...base.settings, ...(d.settings || {}) },
 		};
 	} catch {

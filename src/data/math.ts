@@ -116,7 +116,7 @@ function randomInt(max: number) {
 	return Math.floor(Math.random() * (max + 1));
 }
 
-function makeEquation(chapter: MathChapter) {
+function makeEquation(chapter: MathChapter, nonZeroAddends = false) {
 	const skill =
 		chapter.skill === "mixed"
 			? Math.random() < 0.5
@@ -138,8 +138,12 @@ function makeEquation(chapter: MathChapter) {
 			limit: chapter.limit,
 		};
 	}
-	const first = randomInt(chapter.limit);
-	const second = randomInt(chapter.limit - first);
+	const first = nonZeroAddends
+		? randomInt(chapter.limit - 2) + 1
+		: randomInt(chapter.limit);
+	const second = nonZeroAddends
+		? randomInt(chapter.limit - first - 1) + 1
+		: randomInt(chapter.limit - first);
 	return {
 		first,
 		second,
@@ -168,7 +172,7 @@ function choicesFor(answer: number, limit: number) {
 
 function questionFor(mission: MathMission): MathQuestion {
 	const chapter = MATH_CHAPTERS[mission.chapter];
-	const { first, second, answer, operator, limit } = makeEquation(chapter);
+	const { first, second, answer, operator, limit } = makeEquation(chapter, mission.mode === "story");
 	let display: string;
 	let spokenParts: string[];
 	if (mission.mode === "story") {

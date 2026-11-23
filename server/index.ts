@@ -19,7 +19,9 @@ const projectRoot = path.resolve(
 const distDirectory = path.join(projectRoot, "dist");
 const viteUrl = process.env.VITE_URL ?? "http://localhost:5174";
 
-app.use(express.json({ limit: "32kb" }));
+// Reward coloring canvases are stored in the player's JSON save, so allow
+// enough room for several compressed drawings to sync with the account.
+app.use(express.json({ limit: "4mb" }));
 
 function hashToken(token: string) {
   return crypto.createHash("sha256").update(token).digest("hex");

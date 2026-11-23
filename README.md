@@ -11,3 +11,6 @@ Le serveur Express écoute sur `http://localhost:3001`. En développement, il re
 Pour un déploiement, exécuter `npm run build` puis `npm start`. Le build compile le serveur dans `dist-server/`; le démarrage production utilise Node directement et ne dépend donc pas de `tsx` ou des `devDependencies`.
 
 Les mots de passe sont hachés avec bcrypt. Les sessions utilisent un cookie HttpOnly dont seul le hash est stocké en base. Les invités continuent à utiliser `localStorage`; une connexion synchronise ensuite le progrès avec PostgreSQL.
+# Revue des voix
+
+Ouvrir `http://localhost:5175/?voice-review` (ou ajouter `?voice-review` à l’adresse du site) pour écouter les sons préenregistrés, voir leur texte et leur contexte, puis signaler ceux qui ont un accent anglais ou un autre souci avec une remarque. Les signalements sont conservés dans le stockage local du navigateur. Le bouton d’export produit un fichier JSON à transmettre pour préparer les corrections.

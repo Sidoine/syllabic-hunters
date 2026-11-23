@@ -4,6 +4,7 @@ const audioFiles = import.meta.glob("../assets/voice/*.wav", {
   query: "?url",
   import: "default",
 }) as Record<string, string>;
+import generatedVoices from "../../.agents/skills/generate-voice/voices.json";
 
 const RECORDED_LINES: Record<string, string> = {
   "bravo !": "cheer-bravo.wav",
@@ -127,6 +128,42 @@ const RECORDED_LINES: Record<string, string> = {
   "tu peux rejouer pour gagner plus d'étoiles.": "math-praise-replay.wav",
 
 };
+
+export type RecordedVoice = {
+  file: string;
+  url: string;
+  text: string;
+  context: string;
+  linked: boolean;
+};
+
+const generatedText = new Map(generatedVoices.map((voice) => [`${voice.name}.wav`, voice.text]));
+const textByFile = new Map(Object.entries(RECORDED_LINES).map(([text, file]) => [file, text]));
+
+function voiceContext(file: string) {
+  if (file.startsWith("story-")) {
+    const character = file.split("-")[1];
+    return `Scène d’introduction ou de victoire · ${character}`;
+  }
+  if (file.startsWith("mission-")) return "Instruction d’un exercice de lecture";
+  if (file.startsWith("battle-")) return "Instruction de Combat de démons";
+  if (file.startsWith("math-")) return "Carte des batailles · exercice de mathématiques";
+  if (file.startsWith("cheer-") || file.startsWith("try-") || file === "playful-rate.wav")
+    return "Retour pendant un exercice";
+  if (file === "read-praise.wav") return "Félicitations après une lecture";
+  return "Autre son préenregistré";
+}
+
+export const recordedVoiceCatalog: RecordedVoice[] = Object.entries(audioFiles)
+  .map(([path, url]) => {
+    const file = path.slice(path.lastIndexOf("/") + 1);
+    const text = textByFile.get(file) ?? generatedText.get(file) ?? file
+      .replace(/\.wav$/i, "")
+      .replace(/^(story|math|mission|cheer|try|battle)-/, "")
+      .replace(/-/g, " ");
+    return { file, url, text, context: voiceContext(file), linked: textByFile.has(file) };
+  })
+  .sort((a, b) => a.context.localeCompare(b.context, "fr") || a.file.localeCompare(b.file, "fr"));
 
 function normalizeLine(text: string) {
   return text

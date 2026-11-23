@@ -4,3 +4,8 @@ dist-server/
 .env
 .env.*
 !.env.example
+src/assets/3d/references/
+src/assets/3d/generated/
+src/assets/3d/review/
+.trellis2-workflow.json
+.tmp/
