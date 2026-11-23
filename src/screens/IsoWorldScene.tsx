@@ -830,8 +830,12 @@ export function IsoWorldScene({
 				progressTotal += initialLayers.size;
 				progressInitialized = true;
 				publishProgress();
-				void forestGroundReady.then(completeProgressItem);
-				void mountainGroundReady.then(completeProgressItem);
+				const renderAfterTextureReady = () => {
+					render();
+					requestAnimationFrame(() => requestAnimationFrame(completeProgressItem));
+				};
+				void forestGroundReady.then(renderAfterTextureReady);
+				void mountainGroundReady.then(renderAfterTextureReady);
 			}
 			for (const layer of assetLayers.values()) {
 				addVisibleLayerAssets(scene, layer, isNearViewport, () => {
