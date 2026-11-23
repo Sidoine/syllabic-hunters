@@ -14,6 +14,24 @@ export const WORLD_PITCH = 0.82;
 export const WORLD_PIXEL_WIDTH = WORLD_WIDTH * WORLD_SCALE;
 export const WORLD_PIXEL_HEIGHT = WORLD_DEPTH * WORLD_SCALE * WORLD_PITCH;
 
+const worldPath = (stops: readonly (readonly [number, number])[]) => stops.map(([x, y]) => {
+	const worldX = x * WORLD_WIDTH;
+	const worldZ = y * WORLD_DEPTH;
+	return new THREE.Vector3(worldX, 0, worldZ);
+});
+const missionRoadCurves = [
+	new THREE.CatmullRomCurve3(worldPath(READING_STOPS), false, "centripetal"),
+	new THREE.CatmullRomCurve3(worldPath(MATH_STOPS), false, "centripetal"),
+	new THREE.CatmullRomCurve3([worldPath(READING_STOPS)[0], worldPath(MATH_STOPS)[0]], false, "centripetal"),
+];
+const missionRoadSamples = missionRoadCurves.flatMap((curve) => curve.getPoints(240));
+
+function distanceToMissionRoad(x: number, z: number) {
+	let closest = Infinity;
+	for (const point of missionRoadSamples) closest = Math.min(closest, Math.hypot(x - point.x, z - point.z));
+	return closest;
+}
+
 export type StageMarkerData = {
 	region: "reading" | "math";
 	index: number;
@@ -148,22 +166,17 @@ function scatterProps(region: "forest" | "mountain", count: number, seed: number
 		state = (state * 16807) % 2147483647;
 		return (state - 1) / 2147483646;
 	};
-	const stops = [...READING_STOPS, ...MATH_STOPS].map(([u, v]) => new THREE.Vector2(u * WORLD_WIDTH, v * WORLD_DEPTH));
 	const landmarks = region === "forest"
-		? [[8, 18], [15, 24], [4, 45]]
-		: [[49, 19], [51, 11], [55, 43]];
+		? [[8, 14], [15, 24], [4, 45]]
+		: [[45, 10], [56, 8], [55, 43]];
 	const placements: [number, number, number, number, number, number][] = [];
 	let attempts = 0;
 	while (placements.length < count && attempts++ < count * 30) {
 		const x = region === "forest" ? 1 + random() * 30 : 38 + random() * 21;
 		const z = 1 + random() * 49;
-		if (stops.some((stop) => stop.distanceTo(new THREE.Vector2(x, z)) < radius)) continue;
 		if (landmarks.some(([lx, lz]) => Math.hypot(x - lx, z - lz) < 4.2)) continue;
-		// Keep the shared starting clearing and the main paths readable.
-		const centerline = region === "forest"
-			? Math.abs(z - (28 + 8 * Math.sin(x * 0.12)))
-			: Math.abs(z - (25 - x * 0.28));
-		if (centerline < 2.0) continue;
+		// Reserve space around the whole curved trail, not only around its stage pins.
+		if (distanceToMissionRoad(x, z) < Math.max(2.5, radius + 0.8)) continue;
 		placements.push([x, z, minHeight + random() * (maxHeight - minHeight), random() * Math.PI * 2, 0.72 + random() * 0.7, 0.72 + random() * 0.7]);
 	}
 	return placements;
@@ -429,13 +442,8 @@ function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGr
 	scene.add(terrain);
 	const roadTexture = makePathTexture();
 	const roadSurface = new THREE.MeshStandardMaterial({ color: "#ffffff", map: roadTexture, roughness: 1 });
-	const worldStops = (stops: readonly (readonly [number, number])[]) => stops.map(([x, y]) => {
-		const worldX = x * WORLD_WIDTH;
-		const worldZ = y * WORLD_DEPTH;
-		return new THREE.Vector3(worldX, terrainHeight(worldX, worldZ), worldZ);
-	});
-	const readingPath = worldStops(READING_STOPS);
-	const mathPath = worldStops(MATH_STOPS);
+	const readingPath = worldPath(READING_STOPS).map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
+	const mathPath = worldPath(MATH_STOPS).map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
 	const paths = [readingPath, mathPath, [readingPath[0], mathPath[0]]];
 	for (const points of paths) {
 		makePathRibbon(scene, points, 0.9, roadSurface, 0.09, 2.0);
@@ -462,7 +470,7 @@ export function IsoWorldScene({
 	const stageClickRef = useRef(onStageClick);
 	stageClickRef.current = onStageClick;
 	const refreshRef = useRef<(() => void) | null>(null);
-	useEffect(() => { refreshRef.current?.(); }, [stageMarkers, hero]);
+	useEffect(() => { refreshRef.current?.(); });
 	useEffect(() => {
 		const host = hostRef.current;
 		const scroll = containerRef.current;
@@ -558,10 +566,10 @@ export function IsoWorldScene({
 			});
 		};
 		// ImageGen textures cover the rolling terrain; generated Trellis 2 props are repeated as shared map assets.
-		loadMapAsset(scene, "/models/reading-tree.glb", 8, 18, 4.4);
+		loadMapAsset(scene, "/models/reading-tree.glb", 8, 14, 4.4);
 		loadMapAsset(scene, "/models/reading-bookstone.glb", 15, 24, 2.8);
-		loadMapAsset(scene, "/models/math-abacus.glb", 49, 19, 3.1);
-		loadMapAsset(scene, "/models/math-crystals.glb", 51, 11, 3.6);
+		loadMapAsset(scene, "/models/math-abacus.glb", 45, 10, 3.1);
+		loadMapAsset(scene, "/models/math-crystals.glb", 56, 8, 3.6);
 		loadModelCluster(scene, "/models/forest-tree.glb", scatterProps("forest", 46, 71, 3.0));
 		loadModelCluster(scene, "/models/mountain-fir.glb", scatterProps("mountain", 32, 197, 3.0));
 		loadModelCluster(scene, "/models/map-forest-flower-patch.glb", [
@@ -604,7 +612,7 @@ export function IsoWorldScene({
 		loadModelCluster(scene, "/models/map-riverbank-rock-cluster.glb", riverBankPlacements);
 		// The reading trail crosses the creek on the southern loop; this bridge
 		// keeps that route walkable and sits directly in the 3D scene.
-		loadMapAsset(scene, "/models/map-woodland-footbridge.glb", 20.5, 34.0, 2.7, 0.48);
+		loadMapAsset(scene, "/models/map-woodland-footbridge.glb", 21.5, 34.0, 2.7, 0.48);
 		for (let distance = 0; distance <= creekCurve.getLength(); distance += 4.1) {
 			const point = creekCurve.getPointAt(distance / creekCurve.getLength());
 			const tangent = creekCurve.getTangentAt(distance / creekCurve.getLength());
@@ -778,7 +786,7 @@ export function IsoWorldScene({
 			scene.traverse((object) => {
 				if (object instanceof THREE.Mesh) {
 					object.geometry.dispose();
-					if (Array.isArray(object.material)) object.material.forEach((material) => material.dispose());
+					if (Array.isArray(object.material)) object.material.forEach((material) => { material.dispose(); });
 					else object.material.dispose();
 				}
 			});

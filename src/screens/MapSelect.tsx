@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { IMAGES, UI_ICONS } from "../components/ui";
 import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathChapter } from "../data/math";
 import { CHAPTERS, MISSIONS, type Chapter } from "../data/story";
@@ -42,11 +42,7 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 		: { region: "math", chapter: incompleteMath < 0 ? MATH_CHAPTERS.length - 1 : incompleteMath };
 	const selected = selection ?? initialSelection;
 	const [armed, setArmed] = useState(false);
-	useEffect(() => {
-		centerOnStage(selected.region, selected.chapter, "auto");
-	}, [selected.region, selected.chapter]);
-
-	const centerOnStage = (region: MapRegion, chapter: number, behavior: ScrollBehavior = "smooth") => {
+	const centerOnStage = useCallback((region: MapRegion, chapter: number, behavior: ScrollBehavior = "smooth") => {
 		const panel = scrollRef.current;
 		if (!panel) return;
 		const point = stopPoint(region, chapter);
@@ -55,7 +51,10 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 			top: Math.max(0, point.y - panel.clientHeight / 2),
 			behavior,
 		});
-	};
+	}, []);
+	useEffect(() => {
+		centerOnStage(selected.region, selected.chapter, "auto");
+	}, [centerOnStage, selected.region, selected.chapter]);
 
 	const chooseStage = (region: MapRegion, chapter: number, enter: () => void) => {
 		if (armed && selected.region === region && selected.chapter === chapter) {
@@ -137,7 +136,7 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 
 	return (
 		<main className="fixed inset-0 z-40 overflow-hidden bg-[#172b37] text-white">
-			<div
+			<section
 				ref={scrollRef}
 				aria-label="Carte du monde à explorer"
 				className="absolute inset-0 overflow-auto overscroll-contain cursor-grab active:cursor-grabbing"
@@ -148,7 +147,7 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 			>
 				<div className="relative" style={{ width: WORLD_PIXEL_WIDTH, height: WORLD_PIXEL_HEIGHT }}>
 					<IsoWorldScene containerRef={scrollRef} stageMarkers={stageMarkers} hero={save.hero} onStageClick={onSceneStageClick} />
-					<div className="sr-only" aria-label="Étapes accessibles de la carte">
+					<nav className="sr-only" aria-label="Étapes accessibles de la carte">
 					{CHAPTERS.map((chapter) => {
 						const first = MISSIONS.find((mission) => mission.chapter === chapter.id);
 						const unlocked = first ? isMissionUnlocked(save, first) : false;
@@ -161,9 +160,9 @@ export function MapSelectScreen({ save, selection, onSelectStage, onReading, onM
 						const current = selected.region === "math" && selected.chapter === chapter.id;
 						return <MapStop key={`math-${chapter.id}`} chapter={chapter} region="math" unlocked={unlocked} done={mathChapterComplete(chapter, save)} current={current} confirming={current && armed} onClick={() => unlocked && chooseStage("math", chapter.id, () => onMath(chapter.id))} />;
 					})}
-					</div>
+					</nav>
 				</div>
-			</div>
+			</section>
 
 			<header className="pointer-events-none absolute inset-x-0 top-0 z-30 flex justify-center p-2 sm:p-3">
 				<div className="pointer-events-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-[1.4rem] border border-white/30 bg-slate-950/65 px-3 py-2 shadow-[0_10px_36px_rgba(9,18,29,0.48)] backdrop-blur-xl sm:flex-nowrap sm:px-4">

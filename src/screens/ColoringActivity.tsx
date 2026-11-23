@@ -104,9 +104,9 @@ export function ColoringActivity({ title, pageId, drawingData, completed, onBack
 				<aside className="flex shrink-0 flex-col gap-4 rounded-[1.7rem] border border-white/15 bg-slate-950/50 p-4 shadow-xl backdrop-blur sm:p-5 lg:w-72">
 					<div>
 						<h2 className="text-base font-extrabold">Ta palette</h2>
-						<div className="mt-3 grid grid-cols-5 gap-2" role="group" aria-label="Couleurs">
+						<fieldset className="mt-3 grid grid-cols-5 gap-2" aria-label="Couleurs">
 							{COLORS.map((swatch) => <button key={swatch} type="button" aria-label={`Choisir la couleur ${swatch}`} aria-pressed={color === swatch} onClick={() => setColor(swatch)} className={`h-10 w-10 rounded-full border-2 shadow-md transition-transform hover:scale-110 ${color === swatch ? "scale-110 border-white ring-2 ring-yellow-200" : "border-white/40"}`} style={{ backgroundColor: swatch }} />)}
-						</div>
+						</fieldset>
 					</div>
 					<div>
 						<label htmlFor="brush-size" className="flex items-center justify-between text-sm font-bold"><span>Taille du pinceau</span><span>{brushSize}</span></label>

@@ -78,17 +78,19 @@ export function MissionPathScreen({
 	const [selectedId] = useState(() => missions.find((mission) => mission.unlocked && mission.stars < 3)?.id ?? missions.find((mission) => mission.unlocked)?.id ?? missions[0]?.id ?? "");
 	const [viewportHeight, setViewportHeight] = useState(() => window.innerHeight);
 	const [awardAnimating, setAwardAnimating] = useState(Boolean(award));
+	const awardId = award?.id;
+	const awardStars = award?.stars;
 	useEffect(() => {
 		const updateHeight = () => setViewportHeight(window.innerHeight);
 		window.addEventListener("resize", updateHeight);
 		return () => window.removeEventListener("resize", updateHeight);
 	}, []);
 	useEffect(() => {
-		if (!award) return;
+		if (awardId === undefined || !awardStars) return;
 		setAwardAnimating(true);
 		const timer = window.setTimeout(() => setAwardAnimating(false), 1900);
 		return () => window.clearTimeout(timer);
-	}, [award?.id, award?.stars]);
+	}, [awardId, awardStars]);
 	const selected = missions.find((mission) => mission.id === selectedId) ?? missions.find((mission) => mission.unlocked) ?? missions[0];
 	const rewardReady = rewardUnlocked && rewardAvailable && !rewardComplete;
 	const mapHeight = Math.max(viewportHeight, 820);
@@ -136,12 +138,12 @@ export function MissionPathScreen({
 								>
 									<span className="relative flex h-[5.45rem] w-[5.45rem] items-center justify-center rounded-full p-[5px] shadow-[0_8px_20px_rgba(23,15,13,0.42)] sm:h-24 sm:w-24" style={{ background: mission.unlocked ? `conic-gradient(from -90deg, ${ringColor} 0 ${progress}%, rgba(255,241,207,0.55) ${progress}% 100%)` : "conic-gradient(#b68b52, #e8cb8b, #805b37, #b68b52)" }}>
 										<img src={mission.unlocked ? (region === "reading" ? readingMarkerBadge : mathMarkerBadge) : lockedMarkerBadge} alt="" className="h-full w-full rounded-full object-contain drop-shadow-[0_2px_3px_rgba(32,17,10,0.45)]" />
-										{award?.id === mission.id && award.stars > 0 && <span aria-hidden="true" className="pointer-events-none absolute inset-0">{Array.from({ length: Math.min(3, award.stars) }, (_, star) => <span key={star} className="mission-award-star absolute left-1/2 top-1/2 text-3xl text-yellow-200 drop-shadow-[0_2px_5px_rgba(40,20,0,0.9)]" style={{ animationDelay: `${star * 0.18}s`, ["--star-dx" as string]: `${(star - 1) * 32}px`, ["--star-dy" as string]: "-58px" }}>★</span>)}</span>}
+										{award?.id === mission.id && award.stars > 0 && <span aria-hidden="true" className="pointer-events-none absolute inset-0">{["left", "center", "right"].slice(0, Math.min(3, award.stars)).map((star, index) => <span key={`${award.id}-${star}`} className="mission-award-star absolute left-1/2 top-1/2 text-3xl text-yellow-200 drop-shadow-[0_2px_5px_rgba(40,20,0,0.9)]" style={{ animationDelay: `${index * 0.18}s`, ["--star-dx" as string]: `${(index - 1) * 32}px`, ["--star-dy" as string]: "-58px" }}>★</span>)}</span>}
 										{completed && <span aria-hidden="true" className="absolute -bottom-0.5 -right-0.5 flex h-7 w-7 items-center justify-center rounded-full border-[3px] border-[#fff5d8] bg-[#75c93e] text-lg font-black leading-none text-white shadow-md">✓</span>}
 										{isSelected && <span aria-hidden="true" className="mission-next-orbit pointer-events-none absolute -inset-3 rounded-full"><span className="mission-next-coin">✦</span></span>}
 									</span>
 									<span className="mission-nameplate max-w-full rounded-xl px-2.5 py-1 text-[12px] font-bold leading-tight text-white shadow-lg sm:text-sm">{mission.title}</span>
-									<span className="-mt-1 flex min-h-4 items-center gap-0.5 text-[13px] leading-none" aria-label={`${mission.stars} étoiles sur 3`}>
+									<span aria-hidden="true" className="-mt-1 flex min-h-4 items-center gap-0.5 text-[13px] leading-none">
 										{[0, 1, 2].map((star) => <span key={star} className={star < mission.stars ? "text-yellow-200 drop-shadow" : "text-white/45"}>★</span>)}
 									</span>
 								</button>
