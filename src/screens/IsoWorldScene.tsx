@@ -67,6 +67,164 @@ export type StageMarkerData = {
 	confirming: boolean;
 };
 
+const MAP_FOG_WIDTH = 272;
+const MAP_FOG_HEIGHT = 128;
+const MAP_FOG_REACH_SCALE = 2 / 3;
+type MapFogState = { texture: THREE.DataTexture; clarity: Uint8Array; clouds: Float32Array; enabled: { value: number }; signature: string };
+
+function hashNoise(x: number, z: number) {
+	const value = Math.sin(x * 127.1 + z * 311.7) * 43758.5453;
+	return value - Math.floor(value);
+}
+
+function smoothNoise(x: number, z: number, frequency: number) {
+	const px = x * frequency;
+	const pz = z * frequency;
+	const ix = Math.floor(px);
+	const iz = Math.floor(pz);
+	const fx = px - ix;
+	const fz = pz - iz;
+	const sx = fx * fx * (3 - 2 * fx);
+	const sz = fz * fz * (3 - 2 * fz);
+	const top = THREE.MathUtils.lerp(hashNoise(ix, iz), hashNoise(ix + 1, iz), sx);
+	const bottom = THREE.MathUtils.lerp(hashNoise(ix, iz + 1), hashNoise(ix + 1, iz + 1), sx);
+	return THREE.MathUtils.lerp(top, bottom, sz);
+}
+
+function createMapFogState(): MapFogState {
+	const pixels = MAP_FOG_WIDTH * MAP_FOG_HEIGHT;
+	const data = new Uint8Array(pixels * 4);
+	const clarity = new Uint8Array(pixels);
+	const clouds = new Float32Array(pixels);
+	for (let y = 0; y < MAP_FOG_HEIGHT; y++) {
+		for (let x = 0; x < MAP_FOG_WIDTH; x++) {
+			const worldX = (x / (MAP_FOG_WIDTH - 1)) * WORLD_WIDTH;
+			const worldZ = (y / (MAP_FOG_HEIGHT - 1)) * WORLD_DEPTH;
+			const index = y * MAP_FOG_WIDTH + x;
+			clouds[index] = smoothNoise(worldX, worldZ, 0.11) * 0.56 + smoothNoise(worldX, worldZ, 0.27) * 0.29 + smoothNoise(worldX, worldZ, 0.63) * 0.15;
+			data[index * 4 + 3] = 255;
+		}
+	}
+	const texture = new THREE.DataTexture(data, MAP_FOG_WIDTH, MAP_FOG_HEIGHT, THREE.RGBAFormat, THREE.UnsignedByteType);
+	texture.name = "procedural-world-fog-mask";
+	texture.magFilter = THREE.LinearFilter;
+	texture.minFilter = THREE.LinearFilter;
+	texture.wrapS = THREE.ClampToEdgeWrapping;
+	texture.wrapT = THREE.ClampToEdgeWrapping;
+	texture.generateMipmaps = false;
+	texture.needsUpdate = true;
+	return { texture, clarity, clouds, enabled: { value: 1 }, signature: "" };
+}
+
+function mapFogSmoothstep(edge0: number, edge1: number, value: number) {
+	const t = THREE.MathUtils.clamp((value - edge0) / (edge1 - edge0), 0, 1);
+	return t * t * (3 - 2 * t);
+}
+
+function updateMapFogMask(state: MapFogState, stageMarkers: StageMarkerData[], stageLayout: { reading: number[][]; math: number[][] } | undefined, sharedStart: readonly [number, number]) {
+	const unlockedByRegion = (region: "reading" | "math") => stageMarkers
+		.filter((marker) => marker.region === region && marker.unlocked)
+		.reduce((highest, marker) => Math.max(highest, marker.index), -1);
+	const unlockedReading = unlockedByRegion("reading");
+	const unlockedMath = unlockedByRegion("math");
+	const readingStops = stageLayout?.reading ?? READING_STOPS.map(([x, z]) => [x * WORLD_WIDTH, z * WORLD_DEPTH]);
+	const mathStops = stageLayout?.math ?? MATH_STOPS.map(([x, z]) => [x * WORLD_WIDTH, z * WORLD_DEPTH]);
+	const fullyUnlocked = unlockedReading >= readingStops.length - 1 && unlockedMath >= mathStops.length - 1;
+	const segments: [number, number, number, number][] = [];
+	const hubs: [number, number][] = [[sharedStart[0], sharedStart[1]]];
+	for (const [unlockedIndex, stops] of [[unlockedReading, readingStops], [unlockedMath, mathStops]] as const) {
+		if (unlockedIndex < 0) continue;
+		const controls = [[sharedStart[0], sharedStart[1]], ...stops.slice(0, unlockedIndex + 1)];
+		for (const point of controls.slice(1)) hubs.push([point[0], point[1]]);
+		const curve = new THREE.CatmullRomCurve3(controls.map(([x, z]) => new THREE.Vector3(x, 0, z)), false, "centripetal");
+		const samples = Math.max(2, Math.ceil(curve.getLength() / 2.2));
+		const points = curve.getPoints(samples);
+		for (let i = 0; i < points.length - 1; i++) segments.push([points[i].x, points[i].z, points[i + 1].x, points[i + 1].z]);
+	}
+	const data = state.texture.image.data as Uint8Array;
+	for (let y = 0; y < MAP_FOG_HEIGHT; y++) {
+		const worldZ = (y / (MAP_FOG_HEIGHT - 1)) * WORLD_DEPTH;
+		for (let x = 0; x < MAP_FOG_WIDTH; x++) {
+			const worldX = (x / (MAP_FOG_WIDTH - 1)) * WORLD_WIDTH;
+			const index = y * MAP_FOG_WIDTH + x;
+			const cloud = state.clouds[index];
+			let visibility = fullyUnlocked ? 1 : 0;
+			if (!fullyUnlocked) {
+				const startDistance = Math.hypot(worldX - sharedStart[0], worldZ - sharedStart[1]);
+				visibility = Math.max(visibility, 1 - mapFogSmoothstep((10 + cloud * 2) * MAP_FOG_REACH_SCALE, (22 + cloud * 4) * MAP_FOG_REACH_SCALE, startDistance));
+				for (let hubIndex = 1; hubIndex < hubs.length; hubIndex++) {
+					const [hx, hz] = hubs[hubIndex];
+					const distance = Math.hypot(worldX - hx, worldZ - hz);
+					visibility = Math.max(visibility, 1 - mapFogSmoothstep((8 + cloud * 2) * MAP_FOG_REACH_SCALE, (17 + cloud * 3) * MAP_FOG_REACH_SCALE, distance));
+				}
+				for (const [x1, z1, x2, z2] of segments) {
+					const dx = x2 - x1;
+					const dz = z2 - z1;
+					const lengthSquared = dx * dx + dz * dz || 1;
+					const t = THREE.MathUtils.clamp(((worldX - x1) * dx + (worldZ - z1) * dz) / lengthSquared, 0, 1);
+					const distance = Math.hypot(worldX - (x1 + dx * t), worldZ - (z1 + dz * t));
+					visibility = Math.max(visibility, 1 - mapFogSmoothstep((5 + cloud * 2) * MAP_FOG_REACH_SCALE, (12 + cloud * 3) * MAP_FOG_REACH_SCALE, distance));
+				}
+			}
+			const clarityByte = Math.round(THREE.MathUtils.clamp(visibility, 0, 1) * 255);
+			state.clarity[index] = clarityByte;
+			data[index * 4] = clarityByte;
+			data[index * 4 + 1] = Math.round(cloud * 255);
+			data[index * 4 + 2] = 0;
+		}
+	}
+	state.texture.needsUpdate = true;
+}
+
+function applyMapFogToMaterial(material: THREE.Material, state: MapFogState) {
+	if (material.userData.mapFogState === state || !(material instanceof THREE.MeshStandardMaterial || material instanceof THREE.MeshBasicMaterial || material instanceof THREE.MeshLambertMaterial || material instanceof THREE.MeshPhongMaterial)) return;
+	const previousOnBeforeCompile = material.onBeforeCompile.bind(material);
+	const previousProgramCacheKey = material.customProgramCacheKey.bind(material);
+	material.onBeforeCompile = (shader, renderer) => {
+		previousOnBeforeCompile(shader, renderer);
+		shader.uniforms.mapFogMask = { value: state.texture };
+		shader.uniforms.mapFogEnabled = state.enabled;
+		shader.vertexShader = shader.vertexShader
+			.replace("#include <common>", "#include <common>\nvarying vec3 vMapFogWorldPosition;")
+			.replace("#include <worldpos_vertex>", `#include <worldpos_vertex>
+				vec4 mapFogLocalPosition = vec4(transformed, 1.0);
+				#ifdef USE_BATCHING
+					mapFogLocalPosition = batchingMatrix * mapFogLocalPosition;
+				#endif
+				#ifdef USE_INSTANCING
+					mapFogLocalPosition = instanceMatrix * mapFogLocalPosition;
+				#endif
+				vMapFogWorldPosition = (modelMatrix * mapFogLocalPosition).xyz;`);
+		shader.fragmentShader = shader.fragmentShader
+			.replace("#include <common>", "#include <common>\nuniform sampler2D mapFogMask;\nuniform float mapFogEnabled;\nvarying vec3 vMapFogWorldPosition;")
+			.replace("#include <opaque_fragment>", `
+				float fogClarity = texture2D(mapFogMask, vMapFogWorldPosition.xz / vec2(${WORLD_WIDTH.toFixed(1)}, ${WORLD_DEPTH.toFixed(1)})).r;
+				float fogCloudNoise = texture2D(mapFogMask, vMapFogWorldPosition.xz / vec2(${WORLD_WIDTH.toFixed(1)}, ${WORLD_DEPTH.toFixed(1)})).g;
+				float fogObscurity = (1.0 - fogClarity) * mapFogEnabled;
+				float fogGrayAmount = smoothstep(0.06, 0.52, fogObscurity);
+				float fogFullAmount = smoothstep(0.48, 0.94, fogObscurity);
+				float fogLuminance = dot(outgoingLight, vec3(0.299, 0.587, 0.114));
+				vec3 fogGrayColor = mix(outgoingLight, vec3(fogLuminance), 0.68);
+				vec3 fogCloudColor = mix(vec3(0.36, 0.43, 0.46), vec3(0.69, 0.75, 0.77), fogCloudNoise);
+				vec3 fogTarget = mix(fogGrayColor, fogCloudColor, fogFullAmount);
+				outgoingLight = mix(outgoingLight, fogTarget, max(fogGrayAmount, fogFullAmount));
+				diffuseColor.a = mix(diffuseColor.a, 1.0, max(fogGrayAmount, fogFullAmount));
+				#include <opaque_fragment>
+			`);
+	};
+	material.customProgramCacheKey = () => `${previousProgramCacheKey()}|map-fog-v1`;
+	material.userData.mapFogState = state;
+	material.needsUpdate = true;
+}
+
+function applyMapFogToObject(object: THREE.Object3D, state: MapFogState) {
+	object.traverse((child) => {
+		if (!(child instanceof THREE.Mesh)) return;
+		const materials = Array.isArray(child.material) ? child.material : [child.material];
+		for (const material of materials) applyMapFogToMaterial(material, state);
+	});
+}
+
 export type MapLoadProgress = { loaded: number; total: number; complete: boolean };
 export type MapEditorSelection = { kind: "asset" | "stage" | "river" | "start"; index: number; region?: "reading" | "math"; key?: keyof typeof MAP_LANDMARKS };
 export type MapPaintMode = "select" | "tree" | "flower" | "rock" | "bush" | "erase";
@@ -355,6 +513,8 @@ function placeModel(scene: THREE.Scene, source: THREE.Group, bounds: THREE.Box3,
 			object.receiveShadow = true;
 		}
 	});
+	const fogState = scene.userData.mapFogState as MapFogState | undefined;
+	if (fogState) applyMapFogToObject(model, fogState);
 	scene.add(model);
 	return model;
 }
@@ -505,6 +665,11 @@ function buildInstancedLayer(scene: THREE.Scene, layer: LazyAssetLayer, isNearVi
 	let placedCount = 0;
 	for (const [key, indices] of buckets) {
 		const meshes = sourceMeshes.map(({ mesh: sourceMesh }) => {
+			const fogState = scene.userData.mapFogState as MapFogState | undefined;
+			if (fogState) {
+				const materials = Array.isArray(sourceMesh.material) ? sourceMesh.material : [sourceMesh.material];
+				for (const material of materials) applyMapFogToMaterial(material, fogState);
+			}
 			const instanced = new THREE.InstancedMesh(sourceMesh.geometry, sourceMesh.material, indices.length);
 			instanced.castShadow = true;
 			instanced.receiveShadow = true;
@@ -696,6 +861,7 @@ function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGr
 		roughness: 1,
 		side: THREE.DoubleSide,
 	});
+	const fogState = scene.userData.mapFogState as MapFogState | undefined;
 	terrainMaterial.onBeforeCompile = (shader) => {
 		shader.uniforms.forestGroundMap = { value: forestGround };
 		shader.uniforms.mountainGroundMap = { value: mountainGround };
@@ -717,6 +883,7 @@ function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGr
 		);
 	};
 	terrainMaterial.customProgramCacheKey = () => "biome-terrain-blend-v3";
+	if (fogState) applyMapFogToMaterial(terrainMaterial, fogState);
 	const terrain = new THREE.Mesh(geometry, terrainMaterial);
 	terrain.receiveShadow = true;
 	terrain.castShadow = false;
@@ -724,6 +891,7 @@ function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGr
 	scene.userData.terrainMesh = terrain;
 	const roadTexture = makePathTexture();
 	const roadSurface = new THREE.MeshStandardMaterial({ color: "#ffffff", map: roadTexture, roughness: 1 });
+	if (fogState) applyMapFogToMaterial(roadSurface, fogState);
 	const startPoint: [number, number] = [sharedStart[0], sharedStart[1]];
 	const roads = (['reading', 'math'] as const).map((region) => [startPoint, ...(stageLayout?.[region] ?? (region === 'reading' ? READING_STOPS : MATH_STOPS).map(([u,v]) => [u * WORLD_WIDTH, v * WORLD_DEPTH]))].map(([x,z]) => new THREE.Vector3(x, terrainHeight(x,z), z)));
 	const readingPath = roads[0];
@@ -838,6 +1006,8 @@ export function IsoWorldScene({
 		resourceObserver?.observe({ type: "resource", buffered: true });
 
 		const scene = new THREE.Scene();
+		const mapFogState = createMapFogState();
+		scene.userData.mapFogState = mapFogState;
 		scene.userData.layoutKey = layoutKey;
 		scene.background = new THREE.Color("#172b37");
 		scene.add(new THREE.HemisphereLight("#ffe9d8", "#52604e", 0.95));
@@ -891,6 +1061,7 @@ export function IsoWorldScene({
 		markerBadges.math.src = mathMarkerBadge;
 		markerBadges.locked.src = lockedMarkerBadge;
 	const markerObjects = stageMarkersRef.current.map((marker) => createStageMarker(scene, marker, markerBadges, stageLayout, sharedStart));
+		for (const marker of markerObjects) applyMapFogToObject(marker.group, mapFogState);
 		const riverEditHandles = riverPoints.map((_, index) => {
 			const handle = new THREE.Mesh(new THREE.SphereGeometry(0.72, 16, 12), new THREE.MeshStandardMaterial({ color: "#54e4f5", emissive: "#087d92", emissiveIntensity: 0.7, roughness: 0.35 }));
 			handle.userData.mapRiverIndex = index;
@@ -976,6 +1147,7 @@ export function IsoWorldScene({
 						object.receiveShadow = true;
 					}
 				});
+				applyMapFogToObject(model, mapFogState);
 				heroAnchor.add(model);
 				completeProgressItem();
 				render();
@@ -1148,6 +1320,7 @@ export function IsoWorldScene({
 					object.material = Array.isArray(object.material) ? clonedMaterials : clonedMaterials[0];
 				});
 				anchor?.add(model);
+				applyMapFogToObject(model, mapFogState);
 				if (anchor) {
 					anchor.userData.dialogueMaterials = dialogueMaterials;
 					readyDialogueCharacters.add(key);
@@ -1631,6 +1804,17 @@ export function IsoWorldScene({
 			if (stillVisible) dialogueExitFrame = requestAnimationFrame(animateDialogueExit);
 		};
 		const render = () => {
+			const fogLayout = layoutRef.current;
+			const fogProgress = stageMarkersRef.current
+				.filter((marker) => marker.region !== "intro")
+				.map((marker) => `${marker.region[0]}${marker.index}:${marker.unlocked ? 1 : 0}`)
+				.join(",");
+			const fogSignature = `${fogProgress}|${JSON.stringify(fogLayout.stageLayout)}|${fogLayout.sharedStart.join(",")}`;
+			if (mapFogState.signature !== fogSignature) {
+				updateMapFogMask(mapFogState, stageMarkersRef.current, fogLayout.stageLayout, fogLayout.sharedStart);
+				mapFogState.signature = fogSignature;
+			}
+			mapFogState.enabled.value = editorModeRef.current ? 0 : 1;
 			const width = host.clientWidth || window.innerWidth;
 			const height = host.clientHeight || window.innerHeight;
 			camera.aspect = width / height;
@@ -1823,6 +2007,7 @@ export function IsoWorldScene({
 			});
 			forestGround.dispose();
 			mountainGround.dispose();
+			mapFogState.texture.dispose();
 			renderer.dispose();
 			host.removeChild(renderer.domElement);
 		};
