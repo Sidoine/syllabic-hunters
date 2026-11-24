@@ -19,6 +19,7 @@ import {
 	BigButton,
 	SPEAKER_INFO,
 	SpeakButton,
+	playerText,
 	useGame,
 } from "../components/ui";
 
@@ -34,9 +35,9 @@ export function DialogScreen({
 	bossImgStyle?: React.CSSProperties;
 }) {
 	const [i, setI] = useState(0);
-	const { autoRead } = useGame();
+	const { autoRead, hero } = useGame();
 	const line = lines[i];
-	const text = line.text;
+	const text = playerText(line.text, hero);
 	const info = SPEAKER_INFO[line.who];
 	const left = line.who !== "king" && line.who !== "boss";
 

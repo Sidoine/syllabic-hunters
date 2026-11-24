@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { GameContext, StarField } from "./components/ui";
-import { CHAPTERS, MISSIONS, type Mission } from "./data/story";
+import { CHAPTERS, MISSIONS, WORLD_INTRO_LINES, type Mission } from "./data/story";
 import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathMission } from "./data/math";
 import { setSfxEnabled } from "./lib/sfx";
 import { configureSpeech, stopSpeech } from "./lib/speech";
 import {
   getCurrentUser,
   loadRemoteSave,
-  logout,
   saveRemoteSave,
   type AuthUser,
 } from "./lib/api";
@@ -33,11 +32,14 @@ import { coloringPageForReward, type ColoringPageId } from "./data/coloring";
 type Screen =
   | { name: "title" }
   | { name: "maps" }
+  | { name: "map-intro-world" }
+  | { name: "map-intro-chapter"; ch: number }
   | { name: "math-chapter"; ch: number; award?: { id: string; stars: number } }
   | { name: "math-mission"; id: string; run: number }
   | { name: "math-result"; id: string; stars: number }
   | { name: "coloring"; id: string; pageId: ColoringPageId; title: string; returnTo: { name: "chapter" | "math-chapter"; ch: number } }
   | { name: "chapter"; ch: number; award?: { id: string; stars: number } }
+  | { name: "world-intro" }
   | { name: "dialog"; ch: number; kind: "intro" | "outro" }
   | { name: "mission"; id: string; run: number }
   | { name: "result"; id: string; stars: number };
@@ -53,6 +55,9 @@ function mergeSaves(local: Save, remote: Save): Save {
     // add stars and story flags without replacing its name or character.
     name: remote.name || local.name,
     hero: remote.hero,
+    // A legacy remote save was created after the old character picker, so
+    // treat it as an existing choice when the new flag is absent.
+    heroChosen: remote.heroChosen ?? true,
     stars,
     rewards: { ...remote.rewards, ...local.rewards },
     rewardPages: { ...remote.rewardPages, ...local.rewardPages },
@@ -85,7 +90,6 @@ export default function App() {
         if (remoteSave) {
           setSave((current) => mergeSaves(current, remoteSave));
         }
-        setScreen({ name: "maps" });
       })
       .catch(() => undefined)
       .finally(() => setAuthReady(true));
@@ -105,16 +109,17 @@ export default function App() {
     );
     setUser(nextUser);
     setAuthReady(true);
-    setScreen({ name: "maps" });
+    setScreen({ name: "title" });
   };
 
   useEffect(() => {
     configureSpeech({
       voiceURI: save.settings.voiceURI,
       rate: save.settings.rate,
+      masculine: save.hero === "milo",
     });
     setSfxEnabled(save.settings.sfx);
-  }, [save.settings]);
+  }, [save.settings, save.hero]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -126,9 +131,33 @@ export default function App() {
   };
 
   const openChapter = (ch: number) => {
-    if (!save.seenIntro[ch]) go({ name: "dialog", ch, kind: "intro" });
+    if (!save.seenIntro[ch]) {
+      setMapStage({ region: "reading", chapter: ch });
+      go({ name: "map-intro-chapter", ch });
+    }
     else go({ name: "chapter", ch });
   };
+
+  const renderMap = (intro?: { title: string; lines: typeof WORLD_INTRO_LINES; onEnd: () => void }, backgroundOnly = false) => (
+    <MapSelectScreen
+      save={save}
+      selection={mapStage}
+      onHeroChange={async (hero) => {
+        const nextSave = { ...save, hero, heroChosen: true };
+        setSave(nextSave);
+        if (user) await saveRemoteSave(nextSave);
+        configureSpeech({ masculine: hero === "milo" });
+      }}
+      onSelectStage={setMapStage}
+      onReading={openChapter}
+      onMath={(chapter) => go({ name: "math-chapter", ch: chapter })}
+      onWorldIntro={() => go({ name: "map-intro-world" })}
+      onSettings={() => setShowSettings(true)}
+      intro={intro ? { title: intro.title, lines: intro.lines } : undefined}
+      onIntroEnd={intro?.onEnd}
+      backgroundOnly={backgroundOnly}
+    />
+  );
 
   const startMission = (m: Mission) =>
     go({ name: "mission", id: m.id, run: Date.now() });
@@ -171,39 +200,42 @@ export default function App() {
   }
 
   let content: React.ReactNode = null;
+  let mapIntro: { title: string; lines: typeof WORLD_INTRO_LINES; onEnd: () => void } | undefined;
   switch (screen.name) {
     case "title":
       content = (
         <TitleScreen
           save={save}
           user={user}
+          authReady={authReady}
           onAuthenticated={authenticate}
-          onLogout={async () => {
-            await logout();
-            setUser(null);
-          }}
-          onSettings={() => setShowSettings(true)}
-          onStart={(name, hero) => {
-            setSave((s) => ({ ...s, name, hero }));
-            if (!save.seenIntro[0])
-              go({ name: "dialog", ch: 0, kind: "intro" });
-            else go({ name: "maps" });
-          }}
+          onPlay={() => go({ name: "maps" })}
         />
       );
       break;
     case "maps":
-      content = (
-        <MapSelectScreen
-          save={save}
-          selection={mapStage}
-          onSelectStage={setMapStage}
-          onReading={(chapter) => openChapter(chapter)}
-          onMath={(chapter) => go({ name: "math-chapter", ch: chapter })}
-          onProfile={() => go({ name: "title" })}
-          onSettings={() => setShowSettings(true)}
-        />
-      );
+      break;
+    case "map-intro-chapter": {
+      const ch = CHAPTERS[screen.ch];
+      mapIntro = {
+        title: `${ch.title} · ${ch.place}`,
+        lines: ch.intro,
+        onEnd: () => {
+          setSave((current) => ({ ...current, seenIntro: { ...current.seenIntro, [screen.ch]: true } }));
+          go({ name: "chapter", ch: screen.ch });
+        },
+      };
+      break;
+    }
+    case "map-intro-world":
+      mapIntro = {
+        title: "Le carrefour des découvertes",
+        lines: WORLD_INTRO_LINES,
+        onEnd: () => {
+          setSave((current) => ({ ...current, seenIntro: { ...current.seenIntro, [-1]: true } }));
+          go({ name: "maps" });
+        },
+      };
       break;
     case "chapter":
       content = (
@@ -213,7 +245,10 @@ export default function App() {
           award={screen.award}
           onMission={startMission}
           onBack={() => go({ name: "maps" })}
-          onStory={() => go({ name: "dialog", ch: screen.ch, kind: "intro" })}
+          onStory={() => {
+            setMapStage({ region: "reading", chapter: screen.ch });
+            go({ name: "map-intro-chapter", ch: screen.ch });
+          }}
           onSettings={() => setShowSettings(true)}
           onReward={() => startColoring(`reading-coloring-${screen.ch}`, `Coloriage · ${CHAPTERS[screen.ch].place}`, { name: "chapter", ch: screen.ch })}
         />
@@ -274,6 +309,23 @@ export default function App() {
               if (next < CHAPTERS.length) openChapter(next);
               else go({ name: "maps" });
             }
+          }}
+        />
+      );
+      break;
+    }
+    case "world-intro": {
+      content = (
+        <DialogScreen
+          key="world-intro"
+          lines={WORLD_INTRO_LINES}
+          title="Le carrefour des découvertes"
+          onEnd={() => {
+            setSave((current) => ({
+              ...current,
+              seenIntro: { ...current.seenIntro, [-1]: true },
+            }));
+            go({ name: "maps" });
           }}
         />
       );
@@ -350,6 +402,11 @@ export default function App() {
     }
   }
 
+  const mapPrimaryScreens = ["maps", "map-intro-world", "map-intro-chapter"];
+  const mapOverlayScreens = ["chapter", "math-chapter", "mission", "math-mission", "coloring", "result", "math-result"];
+  const mapIsPrimary = mapPrimaryScreens.includes(screen.name);
+  const showMapBackdrop = mapOverlayScreens.includes(screen.name);
+
   return (
     <GameContext.Provider
       value={{
@@ -360,7 +417,13 @@ export default function App() {
     >
       <div className="bg-night min-h-full relative overflow-x-hidden">
         <StarField />
-        <div className="relative z-10 min-h-screen">{content}</div>
+        <div className="relative z-10 min-h-screen">
+          {screen.name !== "title" && renderMap(mapIntro, !mapIsPrimary)}
+          {showMapBackdrop ? <div className="fixed inset-0 z-[60] overflow-auto overscroll-contain">
+            <div className="pointer-events-none fixed inset-0 bg-slate-950/55 backdrop-blur-[3px]" aria-hidden="true" />
+            <div className="relative z-10 min-h-full">{content}</div>
+          </div> : content}
+        </div>
         {showSettings && (
           <SettingsModal
             save={save}

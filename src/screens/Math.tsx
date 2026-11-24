@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FeedbackLayer, BigButton, IMAGES, MissionFrame, Stars, UI_ICONS, useFeedback, useGame } from "../components/ui";
+import { BackIcon, FeedbackLayer, BigButton, IMAGES, MissionFrame, StarIcon, Stars, UI_ICONS, useFeedback, useGame } from "../components/ui";
 import {
 	createMathQuestions,
 	mathChapterMissions,
@@ -48,13 +48,13 @@ export function MathMapScreen({
 					aria-label="Choisir une carte"
 					className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
 				>
-					<img src={UI_ICONS.home} alt="" className="w-9 h-9 object-contain" />
+					<BackIcon className="h-7 w-7" />
 				</button>
 				<div className="text-center">
 					<div className="text-xl sm:text-2xl font-bold neon-text">Carte des batailles</div>
 					<div className="text-sm text-pink-100">
 						{save.name ? `${save.name} · ` : ""}
-						<img src={UI_ICONS.star} alt="" className="inline-block align-[-3px] w-5 h-5" /> {total} · {completed}/{MATH_MISSIONS.length} missions
+						<StarIcon className="h-5 w-5 align-[-3px]" /> {total} · {completed}/{MATH_MISSIONS.length} missions
 					</div>
 				</div>
 				<img src={UI_ICONS.math} alt="" className="w-12 h-12 object-contain shrink-0" />
@@ -105,13 +105,13 @@ function MathChapterNode({
 			style={{ background: unlocked ? `linear-gradient(135deg, ${chapter.color}, #6b2bd9)` : "#3a2a5a" }}
 		>
 			<div className="relative w-16 h-16 rounded-full bg-white flex items-center justify-center font-read font-bold text-2xl text-purple-800 shrink-0">
-				{unlocked ? chapter.label : <img src={UI_ICONS.lock} alt="Verrouillé" className="w-8 h-8 object-contain" />}
+				{unlocked ? chapter.label === "★" ? <StarIcon className="h-8 w-8" /> : chapter.label : <img src={UI_ICONS.lock} alt="Verrouillé" className="w-8 h-8 object-contain" />}
 				{progress.done && <img src={UI_ICONS.crown} alt="Étape terminée" className="absolute -top-2 -right-2 w-7 h-7 object-contain" />}
 			</div>
 			<div className="flex-1">
 				<div className="font-bold text-lg leading-tight">{chapter.title}</div>
 				<div className="text-xs text-white/80">{chapter.place}</div>
-				<div className="text-sm">★ {progress.stars}/{progress.max}</div>
+				<div className="flex items-center gap-1 text-sm"><StarIcon className="h-4 w-4" /> {progress.stars}/{progress.max}</div>
 			</div>
 			{unlocked && <img src={UI_ICONS.math} alt="" className="w-10 h-10 object-contain" />}
 		</button>

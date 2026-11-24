@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { UI_ICONS } from "../components/ui";
+import { BackIcon, UI_ICONS } from "../components/ui";
 import { COLORING_PAGES, type ColoringPageId } from "../data/coloring";
 
 const COLORS = ["#f43f5e", "#fb923c", "#facc15", "#4ade80", "#38bdf8", "#818cf8", "#c084fc", "#a16207", "#334155"];
@@ -81,9 +81,9 @@ export function ColoringActivity({ title, pageId, drawingData, completed, onBack
 	};
 
 	return (
-		<main className="fixed inset-0 z-50 flex flex-col overflow-auto bg-[radial-gradient(ellipse_at_top,#49306c_0%,#211332_55%,#111827_100%)] text-white">
+		<main className="fixed inset-0 z-50 flex flex-col overflow-auto bg-transparent text-white">
 			<header className="sticky top-0 z-10 flex items-center gap-3 border-b border-white/15 bg-slate-950/75 px-3 py-2.5 shadow-lg backdrop-blur-xl sm:px-6">
-				<button type="button" onClick={onBack} className="btn-pop rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-bold">← Retour</button>
+				<button type="button" onClick={onBack} aria-label="Retour" className="btn-pop flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-bold"><BackIcon className="h-6 w-6" />Retour</button>
 				<div className="min-w-0 flex-1">
 					<div className="truncate text-xs font-semibold text-pink-100">Étape bonus · activité facultative</div>
 					<h1 className="truncate text-lg font-extrabold sm:text-xl">{title}</h1>
@@ -116,7 +116,7 @@ export function ColoringActivity({ title, pageId, drawingData, completed, onBack
 					<div className="mt-auto flex flex-col gap-2">
 						{completed && <p className="text-center text-sm font-bold text-emerald-200">✓ Coloriage déjà terminé</p>}
 						<button type="button" onClick={onComplete} className="btn-pop rounded-2xl border-2 border-emerald-100/70 bg-gradient-to-b from-emerald-400 to-emerald-700 px-5 py-3 font-extrabold text-white shadow-[0_4px_0_#22543a]">{completed ? "Terminer et revenir" : "Terminer le coloriage ✓"}</button>
-						<button type="button" onClick={onBack} className="rounded-xl py-2 text-sm font-bold text-white/70 hover:bg-white/10">Je le finirai plus tard</button>
+						<button type="button" onClick={onBack} className="flex items-center justify-center gap-1 rounded-xl py-2 text-sm font-bold text-white/70 hover:bg-white/10"><BackIcon className="h-5 w-5" />Je le finirai plus tard</button>
 					</div>
 				</aside>
 			</div>

@@ -1,4 +1,4 @@
-import { IMAGES, MISSION_ICONS, UI_ICONS } from "../components/ui";
+import { BackIcon, IMAGES, MISSION_ICONS, StarIcon, UI_ICONS } from "../components/ui";
 import { CHAPTERS, MISSION_INFO, type Chapter, MISSIONS, type Mission } from "../data/story";
 import { syllablesOf, VOWELS } from "../data/syllables";
 import type { Save } from "../lib/storage";
@@ -45,15 +45,15 @@ export function MapScreen({
 					aria-label="Choisir une carte"
 					className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
 				>
-					<img src={UI_ICONS.home} alt="" className="w-9 h-9 object-contain" />
+					<BackIcon className="h-7 w-7" />
 				</button>
 				<div className="text-center">
 					<div className="text-xl sm:text-2xl font-bold neon-text">
-						Carte des concerts
+						Carte des aventures
 					</div>
 					<div className="text-sm text-pink-100">
 						{save.name ? `${save.name} · ` : ""}
-						<img src={UI_ICONS.star} alt="" className="inline-block align-[-3px] w-5 h-5" /> {total} ·
+							<StarIcon className="h-5 w-5 align-[-3px]" /> {total} ·
 						<img src={MISSION_ICONS["see-sound"]} alt="" className="inline-block align-[-3px] w-5 h-5" /> {doneCount}/{MISSIONS.length} missions
 					</div>
 				</div>
@@ -129,7 +129,7 @@ function ChapterNode({
 						<img src={UI_ICONS.crown} alt="Dernier chapitre" className="w-12 h-12 object-contain" />
 					) : (
 						<span className={chapter.id === 0 ? "whitespace-nowrap text-xl tracking-tight" : ""}>
-							{chapter.label}
+							{chapter.label === "★" ? <StarIcon className="h-8 w-8" /> : chapter.label}
 						</span>
 					)
 				) : (
@@ -143,7 +143,7 @@ function ChapterNode({
 				<div className="font-bold text-lg leading-tight">{chapter.title}</div>
 				<div className="text-xs text-white/80">{chapter.place}</div>
 				<div className="text-sm">
-					⭐ {stars.got}/{stars.max}
+					<StarIcon className="mr-1 h-4 w-4 align-[-3px]" /> {stars.got}/{stars.max}
 				</div>
 			</div>
 			{unlocked && (

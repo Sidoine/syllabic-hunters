@@ -1,18 +1,38 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+import type { Speaker } from "../data/story";
+import type { HeroId } from "../lib/storage";
 import readingMarkerBadge from "../assets/ui/map-marker-reading.webp";
 import mathMarkerBadge from "../assets/ui/map-marker-math.webp";
 import lockedMarkerBadge from "../assets/ui/map-marker-locked.webp";
-import { MAP_BRIDGE_POSITIONS, MAP_RIVER_POINTS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, READING_STOPS } from "./map-layout";
+import { MAP_BRIDGE_POSITIONS, MAP_BRIDGE_ROTATION, MAP_DIRECTION_SIGN_POSITION, MAP_LANDMARKS, MAP_RIVER_POINTS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS } from "./map-layout";
 
 
 export const WORLD_WIDTH = MAP_WORLD_WIDTH;
 export const WORLD_DEPTH = MAP_WORLD_DEPTH;
+export const MAP_ERASER_RADIUS = 3.4;
 export const WORLD_SCALE = 52;
 export const WORLD_PITCH = 0.82;
 export const WORLD_PIXEL_WIDTH = WORLD_WIDTH * WORLD_SCALE;
 export const WORLD_PIXEL_HEIGHT = WORLD_DEPTH * WORLD_SCALE * WORLD_PITCH;
+
+const EDITABLE_ASSETS: Record<string, keyof typeof MAP_LANDMARKS> = {
+	"/models/reading-tree.glb": "readingTree", "/models/map-blossom-tree.glb": "readingBlossom",
+	"/models/storybook-reading-arch.glb": "readingArch", "/models/storybook-tree-library.glb": "readingTreeLibrary",
+	"/models/reading-bookstone.glb": "readingBookstone", "/models/reading-mushroom-cluster.glb": "readingMushrooms",
+	"/models/math-abacus.glb": "mathAbacus", "/models/math-crystals.glb": "mathCrystals",
+	"/models/storybook-cottage.glb": "storybookCottage", "/models/mountain-observatory.glb": "mountainObservatory",
+};
+const ERASABLE_SCENERY_ASSETS = new Set([
+	"/models/forest-tree.glb", "/models/mountain-fir.glb", "/models/map-forest-flower-patch.glb",
+	"/models/mossy-boulders.glb", "/models/forest-understory.glb", "/models/map-riverbank-rock-cluster.glb",
+]);
+const INSTANCED_SCENERY_ASSETS = new Set([
+	"/models/forest-tree.glb", "/models/mountain-fir.glb", "/models/map-forest-flower-patch.glb",
+	"/models/mossy-boulders.glb", "/models/forest-understory.glb",
+]);
 
 const worldPath = (stops: readonly (readonly [number, number])[]) => stops.map(([x, y]) => {
 	const worldX = x * WORLD_WIDTH;
@@ -35,7 +55,7 @@ function distanceToMissionRoad(x: number, z: number) {
 }
 
 export type StageMarkerData = {
-	region: "reading" | "math";
+	region: "reading" | "math" | "intro";
 	index: number;
 	label: string;
 	title: string;
@@ -48,11 +68,14 @@ export type StageMarkerData = {
 };
 
 export type MapLoadProgress = { loaded: number; total: number; complete: boolean };
+export type MapEditorSelection = { kind: "asset" | "stage" | "river" | "start"; index: number; region?: "reading" | "math"; key?: keyof typeof MAP_LANDMARKS };
+export type MapPaintMode = "select" | "tree" | "flower" | "rock" | "bush" | "erase";
+export type MapDecoration = { id: string; kind: Exclude<MapPaintMode, "select" | "erase">; x: number; z: number; modelUrl: string; scale: number; rotation: number };
 
 function markerColor(marker: StageMarkerData) {
 	if (!marker.unlocked) return "#8a6240";
 	if (marker.current) return "#dfaa35";
-	return marker.region === "reading" ? "#e347a8" : "#28b9d4";
+	return marker.region === "math" ? "#28b9d4" : marker.region === "intro" ? "#ffd23f" : "#e347a8";
 }
 
 function completionPercent(marker: StageMarkerData) {
@@ -69,8 +92,24 @@ function drawMarkerFace(canvas: HTMLCanvasElement, marker: StageMarkerData, badg
 	const radius = canvas.width * 0.43;
 	const percent = completionPercent(marker);
 	const allStarsEarned = marker.maxStars > 0 && marker.stars >= marker.maxStars;
-	const badge = badges[marker.unlocked ? marker.region : "locked"];
-	if (badge.complete && badge.naturalWidth) ctx.drawImage(badge, 0, 0, canvas.width, canvas.height);
+	const badge = badges[marker.unlocked ? marker.region === "math" ? "math" : "reading" : "locked"];
+	if (marker.region === "intro") {
+		const gradient = ctx.createRadialGradient(center * 0.75, center * 0.7, canvas.width * 0.04, center, center, center);
+		gradient.addColorStop(0, "#fff6b0");
+		gradient.addColorStop(1, "#e89b28");
+		ctx.fillStyle = gradient;
+		ctx.beginPath();
+		ctx.arc(center, center, radius, 0, Math.PI * 2);
+		ctx.fill();
+		ctx.strokeStyle = "#fff4c7";
+		ctx.lineWidth = canvas.width * 0.035;
+		ctx.stroke();
+		ctx.fillStyle = "#8f4e23";
+		ctx.font = `bold ${canvas.width * 0.52}px system-ui, sans-serif`;
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+		ctx.fillText("✦", center, center + canvas.width * 0.015);
+	} else if (badge.complete && badge.naturalWidth) ctx.drawImage(badge, 0, 0, canvas.width, canvas.height);
 	else {
 		ctx.fillStyle = marker.unlocked ? markerColor(marker) : "#705239";
 		ctx.beginPath();
@@ -87,7 +126,7 @@ function drawMarkerFace(canvas: HTMLCanvasElement, marker: StageMarkerData, badg
 		if (percent > 0) {
 			ctx.beginPath();
 			ctx.arc(center, center, gaugeRadius, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * percent) / 100);
-			ctx.strokeStyle = allStarsEarned ? "#a8ef65" : marker.region === "reading" ? "#ff72c6" : "#71edff";
+		ctx.strokeStyle = allStarsEarned ? "#a8ef65" : marker.region === "math" ? "#71edff" : "#ff72c6";
 			ctx.lineWidth = canvas.width * 0.055;
 			ctx.lineCap = "round";
 			ctx.shadowColor = ctx.strokeStyle;
@@ -156,11 +195,16 @@ type SceneStageMarker = {
 	signature: string;
 };
 
-function markerWorldPosition(region: "reading" | "math", index: number) {
+
+function markerWorldPosition(region: "reading" | "math" | "intro", index: number, stageLayout?: { reading: number[][]; math: number[][] }, sharedStart: readonly [number, number] = MAP_SHARED_START) {
+	if (region === "intro") {
+		const x = sharedStart[0];
+		const z = sharedStart[1];
+		return new THREE.Vector3(x, terrainHeight(x, z), z);
+	}
 	const stops = region === "reading" ? READING_STOPS : MATH_STOPS;
-	const [u, v] = stops[index] ?? [0.5, 0.5];
-	const x = u * WORLD_WIDTH;
-	const z = v * WORLD_DEPTH;
+	const edited = stageLayout?.[region][index];
+	const [x, z] = edited ?? [(stops[index]?.[0] ?? 0.5) * WORLD_WIDTH, (stops[index]?.[1] ?? 0.5) * WORLD_DEPTH];
 	return new THREE.Vector3(x, terrainHeight(x, z), z);
 }
 
@@ -171,12 +215,12 @@ function scatterProps(region: "forest" | "mountain", count: number, seed: number
 		return (state - 1) / 2147483646;
 	};
 	const landmarks = region === "forest"
-		? [[8, 14], [15, 24], [4, 45]]
-		: [[45, 10], [56, 8], [55, 43]];
+		? [MAP_LANDMARKS.readingTree, MAP_LANDMARKS.readingBlossom, MAP_LANDMARKS.readingArch, MAP_LANDMARKS.readingTreeLibrary, MAP_LANDMARKS.readingBookstone, MAP_LANDMARKS.storybookCottage, MAP_LANDMARKS.readingMushrooms]
+		: [MAP_LANDMARKS.mathAbacus, MAP_LANDMARKS.mathCrystals, MAP_LANDMARKS.mountainObservatory];
 	const placements: [number, number, number, number, number, number][] = [];
 	let attempts = 0;
 	while (placements.length < count && attempts++ < count * 30) {
-		const x = region === "forest" ? 1 + random() * 30 : 38 + random() * 21;
+		const x = region === "forest" ? 1 + random() * 55 : 70 + random() * 58;
 		const z = 1 + random() * 49;
 		if (landmarks.some(([lx, lz]) => Math.hypot(x - lx, z - lz) < 4.2)) continue;
 		// Reserve space around the whole curved trail, not only around its stage pins.
@@ -188,11 +232,11 @@ function scatterProps(region: "forest" | "mountain", count: number, seed: number
 	return placements;
 }
 
-function createStageMarker(scene: THREE.Scene, data: StageMarkerData, badges: MarkerBadgeImages): SceneStageMarker {
+function createStageMarker(scene: THREE.Scene, data: StageMarkerData, badges: MarkerBadgeImages, stageLayout?: { reading: number[][]; math: number[][] }, sharedStart: readonly [number, number] = MAP_SHARED_START): SceneStageMarker {
 	const group = new THREE.Group();
 	group.name = `stageMarker-${data.region}-${data.index}`;
 	group.userData.stageMarker = { region: data.region, index: data.index };
-	group.position.copy(markerWorldPosition(data.region, data.index));
+	group.position.copy(markerWorldPosition(data.region, data.index, stageLayout, sharedStart));
 	const base = new THREE.Mesh(
 		new THREE.CylinderGeometry(0.44, 0.52, 0.18, 24),
 		new THREE.MeshStandardMaterial({ color: "#9f7448", roughness: 0.72, metalness: 0.18 }),
@@ -250,7 +294,7 @@ function updateStageMarker(marker: SceneStageMarker, data: StageMarkerData, hove
 	drawMarkerFace(marker.faceCanvas, data, badges);
 	marker.faceTexture.needsUpdate = true;
 	const titleLines = hovered
-		? [data.title, `★ ${data.stars}/${data.maxStars} · ${completionPercent(data)}%`, ...(data.confirming ? ["Reclique pour entrer"] : [])]
+		? [data.title, ...(data.region === "intro" ? ["Histoire d’introduction"] : [`${data.stars}/${data.maxStars} étoiles · ${completionPercent(data)}%`]), ...(data.confirming ? ["Reclique pour entrer"] : [])]
 		: [data.confirming ? "Reclique pour entrer" : data.title];
 	const newTitleTexture = makeMarkerTitleTexture(titleLines);
 	marker.title.material.map = newTitleTexture;
@@ -265,17 +309,32 @@ function updateStageMarker(marker: SceneStageMarker, data: StageMarkerData, hove
 }
 
 function terrainHeight(x: number, z: number) {
-	const mountainMass = Math.exp(-((x - 50) ** 2) / 190 - ((z - 15) ** 2) / 210) * 2.6;
-	const mainPeak = Math.exp(-((x - 52) ** 2) / 34 - ((z - 12) ** 2) / 46) * 2.8;
-	const westPeak = Math.exp(-((x - 43) ** 2) / 65 - ((z - 20) ** 2) / 95) * 1.35;
-	const forestHill = Math.exp(-((x - 10) ** 2) / 200 - ((z - 19) ** 2) / 250) * 0.72;
-	const foothills = Math.exp(-((x - 35) ** 2) / 210 - ((z - 27) ** 2) / 210) * 0.5;
-	const ridges = Math.max(0, Math.sin(x * 0.43 + z * 0.11) * Math.cos(z * 0.29 - x * 0.16)) * (x > 34 ? 0.48 : 0.16);
+	const mountainMass = Math.exp(-((x - 103) ** 2) / 520 - ((z - 18) ** 2) / 250) * 2.6;
+	const mainPeak = Math.exp(-((x - 105) ** 2) / 95 - ((z - 13) ** 2) / 52) * 2.8;
+	const westPeak = Math.exp(-((x - 82) ** 2) / 170 - ((z - 22) ** 2) / 110) * 1.35;
+	const forestHill = Math.exp(-((x - 20) ** 2) / 360 - ((z - 20) ** 2) / 250) * 0.72;
+	const foothills = Math.exp(-((x - 61) ** 2) / 330 - ((z - 31) ** 2) / 230) * 0.5;
+	const ridges = Math.max(0, Math.sin(x * 0.43 + z * 0.11) * Math.cos(z * 0.29 - x * 0.16)) * (x > 62 ? 0.48 : 0.16);
 	const rolling = Math.sin(x * 0.23 + z * 0.08) * 0.12 + Math.cos(z * 0.21 - x * 0.1) * 0.1;
 	return mountainMass + mainPeak + westPeak + forestHill + foothills + ridges + rolling;
 }
 
-function placeModel(scene: THREE.Scene, source: THREE.Group, bounds: THREE.Box3, x: number, z: number, height: number, rotation = 0, stretchX = 1, stretchZ = 1) {
+function styleMountainCreekMaterial(material: THREE.Material) {
+	if (!(material instanceof THREE.MeshStandardMaterial)) return material;
+	const styled = material.clone();
+	styled.metalness = 0.04;
+	styled.roughness = 0.34;
+	styled.onBeforeCompile = (shader) => {
+		shader.fragmentShader = shader.fragmentShader.replace(
+			"#include <map_fragment>",
+			"#include <map_fragment>\nfloat riverWaterMask = smoothstep(0.035, 0.14, diffuseColor.b - diffuseColor.r) * smoothstep(0.02, 0.12, diffuseColor.g - diffuseColor.r);\nvec3 riverWaterBase = diffuseColor.rgb;\nvec3 riverWaterBright = min(riverWaterBase * vec3(0.82, 1.38, 1.62) + vec3(0.0, 0.025, 0.045), vec3(1.0));\ndiffuseColor.rgb = mix(riverWaterBase, riverWaterBright, riverWaterMask);",
+		);
+	};
+	styled.customProgramCacheKey = () => "mountain-creek-water-v1";
+	return styled;
+}
+
+function placeModel(scene: THREE.Scene, source: THREE.Group, bounds: THREE.Box3, x: number, z: number, height: number, rotation = 0, stretchX = 1, stretchZ = 1, mountainCreek = false) {
 	const model = source.clone(true);
 	const size = bounds.getSize(new THREE.Vector3());
 	const center = bounds.getCenter(new THREE.Vector3());
@@ -287,11 +346,17 @@ function placeModel(scene: THREE.Scene, source: THREE.Group, bounds: THREE.Box3,
 	model.position.set(x - center.x * model.scale.x, terrainHeight(x, z) - bounds.min.y * model.scale.y, z - center.z * model.scale.z);
 	model.traverse((object) => {
 		if (object instanceof THREE.Mesh) {
+			if (mountainCreek) {
+				object.material = Array.isArray(object.material)
+					? object.material.map(styleMountainCreekMaterial)
+					: styleMountainCreekMaterial(object.material);
+			}
 			object.castShadow = true;
 			object.receiveShadow = true;
 		}
 	});
 	scene.add(model);
+	return model;
 }
 
 function makePathTexture() {
@@ -339,7 +404,7 @@ function makePathRibbon(
 	heightOffset: number,
 	textureScale = 0,
 ) {
-	if (points.length < 2) return;
+	if (points.length < 2) return null;
 	const curve = new THREE.CatmullRomCurve3(points, false, "centripetal");
 	const length = curve.getLength();
 	const divisions = Math.max(32, Math.ceil(length * 10));
@@ -371,13 +436,138 @@ function makePathRibbon(
 	ribbon.castShadow = false;
 	ribbon.receiveShadow = true;
 	scene.add(ribbon);
+	return ribbon;
 }
 
 type AssetPlacement = [number, number, number, number?, number?, number?];
-type LazyAssetLayer = { url: string; placements: AssetPlacement[]; loaded: Set<number>; pending: Set<number>; loading: boolean; placing: boolean; failed?: boolean; source?: THREE.Group; bounds?: THREE.Box3; onInitialReady?: () => void };
+type InstancedChunk = { meshes: THREE.InstancedMesh[]; indices: number[] };
+type LazyAssetLayer = { url: string; placements: AssetPlacement[]; models: Map<number, THREE.Group>; loaded: Set<number>; pending: Set<number>; loading: boolean; placing: boolean; failed?: boolean; source?: THREE.Group; bounds?: THREE.Box3; instancedSourceMeshes?: { mesh: THREE.Mesh; relativeMatrix: THREE.Matrix4 }[]; instancedChunks?: Map<string, InstancedChunk>; placementStartedAt?: number; onInitialReady?: () => void };
 
-function addVisibleLayerAssets(scene: THREE.Scene, layer: LazyAssetLayer, isNearViewport: (x: number, z: number) => boolean, onInitialLayerReady: () => void, isInitialLayer: boolean, onLoad: () => void, isDisposed: () => boolean) {
+function reportGLTFLoad(url: string, startedAt: number, failed = false) {
+	if (!import.meta.env.DEV) return;
+	const completedAt = performance.now();
+	const resourceUrl = new URL(url, window.location.href).href;
+	const resource = performance.getEntriesByName(resourceUrl)
+		.filter((entry): entry is PerformanceResourceTiming => entry.entryType === "resource")
+		.filter((entry) => entry.startTime >= startedAt && entry.responseEnd <= completedAt)
+		.at(-1);
+	console.info(`[map-load] ${failed ? "failed" : "parse"}: ${url}`, {
+		loaderMs: Math.round(completedAt - startedAt),
+		networkMs: resource ? Math.round(resource.duration) : null,
+		afterResponseMs: resource ? Math.round(completedAt - resource.responseEnd) : null,
+	});
+}
+
+function setInstanceVisible(model: THREE.Group, visible: boolean) {
+	model.visible = visible;
+	const targets = model.userData.instanceTargets as { mesh: THREE.InstancedMesh; index: number; matrix: THREE.Matrix4 }[] | undefined;
+	if (!targets) return;
+	const zeroMatrix = new THREE.Matrix4().makeScale(0, 0, 0);
+	for (const { mesh, index, matrix } of targets) {
+		mesh.setMatrixAt(index, visible ? matrix : zeroMatrix);
+		mesh.instanceMatrix.needsUpdate = true;
+		mesh.computeBoundingSphere();
+	}
+}
+
+function buildInstancedLayer(scene: THREE.Scene, layer: LazyAssetLayer, isNearViewport: (x: number, z: number) => boolean, erasedIds: ReadonlySet<string>) {
+	const source = layer.source;
+	const bounds = layer.bounds;
+	if (!source || !bounds) return 0;
+	const chunks = layer.instancedChunks ?? (layer.instancedChunks = new Map());
+	const neededKeys = new Set<string>();
+	layer.placements.forEach(([x, z], index) => {
+		if (!layer.loaded.has(index) && isNearViewport(x, z)) neededKeys.add(`${Math.floor(x / 32)}:${Math.floor(z / 32)}`);
+	});
+	if (!neededKeys.size) return 0;
+	let sourceMeshes = layer.instancedSourceMeshes;
+	if (!sourceMeshes) {
+		source.updateMatrixWorld(true);
+		const inverseSourceRoot = source.matrixWorld.clone().invert();
+		sourceMeshes = [];
+		source.traverse((object) => {
+			if (object instanceof THREE.Mesh) sourceMeshes?.push({ mesh: object, relativeMatrix: inverseSourceRoot.clone().multiply(object.matrixWorld) });
+		});
+		layer.instancedSourceMeshes = sourceMeshes;
+	}
+	if (!sourceMeshes.length) return 0;
+	const size = bounds.getSize(new THREE.Vector3());
+	const center = bounds.getCenter(new THREE.Vector3());
+	const buckets = new Map<string, number[]>();
+	layer.placements.forEach(([x, z], index) => {
+		const key = `${Math.floor(x / 32)}:${Math.floor(z / 32)}`;
+		if (!neededKeys.has(key)) return;
+		const indices = buckets.get(key) ?? [];
+		indices.push(index);
+		buckets.set(key, indices);
+	});
+	const zeroMatrix = new THREE.Matrix4().makeScale(0, 0, 0);
+	let placedCount = 0;
+	for (const [key, indices] of buckets) {
+		const meshes = sourceMeshes.map(({ mesh: sourceMesh }) => {
+			const instanced = new THREE.InstancedMesh(sourceMesh.geometry, sourceMesh.material, indices.length);
+			instanced.castShadow = true;
+			instanced.receiveShadow = true;
+			instanced.frustumCulled = true;
+			return instanced;
+		});
+		const chunk: InstancedChunk = { meshes, indices };
+		chunks.set(key, chunk);
+		indices.forEach((placementIndex, localIndex) => {
+			const [x, z, height = 1, rotation = 0, stretchX = 1, stretchZ = 1] = layer.placements[placementIndex];
+			const unitScale = height / (size.y || 1);
+			const scale = new THREE.Vector3(unitScale * stretchX, unitScale, unitScale * stretchZ);
+			const position = new THREE.Vector3(x - center.x * scale.x, terrainHeight(x, z) - bounds.min.y * scale.y, z - center.z * scale.z);
+			const rootMatrix = new THREE.Matrix4().compose(position, new THREE.Quaternion().setFromEuler(new THREE.Euler(0, rotation, 0)), scale);
+			const proxy = new THREE.Group();
+			proxy.position.set(x, terrainHeight(x, z), z);
+			proxy.userData.mapX = x;
+			proxy.userData.mapZ = z;
+			if (ERASABLE_SCENERY_ASSETS.has(layer.url)) proxy.userData.mapErasableId = `scenery:${layer.url}:${placementIndex}`;
+			const erasedId = proxy.userData.mapErasableId as string | undefined;
+			const erased = Boolean(erasedId && erasedIds.has(erasedId));
+			const targets: { mesh: THREE.InstancedMesh; index: number; matrix: THREE.Matrix4 }[] = [];
+			sourceMeshes.forEach(({ relativeMatrix }, meshIndex) => {
+				const matrix = rootMatrix.clone().multiply(relativeMatrix);
+				const instanced = meshes[meshIndex];
+				instanced.setMatrixAt(localIndex, erased ? zeroMatrix : matrix);
+				targets.push({ mesh: instanced, index: localIndex, matrix });
+			});
+			proxy.userData.instanceTargets = targets;
+			proxy.visible = !erased;
+			layer.models.set(placementIndex, proxy);
+			layer.loaded.add(placementIndex);
+			placedCount += 1;
+		});
+		for (const instanced of meshes) {
+			instanced.instanceMatrix.needsUpdate = true;
+			instanced.computeBoundingSphere();
+			scene.add(instanced);
+		}
+		const chunkVisible = indices.some((index) => {
+			const [x, z] = layer.placements[index];
+			return isNearViewport(x, z);
+		});
+		for (const instanced of meshes) instanced.visible = chunkVisible;
+	}
+	return placedCount;
+}
+
+function addVisibleLayerAssets(scene: THREE.Scene, layer: LazyAssetLayer, isNearViewport: (x: number, z: number) => boolean, onInitialLayerReady: () => void, isInitialLayer: boolean, onLoad: () => void, isDisposed: () => boolean, loader: GLTFLoader, erasedIds: ReadonlySet<string>) {
 	if (isInitialLayer && !layer.onInitialReady) layer.onInitialReady = onInitialLayerReady;
+	if (layer.instancedChunks) {
+		const placementStartedAt = performance.now();
+		const placedCount = buildInstancedLayer(scene, layer, isNearViewport, erasedIds);
+		if (placedCount && import.meta.env.DEV) console.info(`[map-load] placement: ${layer.url}`, { durationMs: Math.round(performance.now() - placementStartedAt), instances: placedCount });
+		for (const chunk of layer.instancedChunks.values()) {
+			const visible = chunk.indices.some((index) => {
+				const [x, z] = layer.placements[index];
+				return isNearViewport(x, z);
+			});
+			for (const mesh of chunk.meshes) mesh.visible = visible;
+		}
+		return;
+	}
 	for (const index of layer.pending) {
 		const [x, z] = layer.placements[index];
 		if (!isNearViewport(x, z)) layer.pending.delete(index);
@@ -388,6 +578,10 @@ function addVisibleLayerAssets(scene: THREE.Scene, layer: LazyAssetLayer, isNear
 	const placeNextBatch = () => {
 		if (isDisposed() || layer.placing) return;
 		if (!layer.pending.size && layer.source) {
+			if (layer.placementStartedAt !== undefined && import.meta.env.DEV) {
+				console.info(`[map-load] placement: ${layer.url}`, { durationMs: Math.round(performance.now() - layer.placementStartedAt), instances: layer.loaded.size });
+				layer.placementStartedAt = undefined;
+			}
 			if (layer.onInitialReady) {
 				const done = layer.onInitialReady;
 				layer.onInitialReady = undefined;
@@ -398,12 +592,38 @@ function addVisibleLayerAssets(scene: THREE.Scene, layer: LazyAssetLayer, isNear
 		const source = layer.source;
 		const bounds = layer.bounds;
 		if (!source || !bounds) return;
+		if (INSTANCED_SCENERY_ASSETS.has(layer.url)) {
+			const placementStartedAt = performance.now();
+			const placedCount = buildInstancedLayer(scene, layer, isNearViewport, erasedIds);
+			if (placedCount && import.meta.env.DEV) console.info(`[map-load] placement: ${layer.url}`, { durationMs: Math.round(performance.now() - placementStartedAt), instances: placedCount });
+			layer.pending.clear();
+			layer.placing = false;
+			onLoad();
+			if (layer.onInitialReady) {
+				const done = layer.onInitialReady;
+				layer.onInitialReady = undefined;
+				done();
+			}
+			return;
+		}
+		if (layer.placementStartedAt === undefined) layer.placementStartedAt = performance.now();
 		layer.placing = true;
 		const indices = [...layer.pending].slice(0, 8);
 		indices.forEach((index) => {
 			layer.pending.delete(index);
 			const [x, z, height, rotation = 0, stretchX = 1, stretchZ = 1] = layer.placements[index];
-			placeModel(scene, source, bounds, x, z, height, rotation, stretchX, stretchZ);
+			const model = placeModel(scene, source, bounds, x, z, height, rotation, stretchX, stretchZ, layer.url === "/models/mountain-creek-segment.glb");
+			if (model) {
+				layer.models.set(index, model);
+				model.userData.mapX = x;
+				model.userData.mapZ = z;
+				if (ERASABLE_SCENERY_ASSETS.has(layer.url)) {
+					const erasedId = `scenery:${layer.url}:${index}`;
+					model.userData.mapErasableId = erasedId;
+				}
+				const assetKey = EDITABLE_ASSETS[layer.url];
+				if (assetKey && index === 0) model.userData.mapAssetKey = assetKey;
+			}
 			layer.loaded.add(index);
 		});
 		onLoad();
@@ -423,25 +643,29 @@ function addVisibleLayerAssets(scene: THREE.Scene, layer: LazyAssetLayer, isNear
 		if (!layer.loading) return;
 		layer.loading = false;
 		layer.failed = true;
+		if (import.meta.env.DEV) console.warn(`[map-load] timeout: ${layer.url} (10s)`);
 		finishInitialLayer();
 	}, 10000);
-	new GLTFLoader().load(layer.url, (gltf) => {
+	const loadStartedAt = performance.now();
+	loader.load(layer.url, (gltf) => {
 		window.clearTimeout(timeout);
 		if (isDisposed()) return;
 		layer.source = gltf.scene;
 		layer.bounds = new THREE.Box3().setFromObject(gltf.scene);
 		layer.loading = false;
 		layer.failed = false;
+		reportGLTFLoad(layer.url, loadStartedAt);
 		placeNextBatch();
 	}, undefined, () => {
 		window.clearTimeout(timeout);
 		layer.loading = false;
 		layer.failed = true;
+		reportGLTFLoad(layer.url, loadStartedAt, true);
 		finishInitialLayer();
 	});
 }
 
-function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGround: THREE.Texture) {
+function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGround: THREE.Texture, stageLayout?: { reading: number[][]; math: number[][] }, sharedStart: readonly [number, number] = MAP_SHARED_START) {
 	const water = new THREE.Mesh(
 		new THREE.PlaneGeometry(WORLD_WIDTH + 30, WORLD_DEPTH + 30),
 		new THREE.MeshBasicMaterial({ color: "#172b37" }),
@@ -489,7 +713,7 @@ function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGr
 		);
 		shader.fragmentShader = shader.fragmentShader.replace(
 			"#include <map_fragment>",
-			"#include <map_fragment>\nvec2 biomeUv = vTerrainWorldPosition.xz * 0.14;\nvec3 forestColor = texture2D(forestGroundMap, biomeUv).rgb;\nvec3 mountainColor = texture2D(mountainGroundMap, biomeUv).rgb;\nfloat biomeEdge = 34.0 + (vTerrainWorldPosition.z - 26.0) * 0.22 + sin(vTerrainWorldPosition.z * 0.22) * 1.4;\nfloat mountainBlend = smoothstep(biomeEdge - 3.0, biomeEdge + 3.0, vTerrainWorldPosition.x);\ndiffuseColor.rgb = mix(forestColor, mountainColor, mountainBlend) * 1.45;",
+			"#include <map_fragment>\nvec2 biomeUv = vTerrainWorldPosition.xz * 0.14;\nvec3 forestColor = texture2D(forestGroundMap, biomeUv).rgb;\nvec3 mountainColor = texture2D(mountainGroundMap, biomeUv).rgb;\nfloat biomeEdge = 61.0 + (vTerrainWorldPosition.z - 32.0) * 0.18 + sin(vTerrainWorldPosition.z * 0.22) * 1.8;\nfloat mountainBlend = smoothstep(biomeEdge - 5.0, biomeEdge + 5.0, vTerrainWorldPosition.x);\ndiffuseColor.rgb = mix(forestColor, mountainColor, mountainBlend) * 1.45;",
 		);
 	};
 	terrainMaterial.customProgramCacheKey = () => "biome-terrain-blend-v3";
@@ -497,35 +721,94 @@ function makeTerrain(scene: THREE.Scene, forestGround: THREE.Texture, mountainGr
 	terrain.receiveShadow = true;
 	terrain.castShadow = false;
 	scene.add(terrain);
+	scene.userData.terrainMesh = terrain;
 	const roadTexture = makePathTexture();
 	const roadSurface = new THREE.MeshStandardMaterial({ color: "#ffffff", map: roadTexture, roughness: 1 });
-	const readingPath = readingRoadPoints.map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
-	const mathPath = mathRoadPoints.map(({ x, z }) => new THREE.Vector3(x, terrainHeight(x, z), z));
-	const paths = [readingPath, mathPath];
-	for (const points of paths) {
-		makePathRibbon(scene, points, 0.9, roadSurface, 0.09, 2.0);
-	}
+	const startPoint: [number, number] = [sharedStart[0], sharedStart[1]];
+	const roads = (['reading', 'math'] as const).map((region) => [startPoint, ...(stageLayout?.[region] ?? (region === 'reading' ? READING_STOPS : MATH_STOPS).map(([u,v]) => [u * WORLD_WIDTH, v * WORLD_DEPTH]))].map(([x,z]) => new THREE.Vector3(x, terrainHeight(x,z), z)));
+	const readingPath = roads[0];
+	const mathPath = roads[1];
+	const routeMeshes = [readingPath, mathPath].map((points) => makePathRibbon(scene, points, 0.9, roadSurface, 0.09, 2.0));
+	scene.userData.routeMeshes = routeMeshes;
 	return terrain;
 }
 
 export function IsoWorldScene({
 	containerRef,
+	layoutKey,
 	stageMarkers,
+	landmarks = MAP_LANDMARKS,
+	stageLayout,
+	sharedStart = MAP_SHARED_START,
+	riverPoints = MAP_RIVER_POINTS,
+	assetRotations = {},
+	decorations = [],
+	erasedDecorations = [],
+	editorMode = false,
+	paintMode = "select",
+	onEditorSelect,
+	onEditorMove,
+	onEditorPaint,
+	onEditorErase,
 	hero,
+	cinematic = false,
+	dialogueSpeaker = null,
+	dialogueCharacters = [],
+	dialogueExiting = false,
 	onStageClick,
 	onLoadProgress,
 }: {
 	containerRef: React.RefObject<HTMLDivElement | null>;
+	layoutKey: string;
 	stageMarkers: StageMarkerData[];
-	hero: "hana" | "yuki" | "momo";
-	onStageClick: (region: "reading" | "math", index: number) => void;
+	landmarks?: typeof MAP_LANDMARKS;
+	stageLayout?: { reading: number[][]; math: number[][] };
+	sharedStart?: readonly [number, number];
+	riverPoints?: readonly (readonly [number, number])[];
+	assetRotations?: Record<string, number>;
+	decorations?: MapDecoration[];
+	erasedDecorations?: string[];
+	editorMode?: boolean;
+	paintMode?: MapPaintMode;
+	onEditorSelect: (selection: MapEditorSelection | null) => void;
+	onEditorMove: (selection: MapEditorSelection, x: number, z: number) => void;
+	onEditorPaint: (x: number, z: number, phase: "start" | "move" | "end") => void;
+	onEditorErase: (ids: string[]) => void;
+	hero: HeroId;
+	cinematic?: boolean;
+	dialogueSpeaker?: Speaker | null;
+	dialogueCharacters?: Speaker[];
+	dialogueExiting?: boolean;
+	onStageClick: (region: "reading" | "math" | "intro", index: number) => void;
 	onLoadProgress: (progress: MapLoadProgress) => void;
 }) {
 	const hostRef = useRef<HTMLDivElement>(null);
 	const stageMarkersRef = useRef(stageMarkers);
 	stageMarkersRef.current = stageMarkers;
+	const layoutRef = useRef({ landmarks, stageLayout, sharedStart, riverPoints, assetRotations, decorations, erasedDecorations });
+	layoutRef.current = { landmarks, stageLayout, sharedStart, riverPoints, assetRotations, decorations, erasedDecorations };
+	const editorModeRef = useRef(editorMode);
+	editorModeRef.current = editorMode;
+	const paintModeRef = useRef(paintMode);
+	paintModeRef.current = paintMode;
+	const editorSelectRef = useRef(onEditorSelect);
+	editorSelectRef.current = onEditorSelect;
+	const editorMoveRef = useRef(onEditorMove);
+	editorMoveRef.current = onEditorMove;
+	const editorPaintRef = useRef(onEditorPaint);
+	editorPaintRef.current = onEditorPaint;
+	const editorEraseRef = useRef(onEditorErase);
+	editorEraseRef.current = onEditorErase;
 	const heroRef = useRef(hero);
 	heroRef.current = hero;
+	const cinematicRef = useRef(cinematic);
+	cinematicRef.current = cinematic;
+	const dialogueSpeakerRef = useRef(dialogueSpeaker);
+	dialogueSpeakerRef.current = dialogueSpeaker;
+	const dialogueCharactersRef = useRef(dialogueCharacters);
+	dialogueCharactersRef.current = dialogueCharacters;
+	const dialogueExitingRef = useRef(dialogueExiting);
+	dialogueExitingRef.current = dialogueExiting;
 	const stageClickRef = useRef(onStageClick);
 	stageClickRef.current = onStageClick;
 	const loadProgressRef = useRef(onLoadProgress);
@@ -536,18 +819,36 @@ export function IsoWorldScene({
 		const host = hostRef.current;
 		const scroll = containerRef.current;
 		if (!host || !scroll) return;
+		const mapLoadStartedAt = performance.now();
+		let firstRenderAt: number | null = null;
+		let initialReadyLogged = false;
+		const resourceObserver = import.meta.env.DEV && typeof PerformanceObserver !== "undefined"
+			? new PerformanceObserver((list) => {
+				for (const entry of list.getEntries() as PerformanceResourceTiming[]) {
+					const path = new URL(entry.name).pathname;
+					if (!/\/(models|textures)\//.test(path)) continue;
+					console.debug(`[map-load] resource: ${path}`, {
+						durationMs: Math.round(entry.duration),
+						transferKiB: Math.round(entry.transferSize / 1024),
+						decodedKiB: Math.round(entry.decodedBodySize / 1024),
+					});
+				}
+			})
+			: null;
+		resourceObserver?.observe({ type: "resource", buffered: true });
 
 		const scene = new THREE.Scene();
+		scene.userData.layoutKey = layoutKey;
 		scene.background = new THREE.Color("#172b37");
 		scene.add(new THREE.HemisphereLight("#ffe9d8", "#52604e", 0.95));
 		const sun = new THREE.DirectionalLight("#fff1d6", 3.2);
-		sun.position.set(-12, 30, 14);
+		sun.position.set(WORLD_WIDTH / 2 - 48, 30, WORLD_DEPTH / 2 + 48);
 		sun.target.position.set(WORLD_WIDTH / 2, 0, WORLD_DEPTH / 2);
 		sun.castShadow = true;
 		sun.shadow.intensity = 0.65;
 		sun.shadow.mapSize.set(4096, 4096);
-		sun.shadow.camera.left = -42;
-		sun.shadow.camera.right = 42;
+		sun.shadow.camera.left = -72;
+		sun.shadow.camera.right = 72;
 		sun.shadow.camera.top = 42;
 		sun.shadow.camera.bottom = -42;
 		sun.shadow.camera.near = 1;
@@ -561,7 +862,7 @@ export function IsoWorldScene({
 		forestGlow.position.set(13, 8, 20);
 		scene.add(forestGlow);
 		const mountainGlow = new THREE.PointLight("#6edff2", 0.45, 28, 2);
-		mountainGlow.position.set(49, 9, 14);
+		mountainGlow.position.set(98, 9, 14);
 		scene.add(mountainGlow);
 		const textureLoader = new THREE.TextureLoader();
 		let forestGround = new THREE.Texture();
@@ -580,7 +881,7 @@ export function IsoWorldScene({
 			texture.colorSpace = THREE.SRGBColorSpace;
 			texture.anisotropy = 8;
 		}
-		makeTerrain(scene, forestGround, mountainGround);
+		makeTerrain(scene, forestGround, mountainGround, stageLayout, sharedStart);
 		const markerBadges: MarkerBadgeImages = {
 			reading: new Image(),
 			math: new Image(),
@@ -589,9 +890,29 @@ export function IsoWorldScene({
 		markerBadges.reading.src = readingMarkerBadge;
 		markerBadges.math.src = mathMarkerBadge;
 		markerBadges.locked.src = lockedMarkerBadge;
-		const markerObjects = stageMarkersRef.current.map((marker) => createStageMarker(scene, marker, markerBadges));
+	const markerObjects = stageMarkersRef.current.map((marker) => createStageMarker(scene, marker, markerBadges, stageLayout, sharedStart));
+		const riverEditHandles = riverPoints.map((_, index) => {
+			const handle = new THREE.Mesh(new THREE.SphereGeometry(0.72, 16, 12), new THREE.MeshStandardMaterial({ color: "#54e4f5", emissive: "#087d92", emissiveIntensity: 0.7, roughness: 0.35 }));
+			handle.userData.mapRiverIndex = index;
+			handle.renderOrder = 20;
+			scene.add(handle);
+			return handle;
+		});
+		const startEditHandle = new THREE.Mesh(new THREE.SphereGeometry(0.9, 18, 14), new THREE.MeshStandardMaterial({ color: "#ffd84d", emissive: "#aa6410", emissiveIntensity: 0.65, roughness: 0.3 }));
+		startEditHandle.userData.mapEditorStart = true;
+		startEditHandle.renderOrder = 21;
+		scene.add(startEditHandle);
+		const eraseBrushOutline = new THREE.Mesh(
+			new THREE.RingGeometry(MAP_ERASER_RADIUS - 0.16, MAP_ERASER_RADIUS, 48),
+			new THREE.MeshBasicMaterial({ color: "#ff4d6d", transparent: true, opacity: 0.92, side: THREE.DoubleSide, depthWrite: false }),
+		);
+		eraseBrushOutline.rotation.x = -Math.PI / 2;
+		eraseBrushOutline.visible = false;
+		eraseBrushOutline.renderOrder = 30;
+		scene.add(eraseBrushOutline);
 		const heroAnchor = new THREE.Group();
 		scene.add(heroAnchor);
+		const dialogueAnchors = new Map<Speaker, THREE.Group>();
 		const initialLayers = new Set<LazyAssetLayer>();
 		let progressInitialized = false;
 		let progressLoaded = 0;
@@ -601,10 +922,21 @@ export function IsoWorldScene({
 			if (disposed || progressLoaded >= progressTotal) return;
 			progressLoaded += 1;
 			publishProgress();
+			if (import.meta.env.DEV && !initialReadyLogged && progressLoaded >= progressTotal) {
+				initialReadyLogged = true;
+				console.info("[map-load] initial scene ready", {
+					totalMs: Math.round(performance.now() - mapLoadStartedAt),
+					firstRenderMs: firstRenderAt === null ? null : Math.round(firstRenderAt - mapLoadStartedAt),
+					progressItems: progressTotal,
+				});
+			}
 		};
 		loadProgressRef.current({ loaded: 0, total: progressTotal, complete: false });
 		let loadedHero = "";
+		const loadedDialogueCharacters = new Set<Speaker>();
+		const readyDialogueCharacters = new Set<Speaker>();
 		let disposed = false;
+		let cameraTransitionStarted = 0;
 		let heroPositionInitialized = false;
 		let heroDestinationKey = "";
 		let heroAnimationFrame = 0;
@@ -621,11 +953,14 @@ export function IsoWorldScene({
 			renderer.render(scene, camera);
 			if (progress < 1) heroAnimationFrame = requestAnimationFrame(animateHeroMovement);
 		};
-		const loadHero = (heroKey: "hana" | "yuki" | "momo") => {
+		const loadHero = (heroKey: HeroId) => {
 			if (loadedHero === heroKey) return;
 			loadedHero = heroKey;
 			heroAnchor.clear();
-			new GLTFLoader().load(`/models/heroes/hero-${heroKey}.glb`, (gltf) => {
+			const heroUrl = heroKey === "zelane" ? "/models/heroes/hero-zelane-compressed.glb?v=map-assets-optimized-1" : `/models/heroes/hero-${heroKey}.glb?v=map-assets-optimized-1`;
+			const heroLoadStartedAt = performance.now();
+			gltfLoader.load(heroUrl, (gltf) => {
+				reportGLTFLoad(heroUrl, heroLoadStartedAt);
 				if (disposed) return;
 				const bounds = new THREE.Box3().setFromObject(gltf.scene);
 				const size = bounds.getSize(new THREE.Vector3());
@@ -644,29 +979,225 @@ export function IsoWorldScene({
 				heroAnchor.add(model);
 				completeProgressItem();
 				render();
-			}, undefined, completeProgressItem);
+			}, undefined, () => { reportGLTFLoad(heroUrl, heroLoadStartedAt, true); completeProgressItem(); });
+		};
+		const prepareDialogueActor = (anchor: THREE.Group, key: Speaker) => {
+			if (anchor.userData.dialogueEffectsPrepared) return;
+			anchor.userData.dialogueEffectsPrepared = true;
+			anchor.userData.dialogueMaterials = [];
+			const isKing = key === "king";
+			const targetHeight = 2.25;
+			const glow = isKing ? null : new THREE.PointLight(key === "zelane" ? "#ffd44d" : key === "yuki" ? "#67d8ff" : key === "momo" ? "#c879ff" : "#ff79c5", 0, 4.5, 2);
+			if (glow) {
+				glow.position.set(0, targetHeight * 0.65, 0);
+				anchor.add(glow);
+			}
+			const shadowAura = isKing ? new THREE.Mesh(
+				new THREE.RingGeometry(0.85, 1.35, 40),
+				new THREE.MeshBasicMaterial({ color: "#1c0a2c", transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide }),
+			) : null;
+			if (shadowAura) {
+				shadowAura.rotation.x = -Math.PI / 2;
+				shadowAura.position.y = 0.035;
+				shadowAura.renderOrder = 2;
+				anchor.add(shadowAura);
+			}
+			const auraCanvas = document.createElement("canvas");
+			auraCanvas.width = 128;
+			auraCanvas.height = 128;
+			const auraContext = auraCanvas.getContext("2d");
+			if (auraContext) {
+				const gradient = auraContext.createRadialGradient(64, 64, 4, 64, 64, 62);
+				gradient.addColorStop(0, "rgba(255,255,255,0.55)");
+				gradient.addColorStop(0.35, "rgba(255,255,255,0.22)");
+				gradient.addColorStop(1, "rgba(255,255,255,0)");
+				auraContext.fillStyle = gradient;
+				auraContext.fillRect(0, 0, 128, 128);
+			}
+			const auraTexture = new THREE.CanvasTexture(auraCanvas);
+			const auraSpriteMaterial = new THREE.SpriteMaterial({
+				map: auraTexture,
+				color: isKing ? "#391447" : key === "zelane" ? "#ffe17d" : key === "yuki" ? "#8ce9ff" : key === "momo" ? "#d89aff" : "#ff9bce",
+				transparent: true,
+				opacity: 0,
+				depthWrite: false,
+				blending: isKing ? THREE.NormalBlending : THREE.AdditiveBlending,
+				toneMapped: false,
+			});
+			const auraSprite = new THREE.Sprite(auraSpriteMaterial);
+			auraSprite.position.set(0, targetHeight * 0.58, 0);
+			auraSprite.scale.set(3.0, 3.6, 1);
+			auraSprite.renderOrder = 1;
+			anchor.add(auraSprite);
+			anchor.userData.dialogueGlow = glow;
+			anchor.userData.dialogueShadowAura = shadowAura;
+			anchor.userData.dialogueAuraSprite = auraSprite;
+		};
+		const startDialogueEntrance = (anchor: THREE.Group, key: Speaker) => {
+			if (anchor.userData.dialogueEntranceStarted || dialogueExitingRef.current) return;
+			anchor.userData.dialogueEntranceStarted = true;
+			const startedAt = performance.now();
+			anchor.userData.dialogueEntranceStartedAt = startedAt;
+			const animateEntrance = (now: number) => {
+				if (disposed || dialogueExitingRef.current) return;
+				const progress = Math.min((now - startedAt) / 1500, 1);
+				const eased = progress * progress * (3 - 2 * progress);
+				const materials = anchor.userData.dialogueMaterials as { material: THREE.Material; opacity: number; transparent: boolean; depthWrite: boolean }[];
+				for (const entry of materials) {
+					entry.material.opacity = entry.opacity * eased;
+					if (progress === 1) {
+						entry.material.transparent = entry.transparent;
+						entry.material.depthWrite = entry.depthWrite;
+					}
+				}
+				const glow = anchor.userData.dialogueGlow as THREE.PointLight | null;
+				const shadowAura = anchor.userData.dialogueShadowAura as THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial> | null;
+				const sprite = anchor.userData.dialogueAuraSprite as THREE.Sprite | null;
+				if (glow) glow.intensity = 0.3 + 1.7 * (1 - eased);
+				if (shadowAura) shadowAura.material.opacity = 0.14 + 0.34 * (1 - eased);
+				if (sprite) (sprite.material as THREE.SpriteMaterial).opacity = key === "king" ? 0.2 + 0.35 * (1 - eased) : 0.14 + 0.52 * (1 - eased);
+				renderer.render(scene, camera);
+				if (progress < 1) requestAnimationFrame(animateEntrance);
+				else anchor.userData.dialogueEntranceFinished = true;
+			};
+			requestAnimationFrame(animateEntrance);
+		};
+		const resetDialogueActor = (anchor: THREE.Group) => {
+			anchor.userData.dialogueEntranceStarted = false;
+			anchor.userData.dialogueEntranceFinished = false;
+			const materials = anchor.userData.dialogueMaterials as { material: THREE.Material; opacity: number; transparent: boolean; depthWrite: boolean }[];
+			for (const entry of materials) {
+				entry.material.opacity = 0;
+				entry.material.transparent = true;
+				entry.material.depthWrite = false;
+			}
+			const glow = anchor.userData.dialogueGlow as THREE.PointLight | null;
+			if (glow) glow.intensity = 0;
+			const shadowAura = anchor.userData.dialogueShadowAura as THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial> | null;
+			if (shadowAura) shadowAura.material.opacity = 0;
+			const sprite = anchor.userData.dialogueAuraSprite as THREE.Sprite | null;
+			if (sprite) (sprite.material as THREE.SpriteMaterial).opacity = 0;
+		};
+		const loadDialogueCast = (characters: Speaker[], playerHero: HeroId, focus: THREE.Vector3 | null) => {
+			const cast = [...new Set(characters)].filter((speaker) => speaker !== playerHero);
+			for (const [speaker, anchor] of dialogueAnchors) {
+				anchor.visible = Boolean(focus && cinematicRef.current && cast.includes(speaker));
+			}
+			if (!focus || !cinematicRef.current) return;
+			cast.forEach((key, index) => {
+				let anchor = dialogueAnchors.get(key);
+				if (!anchor) {
+					anchor = new THREE.Group();
+					anchor.visible = false;
+					scene.add(anchor);
+					dialogueAnchors.set(key, anchor);
+				}
+				prepareDialogueActor(anchor, key);
+				// Stage speakers to the camera's right so they remain clearly visible
+				// beside the hero instead of overlapping or hiding behind them.
+				const lateralOffset = 1.8 + index * 1.55;
+				const x = focus.x + lateralOffset * 0.55;
+				const z = focus.z + lateralOffset * 0.83;
+				anchor.position.set(x, terrainHeight(x, z) + 0.05, z);
+				// Dialogue models have a local forward offset of -PI/2, so compensate
+				// at the anchor to keep every speaker looking toward the hero.
+				anchor.rotation.y = Math.atan2(heroAnchor.position.x - x, heroAnchor.position.z - z) + Math.PI / 2;
+				anchor.visible = true;
+				anchor.scale.setScalar(1);
+				if (loadedDialogueCharacters.has(key)) return;
+				loadedDialogueCharacters.add(key);
+				const modelUrl = key === "mochi"
+					? "/models/dialogue/mochi.glb?v=map-assets-optimized-1"
+					: key === "king"
+						? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1"
+						: key === "zelane"
+							? "/models/heroes/hero-zelane-compressed.glb?v=map-assets-optimized-1"
+						: `/models/heroes/hero-${key}.glb?v=map-assets-optimized-1`;
+				const dialogueLoadStartedAt = performance.now();
+				gltfLoader.load(modelUrl, (gltf) => {
+					reportGLTFLoad(modelUrl, dialogueLoadStartedAt);
+					if (disposed) return;
+				const bounds = new THREE.Box3().setFromObject(gltf.scene);
+				const size = bounds.getSize(new THREE.Vector3());
+				const center = bounds.getCenter(new THREE.Vector3());
+				if (size.y <= 0) {
+					readyDialogueCharacters.add(key);
+					render();
+					return;
+				}
+				const model = gltf.scene.clone(true);
+				const targetHeight = 2.25;
+				const scale = targetHeight / size.y;
+				model.scale.setScalar(scale);
+				model.position.set(-center.x * scale, -bounds.min.y * scale, -center.z * scale);
+				model.rotation.y = -Math.PI / 2;
+				const dialogueMaterials: { material: THREE.Material; opacity: number; transparent: boolean; depthWrite: boolean }[] = [];
+				model.traverse((object) => {
+					if (!(object instanceof THREE.Mesh)) return;
+					object.castShadow = true;
+					object.receiveShadow = true;
+					const materials = Array.isArray(object.material) ? object.material : [object.material];
+					const clonedMaterials = materials.map((material) => {
+						const clone = material.clone();
+						dialogueMaterials.push({ material: clone, opacity: clone.opacity, transparent: clone.transparent, depthWrite: clone.depthWrite });
+						clone.transparent = true;
+						clone.depthWrite = false;
+						clone.opacity = 0;
+						return clone;
+					});
+					object.material = Array.isArray(object.material) ? clonedMaterials : clonedMaterials[0];
+				});
+				anchor?.add(model);
+				if (anchor) {
+					anchor.userData.dialogueMaterials = dialogueMaterials;
+					readyDialogueCharacters.add(key);
+				}
+				render();
+			}, undefined, () => { reportGLTFLoad(modelUrl, dialogueLoadStartedAt, true); readyDialogueCharacters.add(key); render(); });
+			});
 		};
 		const assetLayers = new Map<string, LazyAssetLayer>();
+		const placedDecorations = new Map<string, THREE.Group>();
+		const decorationSources = new Map<string, Promise<{ source: THREE.Group; bounds: THREE.Box3 }>>();
+		const loadDecorationSource = (url: string) => {
+			let pending = decorationSources.get(url);
+			if (!pending) {
+				const decorationLoadStartedAt = performance.now();
+				pending = new Promise((resolve, reject) => gltfLoader.load(url, (gltf) => {
+					reportGLTFLoad(url, decorationLoadStartedAt);
+					gltf.scene.updateMatrixWorld(true);
+					resolve({ source: gltf.scene, bounds: new THREE.Box3().setFromObject(gltf.scene) });
+				}, undefined, (error) => { reportGLTFLoad(url, decorationLoadStartedAt, true); reject(error); }));
+				decorationSources.set(url, pending);
+			}
+			return pending;
+		};
 		const addLayer = (url: string, placements: AssetPlacement[]) => {
-			const layer = assetLayers.get(url) ?? { url, placements: [], loaded: new Set<number>(), pending: new Set<number>(), loading: false, placing: false };
+			const layer = assetLayers.get(url) ?? { url, placements: [], models: new Map<number, THREE.Group>(), loaded: new Set<number>(), pending: new Set<number>(), loading: false, placing: false };
 			layer.placements.push(...placements);
 			assetLayers.set(url, layer);
 		};
 		const one = (x: number, z: number, height: number, rotation = 0): AssetPlacement[] => [[x, z, height, rotation]];
 		// Each model type is requested only when at least one of its instances is near the viewport.
-		addLayer("/models/reading-tree.glb", one(2, 12, 4.4));
-		addLayer("/models/reading-bookstone.glb", one(4, 9, 2.8));
-		addLayer("/models/math-abacus.glb", one(45, 10, 3.1));
-		addLayer("/models/math-crystals.glb", one(56, 8, 3.6));
+		addLayer("/models/reading-tree.glb", one(...landmarks.readingTree, 4.4, assetRotations.readingTree ?? 0));
+		addLayer("/models/map-blossom-tree.glb", one(...landmarks.readingBlossom, 4.0, assetRotations.readingBlossom ?? 0));
+		addLayer("/models/storybook-reading-arch.glb", one(...landmarks.readingArch, 3.5, 1.0 + (assetRotations.readingArch ?? 0)));
+		addLayer("/models/storybook-tree-library.glb", one(...landmarks.readingTreeLibrary, 4.2, assetRotations.readingTreeLibrary ?? 0));
+		addLayer("/models/reading-bookstone.glb", one(...landmarks.readingBookstone, 2.8, assetRotations.readingBookstone ?? 0));
+		addLayer("/models/reading-mushroom-cluster.glb", one(...landmarks.readingMushrooms, 4.0, assetRotations.readingMushrooms ?? 0));
+		addLayer("/models/math-abacus.glb", one(...landmarks.mathAbacus, 3.1, Math.PI / 2 + (assetRotations.mathAbacus ?? 0)));
+		addLayer("/models/math-crystals.glb", one(...landmarks.mathCrystals, 3.6, assetRotations.mathCrystals ?? 0));
+		// Illustrated book and abacus arrows mark the two routes at their shared start.
+		addLayer("/models/direction-signpost.glb", one(...MAP_DIRECTION_SIGN_POSITION, 4.0));
 		addLayer("/models/forest-tree.glb", scatterProps("forest", 46, 71, 3.0));
-		// A dense grove sits between the close reading stages and the trail loops around it on both sides.
+		// A dense grove sits north of the western reading route.
 		addLayer("/models/forest-tree.glb", [
-			[2, 18, 3.8, 0.2, 1.05, 1.05], [4, 20, 3.7, -0.4, 1.05, 1.05],
-			[3, 23, 3.8, 0.5, 1.05, 1.1], [5, 25, 3.6, -0.2, 1.05, 1],
+			[16, 49, 3.8, 0.2, 1.05, 1.05], [19, 52, 3.7, -0.4, 1.05, 1.05],
+			[22, 50, 3.8, 0.5, 1.05, 1.1], [25, 53, 3.6, -0.2, 1.05, 1],
 		]);
 		addLayer("/models/forest-understory.glb", [
-			[2.5, 20.5, 1.05, 0.3, 1.05, 1.05], [4.5, 22.5, 1.1, 1.1, 1.05, 1.05],
-			[3, 26, 1.05, -0.4, 1.05, 1.05],
+			[16.5, 52, 1.05, 0.3, 1.05, 1.05], [20.5, 54, 1.1, 1.1, 1.05, 1.05],
+			[23, 56, 1.05, -0.4, 1.05, 1.05],
 		]);
 		addLayer("/models/mountain-fir.glb", scatterProps("mountain", 32, 197, 3.0));
 		addLayer("/models/map-forest-flower-patch.glb", [
@@ -681,41 +1212,48 @@ export function IsoWorldScene({
 			...scatterProps("forest", 20, 1301, 3.2),
 			...scatterProps("mountain", 30, 1307, 3.1),
 		]);
-		addLayer("/models/storybook-cottage.glb", one(4, 45, 3.2));
-		addLayer("/models/mountain-observatory.glb", one(55, 43, 3.8));
+		addLayer("/models/storybook-cottage.glb", one(...landmarks.storybookCottage, 3.2, assetRotations.storybookCottage ?? 0));
+		addLayer("/models/mountain-observatory.glb", one(...landmarks.mountainObservatory, 3.8, assetRotations.mountainObservatory ?? 0));
 		// This TRELLIS.2 segment has an open channel along local Z. Orient its open
 		// ends along the winding course and overlap neighboring banks slightly.
-		const creekPlacements: [number, number, number, number, number, number][] = [];
-		const creekCurve = new THREE.CatmullRomCurve3(MAP_RIVER_POINTS.map(([x, z]) => new THREE.Vector3(x, 0, z)), false, "centripetal");
+		const woodlandCreekPlacements: [number, number, number, number, number, number][] = [];
+		const mountainCreekPlacements: [number, number, number, number, number, number][] = [];
+		const creekCurve = new THREE.CatmullRomCurve3(riverPoints.map(([x, z]) => new THREE.Vector3(x, 0, z)), false, "centripetal");
 		const riverBankPlacements: [number, number, number, number, number, number][] = [];
 		for (let distance = 5; distance < creekCurve.getLength(); distance += 7.5) {
 			const t = distance / creekCurve.getLength();
 			const point = creekCurve.getPointAt(t);
 			const tangent = creekCurve.getTangentAt(t);
+			const mountainBlend = mountainBlendAt(point.x, point.z);
 			const bankOffset = new THREE.Vector3(-tangent.z, 0, tangent.x).multiplyScalar(1.35);
 			const rotation = Math.atan2(-tangent.z, tangent.x);
-			for (const side of [-1, 1]) {
-				const x = point.x + bankOffset.x * side;
-				const z = point.z + bankOffset.z * side;
-				if (MAP_BRIDGE_POSITIONS.some(([bridgeX, bridgeZ]) => Math.hypot(x - bridgeX, z - bridgeZ) < 3.2)) continue;
-				riverBankPlacements.push([x, z, 1.15, rotation + (side * 0.15), 1.1, 0.9]);
+			if (mountainBlend < 0.5) {
+				for (const side of [-1, 1]) {
+					const x = point.x + bankOffset.x * side;
+					const z = point.z + bankOffset.z * side;
+					if (MAP_BRIDGE_POSITIONS.some(([bridgeX, bridgeZ]) => Math.hypot(x - bridgeX, z - bridgeZ) < 3.2)) continue;
+					riverBankPlacements.push([x, z, 1.15, rotation + (side * 0.15), 1.1, 0.9]);
+				}
 			}
 		}
 		addLayer("/models/map-riverbank-rock-cluster.glb", riverBankPlacements);
-		// The reading trail crosses the creek on the southern loop; this bridge
-		// keeps that route walkable and sits directly in the 3D scene.
+		// The western reading trail crosses the creek once at its stone bridge.
 		for (const [bridgeX, bridgeZ] of MAP_BRIDGE_POSITIONS) {
-			addLayer("/models/map-woodland-footbridge.glb", one(bridgeX, bridgeZ, 2.7, 0.48));
+			addLayer("/models/map-woodland-footbridge.glb", one(bridgeX, bridgeZ, 2.7, MAP_BRIDGE_ROTATION));
 		}
 		for (let distance = 0; distance <= creekCurve.getLength(); distance += 4.1) {
 			const point = creekCurve.getPointAt(distance / creekCurve.getLength());
 			const tangent = creekCurve.getTangentAt(distance / creekCurve.getLength());
-			creekPlacements.push([point.x, point.z, 0.75, Math.atan2(tangent.x, tangent.z), 1, 0.55]);
+			const placement: [number, number, number, number, number, number] = [point.x, point.z, 0.75, Math.atan2(tangent.x, tangent.z), 1, 0.55];
+			const mountainBlend = mountainBlendAt(point.x, point.z);
+			(mountainBlend >= 0.5 ? mountainCreekPlacements : woodlandCreekPlacements).push(placement);
 		}
-		addLayer("/models/creek-open-segment-v2.glb", creekPlacements);
+		addLayer("/models/creek-open-segment-v2.glb", woodlandCreekPlacements);
+		addLayer("/models/mountain-creek-segment.glb", mountainCreekPlacements);
 
 		const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 220);
 		const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "low-power" });
+		const gltfLoader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 		renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
 		renderer.shadowMap.enabled = true;
 		renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -729,10 +1267,13 @@ export function IsoWorldScene({
 		const raycaster = new THREE.Raycaster();
 		const pointer = new THREE.Vector2();
 		let pointerDown: { x: number; y: number; left: number; top: number } | null = null;
+		let activeEditorTarget: MapEditorSelection | null = null;
+		let activePainting = false;
+		let eraserCursorOnMap = false;
 		let dragged = false;
 		let hoveredMarker: SceneStageMarker | null = null;
 		const stateForMarker = (marker: SceneStageMarker) => {
-			const stage = marker.group.userData.stageMarker as { region: "reading" | "math"; index: number };
+			const stage = marker.group.userData.stageMarker as { region: "reading" | "math" | "intro"; index: number };
 			return stageMarkersRef.current.find((item) => item.region === stage.region && item.index === stage.index);
 		};
 		const setHoveredMarker = (next: SceneStageMarker | null) => {
@@ -757,18 +1298,121 @@ export function IsoWorldScene({
 			const hit = raycaster.intersectObjects(markerObjects.map((marker) => marker.group), true)[0]?.object;
 			let markerGroup: THREE.Object3D | null = hit ?? null;
 			while (markerGroup && !markerGroup.userData.stageMarker) markerGroup = markerGroup.parent;
-			const stage = markerGroup?.userData.stageMarker as { region: "reading" | "math"; index: number } | undefined;
+			const stage = markerGroup?.userData.stageMarker as { region: "reading" | "math" | "intro"; index: number } | undefined;
 			if (!stage) return null;
 			return markerObjects.find((marker) => marker.group === markerGroup) ?? null;
 		};
+		const setRayFromPointer = (clientX: number, clientY: number) => {
+			const rect = renderer.domElement.getBoundingClientRect();
+			pointer.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1);
+			raycaster.setFromCamera(pointer, camera);
+		};
+		const findGroundAtPointer = (clientX: number, clientY: number) => {
+			setRayFromPointer(clientX, clientY);
+			const terrain = scene.userData.terrainMesh as THREE.Mesh;
+			return raycaster.intersectObject(terrain, false)[0]?.point ?? null;
+		};
+		const updateEraserCursor = (clientX: number, clientY: number) => {
+			const point = findGroundAtPointer(clientX, clientY);
+			if (!point) { eraserCursorOnMap = false; eraseBrushOutline.visible = false; return; }
+			eraserCursorOnMap = true;
+			eraseBrushOutline.position.set(point.x, terrainHeight(point.x, point.z) + 0.075, point.z);
+			eraseBrushOutline.visible = editorModeRef.current && paintModeRef.current === "erase";
+			renderer.render(scene, camera);
+		};
+		const eraseSceneryAt = (x: number, z: number) => {
+			const erased: string[] = [];
+			for (const layer of assetLayers.values()) {
+				for (const model of layer.models.values()) {
+					const id = model.userData.mapErasableId as string | undefined;
+					if (!id || !model.visible) continue;
+					const modelX = model.userData.mapX as number;
+					const modelZ = model.userData.mapZ as number;
+					if (Math.hypot(modelX - x, modelZ - z) <= MAP_ERASER_RADIUS) {
+						setInstanceVisible(model, false);
+						erased.push(id);
+					}
+				}
+			}
+			if (erased.length) editorEraseRef.current(erased);
+		};
+		const findEditorTargetAtPointer = (clientX: number, clientY: number): MapEditorSelection | null => {
+			setRayFromPointer(clientX, clientY);
+			for (const intersection of raycaster.intersectObjects(scene.children, true)) {
+				let object: THREE.Object3D | null = intersection.object;
+				while (object) {
+					if (object.userData.mapAssetKey) return { kind: "asset", key: object.userData.mapAssetKey as keyof typeof MAP_LANDMARKS, index: 0 };
+					if (object.userData.mapRiverIndex !== undefined) return { kind: "river", index: object.userData.mapRiverIndex as number };
+					if (object.userData.mapEditorStart) return { kind: "start", index: 0 };
+					if (object.userData.stageMarker) {
+						const stage = object.userData.stageMarker as { region: "reading" | "math" | "intro"; index: number };
+						return stage.region === "intro" ? { kind: "start", index: 0 } : { kind: "stage", region: stage.region, index: stage.index };
+					}
+					object = object.parent;
+				}
+			}
+			return null;
+		};
+		const moveEditorTargetAtPointer = (target: MapEditorSelection, clientX: number, clientY: number) => {
+			const point = findGroundAtPointer(clientX, clientY);
+			if (!point) return;
+			editorMoveRef.current(target, THREE.MathUtils.clamp(point.x, 0, WORLD_WIDTH), THREE.MathUtils.clamp(point.z, 0, WORLD_DEPTH));
+		};
 		const onCanvasPointerDown = (event: PointerEvent) => {
 			if (event.pointerType !== "mouse" || event.button !== 0) return;
+			if (editorModeRef.current) {
+				if (paintModeRef.current !== "select") {
+					activePainting = true;
+					event.preventDefault();
+					renderer.domElement.setPointerCapture(event.pointerId);
+					editorSelectRef.current(null);
+					const point = findGroundAtPointer(event.clientX, event.clientY);
+					if (point) {
+						if (paintModeRef.current === "erase") updateEraserCursor(event.clientX, event.clientY);
+						const x = THREE.MathUtils.clamp(point.x, 0, WORLD_WIDTH);
+						const z = THREE.MathUtils.clamp(point.z, 0, WORLD_DEPTH);
+						editorPaintRef.current(x, z, "start");
+						if (paintModeRef.current === "erase") eraseSceneryAt(x, z);
+					}
+					return;
+				}
+				activeEditorTarget = findEditorTargetAtPointer(event.clientX, event.clientY);
+				if (activeEditorTarget) {
+					event.preventDefault();
+					renderer.domElement.setPointerCapture(event.pointerId);
+					editorSelectRef.current(activeEditorTarget);
+					renderer.domElement.style.cursor = "grabbing";
+					return;
+				}
+				editorSelectRef.current(null);
+			}
 			pointerDown = { x: event.clientX, y: event.clientY, left: scroll.scrollLeft, top: scroll.scrollTop };
 			dragged = false;
 			renderer.domElement.style.cursor = "grabbing";
 			renderer.domElement.setPointerCapture(event.pointerId);
 		};
 		const onCanvasPointerMove = (event: PointerEvent) => {
+			if (editorModeRef.current && activePainting) {
+				const point = findGroundAtPointer(event.clientX, event.clientY);
+				if (point) {
+					if (paintModeRef.current === "erase") updateEraserCursor(event.clientX, event.clientY);
+					const x = THREE.MathUtils.clamp(point.x, 0, WORLD_WIDTH);
+					const z = THREE.MathUtils.clamp(point.z, 0, WORLD_DEPTH);
+					editorPaintRef.current(x, z, "move");
+					if (paintModeRef.current === "erase") eraseSceneryAt(x, z);
+				}
+				return;
+			}
+			if (editorModeRef.current && activeEditorTarget) {
+				moveEditorTargetAtPointer(activeEditorTarget, event.clientX, event.clientY);
+				return;
+			}
+			if (editorModeRef.current && !pointerDown) {
+				if (paintModeRef.current === "erase") updateEraserCursor(event.clientX, event.clientY);
+				else { eraserCursorOnMap = false; eraseBrushOutline.visible = false; }
+				renderer.domElement.style.cursor = findEditorTargetAtPointer(event.clientX, event.clientY) ? "grab" : "default";
+				return;
+			}
 			if (pointerDown) {
 				const dx = event.clientX - pointerDown.x;
 				const dy = event.clientY - pointerDown.y;
@@ -784,17 +1428,28 @@ export function IsoWorldScene({
 			setHoveredMarker(findMarkerAtPointer(event.clientX, event.clientY));
 		};
 		const onCanvasPointerUp = (event: PointerEvent) => {
+			if (activePainting) {
+				activePainting = false;
+				editorPaintRef.current(0, 0, "end");
+			}
+			if (activeEditorTarget) {
+				activeEditorTarget = null;
+				renderer.domElement.style.cursor = "grab";
+			}
 			pointerDown = null;
 			setHoveredMarker(findMarkerAtPointer(event.clientX, event.clientY));
 		};
 		const onCanvasPointerLeave = () => {
 			if (pointerDown) return;
+			eraserCursorOnMap = false;
+			eraseBrushOutline.visible = false;
 			setHoveredMarker(null);
 		};
 		const onCanvasClick = (event: MouseEvent) => {
+			if (editorModeRef.current) { dragged = false; return; }
 			if (dragged) { dragged = false; return; }
 			const marker = findMarkerAtPointer(event.clientX, event.clientY);
-			const stage = marker?.group.userData.stageMarker as { region: "reading" | "math"; index: number } | undefined;
+			const stage = marker?.group.userData.stageMarker as { region: "reading" | "math" | "intro"; index: number } | undefined;
 			if (!stage) return;
 			const state = stageMarkersRef.current.find((item) => item.region === stage.region && item.index === stage.index);
 			if (state?.unlocked) stageClickRef.current(stage.region, stage.index);
@@ -807,21 +1462,270 @@ export function IsoWorldScene({
 		renderer.domElement.addEventListener("click", onCanvasClick);
 
 		const viewportBounds = { centerX: 0, centerZ: 0, halfWidth: 0, halfDepth: 0 };
+		let previousLayoutSignature = "";
+		const syncInstance = (layer: LazyAssetLayer | undefined, index: number, placement: AssetPlacement) => {
+			if (!layer) return;
+			const previous = layer.placements[index];
+			const model = layer.models.get(index);
+			if (model && previous) {
+				const [x, z, , rotation = 0] = placement;
+				const [oldX, oldZ] = previous;
+				model.position.x += x - oldX;
+				model.position.z += z - oldZ;
+				model.position.y += terrainHeight(x, z) - terrainHeight(oldX, oldZ);
+				model.rotation.y = rotation;
+				model.userData.mapX = x;
+				model.userData.mapZ = z;
+				model.visible = !model.userData.mapErasableId || !layoutRef.current.erasedDecorations.includes(model.userData.mapErasableId as string);
+			}
+			layer.placements[index] = placement;
+		};
+		const syncEditedLayout = () => {
+			const current = layoutRef.current;
+			const signature = JSON.stringify(current);
+			if (signature === previousLayoutSignature) return;
+			previousLayoutSignature = signature;
+			const assetModels: [string, keyof typeof MAP_LANDMARKS, number, number][] = [
+				["/models/reading-tree.glb", "readingTree", 4.4, 0], ["/models/map-blossom-tree.glb", "readingBlossom", 4, 0],
+				["/models/storybook-reading-arch.glb", "readingArch", 3.5, 1], ["/models/storybook-tree-library.glb", "readingTreeLibrary", 4.2, 0],
+				["/models/reading-bookstone.glb", "readingBookstone", 2.8, 0], ["/models/reading-mushroom-cluster.glb", "readingMushrooms", 4, 0],
+				["/models/math-abacus.glb", "mathAbacus", 3.1, Math.PI / 2], ["/models/math-crystals.glb", "mathCrystals", 3.6, 0],
+				["/models/storybook-cottage.glb", "storybookCottage", 3.2, 0], ["/models/mountain-observatory.glb", "mountainObservatory", 3.8, 0],
+			];
+			for (const [url, key, height, baseRotation] of assetModels) {
+				const [x, z] = current.landmarks[key];
+				syncInstance(assetLayers.get(url), 0, [x, z, height, baseRotation + (current.assetRotations[key] ?? 0)]);
+			}
+			for (const marker of markerObjects) {
+				const data = marker.group.userData.stageMarker as { region: "reading" | "math" | "intro"; index: number };
+				marker.group.position.copy(markerWorldPosition(data.region, data.index, current.stageLayout, current.sharedStart));
+			}
+			for (const [index, handle] of riverEditHandles.entries()) {
+				const point = current.riverPoints[index];
+				if (point) handle.position.set(point[0], terrainHeight(point[0], point[1]) + 1.15, point[1]);
+			}
+			startEditHandle.position.set(current.sharedStart[0], terrainHeight(current.sharedStart[0], current.sharedStart[1]) + 1.3, current.sharedStart[1]);
+			const routeMeshes = scene.userData.routeMeshes as (THREE.Mesh | null)[];
+			for (const [routeIndex, region] of (["reading", "math"] as const).entries()) {
+				const stages = current.stageLayout?.[region] ?? (region === "reading" ? READING_STOPS : MATH_STOPS).map(([u, v]) => [u * WORLD_WIDTH, v * WORLD_DEPTH]);
+				const points = [[...current.sharedStart], ...stages].map(([x, z]) => new THREE.Vector3(x, terrainHeight(x, z), z));
+				const oldMesh = routeMeshes[routeIndex];
+				if (oldMesh) {
+					const routeMaterial = Array.isArray(oldMesh.material) ? oldMesh.material[0] : oldMesh.material;
+					const replacement = makePathRibbon(scene, points, 0.9, routeMaterial, 0.09, 2.0);
+					scene.remove(oldMesh);
+					oldMesh.geometry.dispose();
+					routeMeshes[routeIndex] = replacement;
+				}
+			}
+			const creekCurve = new THREE.CatmullRomCurve3(current.riverPoints.map(([x, z]) => new THREE.Vector3(x, 0, z)), false, "centripetal");
+			const creekTargets: Record<string, AssetPlacement[]> = { "/models/creek-open-segment-v2.glb": [], "/models/mountain-creek-segment.glb": [], "/models/map-riverbank-rock-cluster.glb": [] };
+			for (let distance = 0; distance <= creekCurve.getLength(); distance += 4.1) {
+				const t = distance / creekCurve.getLength();
+				const point = creekCurve.getPointAt(t);
+				const tangent = creekCurve.getTangentAt(t);
+				const placement: AssetPlacement = [point.x, point.z, 0.75, Math.atan2(tangent.x, tangent.z), 1, 0.55];
+				const url = mountainBlendAt(point.x, point.z) >= 0.5 ? "/models/mountain-creek-segment.glb" : "/models/creek-open-segment-v2.glb";
+				creekTargets[url].push(placement);
+			}
+		for (let distance = 5; distance < creekCurve.getLength(); distance += 7.5) {
+				const t = distance / creekCurve.getLength();
+				const point = creekCurve.getPointAt(t);
+				const tangent = creekCurve.getTangentAt(t);
+				if (mountainBlendAt(point.x, point.z) >= 0.5) continue;
+				const bankOffset = new THREE.Vector3(-tangent.z, 0, tangent.x).multiplyScalar(1.35);
+				const rotation = Math.atan2(-tangent.z, tangent.x);
+				for (const side of [-1, 1]) {
+					const x = point.x + bankOffset.x * side;
+					const z = point.z + bankOffset.z * side;
+					if (!MAP_BRIDGE_POSITIONS.some(([bridgeX, bridgeZ]) => Math.hypot(x - bridgeX, z - bridgeZ) < 3.2)) creekTargets["/models/map-riverbank-rock-cluster.glb"].push([x, z, 1.15, rotation + side * 0.15, 1.1, 0.9]);
+				}
+			}
+			for (const [url, placements] of Object.entries(creekTargets)) {
+				const layer = assetLayers.get(url);
+				if (!layer) continue;
+				placements.forEach((placement, index) => syncInstance(layer, index, placement));
+				for (const [index, model] of layer.models) if (index >= placements.length) model.visible = false;
+			}
+			const erasedIds = new Set(current.erasedDecorations);
+			for (const layer of assetLayers.values()) {
+				for (const model of layer.models.values()) {
+					const erasedId = model.userData.mapErasableId as string | undefined;
+					if (erasedId && erasedIds.has(erasedId)) setInstanceVisible(model, false);
+				}
+			}
+			const decorationIds = new Set(current.decorations.map((item) => item.id));
+			for (const [id, model] of placedDecorations) {
+				if (decorationIds.has(id)) continue;
+				scene.remove(model);
+				placedDecorations.delete(id);
+			}
+			for (const decoration of current.decorations) {
+				const existing = placedDecorations.get(decoration.id);
+				if (existing) {
+					const oldX = existing.userData.mapX as number;
+					const oldZ = existing.userData.mapZ as number;
+					existing.position.x += decoration.x - oldX;
+					existing.position.z += decoration.z - oldZ;
+					existing.position.y += terrainHeight(decoration.x, decoration.z) - terrainHeight(oldX, oldZ);
+					existing.rotation.y = decoration.rotation;
+					existing.userData.mapX = decoration.x;
+					existing.userData.mapZ = decoration.z;
+					continue;
+				}
+				void loadDecorationSource(decoration.modelUrl).then(({ source, bounds }) => {
+					if (disposed || !layoutRef.current.decorations.some((item) => item.id === decoration.id)) return;
+					const baseHeight = decoration.kind === "tree" ? 3.4 : decoration.kind === "flower" ? 1.5 : decoration.kind === "rock" ? 1.6 : 1.7;
+					const model = placeModel(scene, source, bounds, decoration.x, decoration.z, baseHeight * decoration.scale, decoration.rotation);
+					if (!model) return;
+					model.userData.mapDecorationId = decoration.id;
+					model.userData.mapX = decoration.x;
+					model.userData.mapZ = decoration.z;
+					placedDecorations.set(decoration.id, model);
+					render();
+				}).catch((error: unknown) => console.warn(`Impossible de charger le décor ${decoration.modelUrl}`, error));
+			}
+		};
+		let cameraPoseInitialized = false;
+		let previousCinematic: boolean | null = null;
+		let cameraTransitionFrame = 0;
+		let dialogueExitFrame = 0;
+		const cameraFromPosition = new THREE.Vector3();
+		const cameraToPosition = new THREE.Vector3();
+		const cameraFromLookAt = new THREE.Vector3();
+		const cameraToLookAt = new THREE.Vector3();
+		const cameraLookAt = new THREE.Vector3();
+		const animateCamera = (now: number) => {
+			if (disposed) return;
+			const rawProgress = Math.min((now - cameraTransitionStarted) / 1500, 1);
+			const eased = rawProgress * rawProgress * (3 - 2 * rawProgress);
+			camera.position.lerpVectors(cameraFromPosition, cameraToPosition, eased);
+			cameraLookAt.lerpVectors(cameraFromLookAt, cameraToLookAt, eased);
+			camera.lookAt(cameraLookAt);
+			renderer.render(scene, camera);
+			if (rawProgress < 1) cameraTransitionFrame = requestAnimationFrame(animateCamera);
+			else cameraTransitionFrame = 0;
+		};
+		const animateDialogueExit = () => {
+			dialogueExitFrame = 0;
+			if (disposed) return;
+			let stillVisible = false;
+			for (const anchor of dialogueAnchors.values()) {
+				const materials = anchor.userData.dialogueMaterials as { material: THREE.Material }[] | undefined;
+				for (const entry of materials ?? []) {
+					entry.material.transparent = true;
+					entry.material.depthWrite = false;
+					entry.material.opacity *= 0.78;
+					if (entry.material.opacity > 0.035) stillVisible = true;
+				}
+				const glow = anchor.userData.dialogueGlow as THREE.PointLight | null;
+				if (glow) glow.intensity *= 0.78;
+				const aura = anchor.userData.dialogueShadowAura as THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial> | null;
+				if (aura) aura.material.opacity *= 0.78;
+				const sprite = anchor.userData.dialogueAuraSprite as THREE.Sprite | null;
+				if (sprite) (sprite.material as THREE.SpriteMaterial).opacity *= 0.78;
+				if (!materials?.some((entry) => entry.material.opacity > 0.035)) anchor.visible = false;
+				else stillVisible = true;
+			}
+			renderer.render(scene, camera);
+			if (stillVisible) dialogueExitFrame = requestAnimationFrame(animateDialogueExit);
+		};
 		const render = () => {
 			const width = host.clientWidth || window.innerWidth;
 			const height = host.clientHeight || window.innerHeight;
 			camera.aspect = width / height;
 			camera.updateProjectionMatrix();
-			const centerX = (scroll.scrollLeft + width / 2) / WORLD_SCALE;
-			const centerZ = (scroll.scrollTop + height / 2) / (WORLD_SCALE * WORLD_PITCH);
-			// A perspective lens adds depth to the diorama while keeping the
-			// selected stage at the center of the viewport during map scrolling.
-			camera.position.set(centerX, 21.5, centerZ + 16);
-			camera.lookAt(centerX, 0, centerZ);
+			syncEditedLayout();
+			for (const handle of riverEditHandles) handle.visible = editorModeRef.current;
+			startEditHandle.visible = editorModeRef.current;
+			if (paintModeRef.current !== "erase" || !editorModeRef.current) eraserCursorOnMap = false;
+			eraseBrushOutline.visible = editorModeRef.current && paintModeRef.current === "erase" && eraserCursorOnMap;
+			const current = stageMarkersRef.current.find((marker) => marker.current);
+			const isCinematic = cinematicRef.current && Boolean(current);
+			const focus = current ? markerWorldPosition(current.region, current.index, stageLayout, sharedStart) : null;
+			if (current) {
+				const destinationKey = `${current.region}-${current.index}`;
+				const heroPosition = markerWorldPosition(current.region, current.index, stageLayout, sharedStart);
+				heroPosition.y += 0.22;
+				heroAnchor.visible = true;
+				if (isCinematic) {
+					if (heroAnimationFrame) cancelAnimationFrame(heroAnimationFrame);
+					heroAnimationFrame = 0;
+					heroAnchor.position.copy(heroPosition);
+					heroPositionInitialized = true;
+					heroDestinationKey = destinationKey;
+				} else if (!heroPositionInitialized) {
+					heroAnchor.position.copy(heroPosition);
+					heroPositionInitialized = true;
+					heroDestinationKey = destinationKey;
+				} else if (destinationKey !== heroDestinationKey) {
+					heroDestinationKey = destinationKey;
+					heroAnimationStart.copy(heroAnchor.position);
+					heroAnimationTarget.copy(heroPosition);
+					heroAnimationStartedAt = performance.now();
+					if (heroAnimationFrame) cancelAnimationFrame(heroAnimationFrame);
+					heroAnimationFrame = requestAnimationFrame(animateHeroMovement);
+				}
+			} else {
+				heroAnchor.visible = false;
+			}
+			loadDialogueCast(dialogueCharactersRef.current, heroRef.current, isCinematic ? focus : null);
+			const castReady = dialogueCharactersRef.current
+				.filter((speaker) => speaker !== heroRef.current)
+				.every((speaker) => readyDialogueCharacters.has(speaker));
+			const centerX = isCinematic && focus ? focus.x : (scroll.scrollLeft + width / 2) / WORLD_SCALE;
+			const centerZ = isCinematic && focus ? focus.z : (scroll.scrollTop + height / 2) / (WORLD_SCALE * WORLD_PITCH);
+			const mapCameraPosition = new THREE.Vector3(centerX, 21.5, centerZ + 16);
+			const mapCameraLookAt = new THREE.Vector3(centerX, 0, centerZ);
+			const desiredCameraPosition = isCinematic && focus
+				? new THREE.Vector3(focus.x - 7.6, focus.y + 4.25, focus.z + 5)
+				: mapCameraPosition;
+			const desiredCameraLookAt = isCinematic && focus
+				? new THREE.Vector3(focus.x, focus.y + 1.05, focus.z)
+				: mapCameraLookAt;
+			if (!cameraPoseInitialized) {
+				cameraPoseInitialized = true;
+				camera.position.copy(mapCameraPosition);
+				camera.lookAt(mapCameraLookAt);
+				cameraLookAt.copy(mapCameraLookAt);
+				previousCinematic = false;
+			}
+			if (previousCinematic !== isCinematic && (!isCinematic || castReady)) {
+				if (cameraTransitionFrame) cancelAnimationFrame(cameraTransitionFrame);
+				if (isCinematic && dialogueExitFrame) {
+					cancelAnimationFrame(dialogueExitFrame);
+					dialogueExitFrame = 0;
+				}
+				cameraFromPosition.copy(camera.position);
+				cameraToPosition.copy(desiredCameraPosition);
+				cameraFromLookAt.copy(cameraLookAt);
+				cameraToLookAt.copy(desiredCameraLookAt);
+				cameraTransitionStarted = performance.now();
+				cameraTransitionFrame = requestAnimationFrame(animateCamera);
+				previousCinematic = isCinematic;
+				if (isCinematic) {
+					for (const speaker of dialogueCharactersRef.current) {
+						if (speaker === heroRef.current) continue;
+						const anchor = dialogueAnchors.get(speaker);
+						if (anchor) {
+							resetDialogueActor(anchor);
+							startDialogueEntrance(anchor, speaker);
+						}
+					}
+				}
+			} else if (!cameraTransitionFrame) {
+				camera.position.copy(desiredCameraPosition);
+				cameraLookAt.copy(desiredCameraLookAt);
+				camera.lookAt(cameraLookAt);
+			}
+			if (isCinematic && focus) {
+				// A close lateral camera stages the hero in profile while leaving
+				// the surrounding map visible as the story backdrop.
+			}
 			viewportBounds.centerX = centerX;
 			viewportBounds.centerZ = centerZ;
-			viewportBounds.halfWidth = width / (2 * WORLD_SCALE) + 3.5;
-			viewportBounds.halfDepth = height / (2 * WORLD_SCALE * WORLD_PITCH) + 4.5;
+			viewportBounds.halfWidth = isCinematic ? 13 : width / (2 * WORLD_SCALE) + 3.5;
+			viewportBounds.halfDepth = isCinematic ? 13 : height / (2 * WORLD_SCALE * WORLD_PITCH) + 4.5;
 			const isNearViewport = (x: number, z: number) => Math.abs(x - viewportBounds.centerX) <= viewportBounds.halfWidth && Math.abs(z - viewportBounds.centerZ) <= viewportBounds.halfDepth;
 			if (!progressInitialized) {
 				for (const layer of assetLayers.values()) {
@@ -837,37 +1741,38 @@ export function IsoWorldScene({
 				void forestGroundReady.then(renderAfterTextureReady);
 				void mountainGroundReady.then(renderAfterTextureReady);
 			}
+			const erasedScenery = new Set(layoutRef.current.erasedDecorations);
 			for (const layer of assetLayers.values()) {
 				addVisibleLayerAssets(scene, layer, isNearViewport, () => {
 					if (initialLayers.delete(layer)) completeProgressItem();
-				}, initialLayers.has(layer), render, () => disposed);
+				}, initialLayers.has(layer), render, () => disposed, gltfLoader, erasedScenery);
+			}
+			for (const layer of assetLayers.values()) {
+				for (const model of layer.models.values()) {
+					const id = model.userData.mapErasableId as string | undefined;
+					if (id && erasedScenery.has(id)) setInstanceVisible(model, false);
+				}
 			}
 			for (const marker of markerObjects) {
 				const data = stateForMarker(marker);
 				if (data) updateStageMarker(marker, data, marker === hoveredMarker, markerBadges);
+				marker.group.visible = !isCinematic;
+			}
+			if (isCinematic) {
+				const activeSpeaker = dialogueSpeakerRef.current ? dialogueAnchors.get(dialogueSpeakerRef.current) : undefined;
+				const firstSpeaker = dialogueAnchors.values().next().value as THREE.Group | undefined;
+				const speakingTo = activeSpeaker ?? firstSpeaker;
+				heroAnchor.rotation.y = speakingTo
+					? Math.atan2(speakingTo.position.x - heroAnchor.position.x, speakingTo.position.z - heroAnchor.position.z)
+					: Math.PI;
+			} else {
+				heroAnchor.rotation.y = 0;
 			}
 			loadHero(heroRef.current);
-			const current = stageMarkersRef.current.find((marker) => marker.current);
-			if (current) {
-				const destinationKey = `${current.region}-${current.index}`;
-				const heroPosition = markerWorldPosition(current.region, current.index);
-				heroPosition.y += 0.22;
-				heroAnchor.visible = true;
-				if (!heroPositionInitialized) {
-					heroAnchor.position.copy(heroPosition);
-					heroPositionInitialized = true;
-					heroDestinationKey = destinationKey;
-				} else if (destinationKey !== heroDestinationKey) {
-					heroDestinationKey = destinationKey;
-					heroAnimationStart.copy(heroAnchor.position);
-					heroAnimationTarget.copy(heroPosition);
-					heroAnimationStartedAt = performance.now();
-					if (heroAnimationFrame) cancelAnimationFrame(heroAnimationFrame);
-					heroAnimationFrame = requestAnimationFrame(animateHeroMovement);
-				}
-			} else heroAnchor.visible = false;
+			if (dialogueExitingRef.current && dialogueExitFrame === 0) dialogueExitFrame = requestAnimationFrame(animateDialogueExit);
 			renderer.setSize(width, height, false);
 			renderer.render(scene, camera);
+			if (firstRenderAt === null) firstRenderAt = performance.now();
 		};
 		const refreshMarkerBadges = () => {
 			if (disposed) return;
@@ -888,7 +1793,10 @@ export function IsoWorldScene({
 		render();
 		return () => {
 			disposed = true;
+			resourceObserver?.disconnect();
 			if (heroAnimationFrame) cancelAnimationFrame(heroAnimationFrame);
+			if (cameraTransitionFrame) cancelAnimationFrame(cameraTransitionFrame);
+			if (dialogueExitFrame) cancelAnimationFrame(dialogueExitFrame);
 			if (refreshRef.current === render) refreshRef.current = null;
 			observer.disconnect();
 			window.removeEventListener("resize", render);
@@ -908,6 +1816,9 @@ export function IsoWorldScene({
 					object.geometry.dispose();
 					if (Array.isArray(object.material)) object.material.forEach((material) => { material.dispose(); });
 					else object.material.dispose();
+				} else if (object instanceof THREE.Sprite) {
+					object.material.map?.dispose();
+					object.material.dispose();
 				}
 			});
 			forestGround.dispose();

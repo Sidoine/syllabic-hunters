@@ -6,9 +6,12 @@ export interface Settings {
 	unlockAll: boolean;
 }
 
+export type HeroId = "hana" | "yuki" | "momo" | "milo" | "zelane";
+
 export interface Save {
 	name: string;
-	hero: "hana" | "yuki" | "momo";
+	hero: HeroId;
+	heroChosen: boolean;
 	stars: Record<string, number>; // missionId -> meilleures étoiles (1-3)
 	rewards?: Record<string, boolean>; // rewardId -> activité terminée
 	rewardPages?: Record<string, string>; // rewardId -> coloriage unique attribué
@@ -23,6 +26,7 @@ const KEY = "baba-hunters-save-v1";
 export const defaultSave = (): Save => ({
 	name: "",
 	hero: "hana",
+	heroChosen: false,
 	stars: {},
 	rewards: {},
 	rewardPages: {},
@@ -47,6 +51,9 @@ export function loadSave(): Save {
 		return {
 			...base,
 			...d,
+			// Saves created before the explicit confirmation flow already passed
+			// through the character picker, so preserve that choice.
+			heroChosen: d.heroChosen ?? true,
 			rewards: { ...base.rewards, ...(d.rewards || {}) },
 			rewardPages: { ...base.rewardPages, ...(d.rewardPages || {}) },
 			rewardDrawings: { ...base.rewardDrawings, ...(d.rewardDrawings || {}) },

@@ -55,13 +55,13 @@ pilule|💊|pi-lu-le|pi,lu
 poule|🐔|pou-le|pou
 maman|👩|ma-man|ma,_
 mamie|👵|ma-mie|ma,mi
-micro|🎤|mi-cro|mi,_
+minou|🐱|mi-nou|mi,nou
 miroir|🪞|mi-roir|mi,_
 moto|🏍️|mo-to|mo,to
 mouton|🐑|mou-ton|mou,_
 mouche|🪰|mou-che|mou
 moustique|🦟|mous-ti-que|mou,ti,_
-musique|🎵|mu-si-que|mu,_
+muguet|🌼|mu-guet|mu,_
 médaille|🏅|mé-dai-lle|mé,_
 tomate|🍅|to-ma-te|to,ma
 fromage|🧀|fro-ma-ge|_,ma
@@ -104,7 +104,7 @@ papa|👨|pa-pa|pa,pa
 panda|🐼|pan-da|_,da
 patate|🥔|pa-ta-te|pa,ta
 papillon|🦋|pa-pil-lon|pa,pi,_
-piano|🎹|pia-no|_,no
+novembre|📅|no-vem-bre|no,_
 pile|🔋|pi-le|pi
 pomme|🍎|pom-me|_
 potiron|🎃|po-ti-ron|po,ti,_

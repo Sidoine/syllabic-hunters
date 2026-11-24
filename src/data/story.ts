@@ -1,11 +1,17 @@
 import { syllablesOf, VOWELS } from "./syllables";
 
-export type Speaker = "hana" | "yuki" | "momo" | "mochi" | "king" | "boss";
+export type Speaker = "hana" | "yuki" | "momo" | "milo" | "zelane" | "mochi" | "king" | "boss";
 
 export interface Line {
 	who: Speaker;
 	text: string;
 }
+
+export const WORLD_INTRO_LINES: Line[] = [
+	{ who: "hana", text: "Bienvenue au carrefour des découvertes ! Deux chemins s’ouvrent devant nous." },
+	{ who: "mochi", text: "À l’ouest, la forêt de la lecture. À l’est, la montagne des nombres !" },
+	{ who: "hana", text: "Choisis le chemin qui te tente. Tu pourras toujours revenir ici pour explorer l’autre région." },
+];
 
 export type MissionType =
 	| "vowels"
@@ -52,7 +58,7 @@ export const MISSION_INFO: Record<
 > = {
 	vowels: {
 		title: "Les voyelles magiques",
-		help: "Touche chaque voyelle pour entendre sa chanson.",
+		help: "Touche chaque voyelle pour découvrir son son.",
 	},
 	fusion: {
 		title: "Fusion magique",
@@ -63,7 +69,7 @@ export const MISSION_INFO: Record<
 		help: "Écoute le son et trouve la bonne syllabe.",
 	},
 	"see-sound": {
-		title: "Le micro magique",
+		title: "Les bulles d’écoute",
 		help: "Regarde la syllabe et trouve le bon son.",
 	},
 	"find-images": {
@@ -136,11 +142,11 @@ const RAW_CHAPTERS = [
 			},
 			{
 				who: "king",
-				text: "Chuuut ! Plus de chansons, plus de mots ! Le silence pour toujours ! Mouahaha !",
+				text: "Chuuut ! Plus de sons, plus de mots ! Le silence pour toujours ! Mouahaha !",
 			},
 			{
 				who: "hana",
-				text: "Bonjour Alix ! Je suis Hana, des Lumi Stars. Nous chassons les démons avec la musique !",
+				text: "Bonjour Alix ! Je suis Hana, des Lumi Stars. Nous chassons les démons avec la magie des syllabes !",
 			},
 			{
 				who: "yuki",
@@ -148,7 +154,7 @@ const RAW_CHAPTERS = [
 			},
 		],
 		[
-			{ who: "momo", text: "Bravo Alix ! Les voyelles chantent à nouveau !" },
+			{ who: "momo", text: "Bravo Alix ! Les voyelles brillent à nouveau !" },
 			{
 				who: "hana",
 				text: "Maintenant, on va coller des lettres aux voyelles pour faire des syllabes. C'est ça, le B-A BA !",
@@ -170,7 +176,7 @@ const RAW_CHAPTERS = [
 			},
 			{
 				who: "yuki",
-				text: "La lettre L chante « llll » avec sa langue. Avec a, elle fait la. Avec i, elle fait li !",
+				text: "La lettre L fait « llll » avec sa langue. Avec a, elle fait la. Avec i, elle fait li !",
 			},
 		],
 		[
@@ -292,7 +298,7 @@ const RAW_CHAPTERS = [
 			{ who: "hana", text: "Tornado Toto fait tourner la Tour de la Télé !" },
 			{
 				who: "mochi",
-				text: "T tape « t, t, t » comme un tambour. Avec a : ta !",
+				text: "T tape « t, t, t » comme de petits pas. Avec a : ta !",
 			},
 		],
 		[
@@ -315,7 +321,7 @@ const RAW_CHAPTERS = [
 				who: "momo",
 				text: "Un ninja se cache dans les nuages ! Il a volé la lettre N !",
 			},
-			{ who: "yuki", text: "N chante « nnnn » dans le nez. Avec a : na !" },
+			{ who: "yuki", text: "N fait « nnnn » dans le nez. Avec a : na !" },
 		],
 		[
 			{
@@ -355,7 +361,7 @@ const RAW_CHAPTERS = [
 		180,
 		"#ff4fa3",
 		[
-			{ who: "yuki", text: "Baba Boubou enferme la musique dans des bulles !" },
+			{ who: "yuki", text: "Baba Boubou enferme les sons dans des bulles !" },
 			{
 				who: "mochi",
 				text: "B fait « b » avec les lèvres qui se collent. Avec a : ba ! Comme B-A BA !",
@@ -420,7 +426,7 @@ const RAW_CHAPTERS = [
 		[
 			{
 				who: "yuki",
-				text: "Attention : C et H ensemble chantent « chhhh », comme pour dire chut !",
+				text: "Attention : C et H ensemble font « chhhh », comme pour dire chut !",
 			},
 			{
 				who: "momo",
@@ -463,7 +469,7 @@ const RAW_CHAPTERS = [
 	C(
 		["c", "g"],
 		"Les pièges C et G",
-		"La Grotte aux Gongs",
+		"La Grotte aux Runes",
 		"Capitaine Gorgo",
 		"🦍",
 		100,
@@ -475,7 +481,7 @@ const RAW_CHAPTERS = [
 			},
 			{
 				who: "hana",
-				text: "Devant a, o, u et ou, C chante comme dans cadeau, et G chante comme dans gâteau. Ca, co, cu, cou... ga, go, gou !",
+				text: "Devant a, o, u et ou, C fait le son de cadeau, et G celui de gâteau. Ca, co, cu, cou... ga, go, gou !",
 			},
 			{
 				who: "momo",
@@ -492,7 +498,7 @@ const RAW_CHAPTERS = [
 	),
 	C(
 		[],
-		"Le Grand Concert",
+		"Le Grand Défi",
 		"Le Stade des Étoiles",
 		"Le Roi Chuuut",
 		"👑",
@@ -501,17 +507,17 @@ const RAW_CHAPTERS = [
 		[
 			{
 				who: "king",
-				text: "Grrr ! Tu as libéré toutes les lettres ! Mais tu ne gagneras pas le Grand Concert !",
+				text: "Grrr ! Tu as libéré toutes les lettres ! Mais tu ne gagneras pas le Grand Défi !",
 			},
 			{
 				who: "hana",
-				text: "Alix, tu connais maintenant plein de syllabes. Chantons ensemble pour battre le Roi Chuuut !",
+				text: "Alix, tu connais maintenant plein de syllabes. Utilisons-les ensemble pour battre le Roi Chuuut !",
 			},
 		],
 		[
 			{
 				who: "king",
-				text: "Nooon ! Toute cette musique... c'est... trop joli ! Bon d'accord, j'arrête de faire chuuut !",
+				text: "Nooon ! Tous ces mots... c'est... trop joli ! Bon d'accord, j'arrête de faire chuuut !",
 			},
 			{
 				who: "hana",

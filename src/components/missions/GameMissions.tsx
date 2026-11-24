@@ -5,7 +5,7 @@ import { cleanPart, type Word } from "../../data/words";
 import { sfx } from "../../lib/sfx";
 import { speak } from "../../lib/speech";
 import { cycle, sample, shuffle } from "../../lib/utils";
-import { FeedbackLayer, IMAGES, MissionFrame, useFeedback } from "../ui";
+import { FeedbackLayer, IMAGES, MissionFrame, StarIcon, useFeedback } from "../ui";
 import {
   confusables,
   isVowel,
@@ -135,12 +135,9 @@ export function MemoryMission({ mission, onDone }: MissionProps) {
                   <span className="text-6xl">{c.word?.emoji}</span>
                 )
               ) : (
-                <span
-                  className="text-4xl"
-                  style={{ transform: "rotateY(180deg)" }}
-                >
-                  ⭐
-                </span>
+					<span className="flex h-12 w-12 items-center justify-center" style={{ transform: "rotateY(180deg)" }}>
+						<StarIcon className="h-11 w-11" />
+					</span>
               )}
             </button>
           );

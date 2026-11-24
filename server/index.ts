@@ -1,5 +1,6 @@
 import "dotenv/config";
 import crypto from "node:crypto";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import express, { type Request, type Response } from "express";
@@ -22,6 +23,24 @@ const viteUrl = process.env.VITE_URL ?? "http://localhost:5174";
 // Reward coloring canvases are stored in the player's JSON save, so allow
 // enough room for several compressed drawings to sync with the account.
 app.use(express.json({ limit: "4mb" }));
+
+const mapLayoutFile = path.join(projectRoot, "src", "data", "map-layout.json");
+app.get("/api/dev/map-layout", async (_request, response) => {
+  if (isProduction) { response.sendStatus(404); return; }
+  try { response.json(JSON.parse(await readFile(mapLayoutFile, "utf8"))); }
+  catch { response.status(500).json({ error: "Impossible de lire le plan de carte." }); }
+});
+app.put("/api/dev/map-layout", async (request, response) => {
+  if (isProduction) { response.sendStatus(404); return; }
+  const body = request.body as Record<string, unknown>;
+  const layout = (body.landmarks ?? body) as Record<string, unknown>;
+  const keys = ["readingTree", "readingBlossom", "readingArch", "readingTreeLibrary", "readingBookstone", "storybookCottage", "readingMushrooms", "mathAbacus", "mathCrystals", "mountainObservatory"];
+  if (!layout || keys.some((key) => !Array.isArray(layout[key]) || layout[key].length !== 2 || layout[key].some((v) => typeof v !== "number" || !Number.isFinite(v)))) {
+    response.status(400).json({ error: "Coordonnées de carte invalides." }); return;
+  }
+  try { await writeFile(mapLayoutFile, `${JSON.stringify(body.landmarks ? body : layout, null, 2)}\n`); response.json({ ok: true }); }
+  catch { response.status(500).json({ error: "Impossible d’enregistrer le plan de carte." }); }
+});
 
 function hashToken(token: string) {
   return crypto.createHash("sha256").update(token).digest("hex");

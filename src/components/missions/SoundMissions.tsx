@@ -17,6 +17,9 @@ import {
   MissionFrame,
   SyllableWord,
   SylTile,
+  UI_ICONS,
+  playerText,
+  useGame,
   useFeedback,
 } from "../ui";
 import {
@@ -46,11 +49,11 @@ export function VowelsMission({ onDone }: MissionProps) {
     <MissionFrame
       instruction={
         <>
-          Touche chaque voyelle pour écouter sa chanson. <b>ou</b> : deux
+          Touche chaque voyelle pour découvrir son son. <b>ou</b> : deux
           lettres, un seul son !
         </>
       }
-      speakText="Touche chaque voyelle pour écouter sa chanson. Attention, o et u ensemble font le son ou : deux lettres, un seul son !"
+      speakText="Touche chaque voyelle pour découvrir son son. Attention, o et u ensemble font le son ou : deux lettres, un seul son !"
       round={seen.length}
       total={VOWELS.length}
       readKey="vowels"
@@ -72,7 +75,7 @@ export function VowelsMission({ onDone }: MissionProps) {
           >
             {v.id}
             {seen.includes(v.id) && (
-              <span className="absolute -top-1 -right-1 text-2xl">⭐</span>
+				<img src={UI_ICONS.star} alt="" className="absolute -top-1 -right-1 h-7 w-7 object-contain" />
             )}
           </button>
         ))}
@@ -103,6 +106,7 @@ export function VowelsMission({ onDone }: MissionProps) {
 
 // ======================= Fusion magique =======================
 export function FusionMission({ mission, onDone }: MissionProps) {
+  const { hero } = useGame();
   const consonants = mission.consonants;
   const [ci, setCi] = useState(0);
   const cons = consonants[ci];
@@ -199,7 +203,7 @@ export function FusionMission({ mission, onDone }: MissionProps) {
             >
               {vv}
               {found.includes(cons + vv) && (
-                <span className="absolute -top-2 -right-2 text-xl">⭐</span>
+				<img src={UI_ICONS.star} alt="" className="absolute -top-2 -right-2 h-6 w-6 object-contain" />
               )}
             </button>
           ))}
@@ -222,7 +226,7 @@ export function FusionMission({ mission, onDone }: MissionProps) {
             className="mt-4 anim-glow"
             onClick={() => setPhase("quiz")}
           >
-            Je suis prête pour le test ! ⚡
+            {playerText("Je suis prête pour le test !", hero)} ⚡
           </BigButton>
         )}
       </MissionFrame>
@@ -376,9 +380,9 @@ export function ListenSylMission({ mission, onDone }: MissionProps) {
   );
 }
 
-// ======================= Le micro magique =======================
+// ======================= Les bulles d'écoute =======================
 const BUBBLES = [
-  { icon: "⭐", color: "from-yellow-200 to-amber-400" },
+  { icon: "star", color: "from-yellow-200 to-amber-400" },
   { icon: "💖", color: "from-pink-300 to-fuchsia-500" },
   { icon: "🌙", color: "from-cyan-200 to-sky-500" },
   { icon: "🍀", color: "from-lime-200 to-emerald-500" },
@@ -423,8 +427,8 @@ export function SeeSoundMission({ mission, onDone }: MissionProps) {
 
   return (
     <MissionFrame
-      instruction="Lis la syllabe. Écoute les bulles et choisis celle qui chante la syllabe !"
-      speakText="Regarde la syllabe. Touche les bulles pour les écouter, puis choisis celle qui chante la bonne syllabe."
+      instruction="Lis la syllabe. Écoute les bulles et choisis celle qui fait le bon son !"
+      speakText="Regarde la syllabe. Touche les bulles pour les écouter, puis choisis celle qui fait le bon son."
       round={ri}
       total={rounds.length}
     >
@@ -448,7 +452,7 @@ export function SeeSoundMission({ mission, onDone }: MissionProps) {
                 : "border-white"
             }`}
           >
-            <span className="text-4xl">{BUBBLES[i].icon}</span>
+            {BUBBLES[i].icon === "star" ? <img src={UI_ICONS.star} alt="" className="h-10 w-10 object-contain" /> : <span className="text-4xl">{BUBBLES[i].icon}</span>}
             <span className="text-xl">🔊</span>
           </button>
         ))}

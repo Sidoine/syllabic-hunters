@@ -21,17 +21,10 @@ const RECORDED_LINES: Record<string, string> = {
   "oups ! encore une fois.": "try-oups-encore.wav",
   "hihihi ! raté !": "playful-rate.wav",
   "au secours! le roi chuuut a volé tous les sons du monde!": "story-mochi-au-secours-le-roi-chuuut-a-vole-tous-les-sons-du.wav",
-  "chuuut! plus de chansons, plus de mots! le silence pour toujours! mouahaha!": "story-king-chuuut-plus-de-chansons-plus-de-mots-le-silence-.wav",
-  "bonjour alix! je suis hana, des lumi stars. nous chassons les démons avec la musique!": "story-hana-bonjour-alix-je-suis-hana-des-lumi-stars-nous-ch.wav",
   "pour les battre, il faut apprendre les sons. on commence par les voyelles : a, i, oh, u, é et où!": "story-yuki-pour-les-battre-il-faut-apprendre-les-sons-on-co.wav",
-  "bravo alix! les voyelles chantent à nouveau!": "story-momo-bravo-alix-les-voyelles-chantent-a-nouveau.wav",
   "maintenant, on va coller des lettres aux voyelles pour faire des syllabes. c'est ça, le b-a bas!": "story-hana-maintenant-on-va-coller-des-lettres-aux-voyelles.wav",
-  "alix, tu connais maintenant plein de syllabes. chantons ensemble pour battre le roi chuuut!": "story-hana-alix-tu-connais-maintenant-plein-de-syllabes-cha.wav",
-  "nooon! toute cette musique... c'est... trop joli! bon d'accord, j'arrête de faire chuuut!": "story-king-nooon-toute-cette-musique-c-est-trop-joli-bon-d-.wav",
   "alix, tu es une vraie star de la lecture! les lumi stars sont fières de toi!": "story-hana-alix-tu-es-une-vraie-star-de-la-lecture-les-lumi.wav",
-  "grrr! tu as libéré toutes les lettres! mais tu ne gagneras pas le grand concert!": "story-king-grrr-tu-as-libere-toutes-les-lettres.wav",
   "tu peux rejouer toutes les missions pour gagner encore plus d'étoiles!": "story-mochi-tu-peux-rejouer-toutes-les-missions.wav",
-  "touche chaque voyelle pour écouter sa chanson. attention, o et u ensemble font le son ou : deux lettres, un seul son !": "mission-vowels.wav",
   "écoute bien. quelle voyelle faut-il coller ?": "mission-fusion-quiz.wav",
   "écoute bien, et touche la syllabe que tu entends.": "mission-listen-syllable.wav",
   "regarde la syllabe. touche les bulles pour les écouter, puis choisis celle qui chante la bonne syllabe.": "mission-see-sound.wav",
@@ -56,7 +49,6 @@ const RECORDED_LINES: Record<string, string> = {
   "p fait un petit bruit qui éclate comme une bulle. avec a : pas!": "story-yuki-p-fait-un-petit-bruit-qui-eclate-comme-une-bulle-avec-a-9773dc.wav",
   "plouf! pirata poulpe tombe à l'eau! pas, pie, pot, pu, pé, pou!": "story-momo-plouf-pirata-poulpe-tombe-a-l-eau-pas-pie-pot-pu-pe-pou-35b257.wav",
   "tornado toto fait tourner la tour de la télé!": "story-hana-tornado-toto-fait-tourner-la-tour-de-la-tele-265a08.wav",
-  "t tape comme un tambour. avec a : ta!": "story-mochi-t-tape-comme-un-tambour-avec-a-ta-55f489.wav",
   "la tornade s'arrête! ta, ti, tôt, tu, thé, tout : génial!": "story-yuki-la-tornade-s-arrete-ta-ti-tot-tu-the-tout-genial-2a47f4.wav",
   "un ninja se cache dans les nuages! il a volé la lettre n!": "story-momo-un-ninja-se-cache-dans-les-nuages-il-a-vole-la-lettre-n-392ba6.wav",
   "n chante dans le nez. avec a : na!": "story-yuki-n-chante-dans-le-nez-avec-a-na-f033c4.wav",
@@ -64,7 +56,6 @@ const RECORDED_LINES: Record<string, string> = {
   "dragonito crache du feu sur les diamants!": "story-mochi-dragonito-crache-du-feu-sur-les-diamants-5fd957.wav",
   "d tape avec la langue derrière les dents. avec a : da!": "story-hana-d-tape-avec-la-langue-derriere-les-dents-avec-a-da-bf5110.wav",
   "dragonito fait dodo! da, dit, dos, du, dé, doux : bien joué!": "story-momo-dragonito-fait-dodo-da-dit-dos-du-de-doux-bien-joue-2a9dc3.wav",
-  "baba boubou enferme la musique dans des bulles!": "story-yuki-baba-boubou-enferme-la-musique-dans-des-bulles-58cc91.wav",
   "b fait avec les lèvres qui se collent. avec a : bas! comme b-a bas!": "story-mochi-b-fait-avec-les-levres-qui-se-collent-avec-a-bas-comme-11b201.wav",
   "les bulles éclatent! bas, bi, beau, bu, bé, bout : tu es une championne!": "story-hana-les-bulles-eclatent-bas-bi-beau-bu-be-bout-tu-es-une-ch-cbc790.wav",
   "fifi fantôme fait peur aux fées de la forêt!": "story-momo-fifi-fantome-fait-peur-aux-fees-de-la-foret-648abc.wav",
@@ -182,6 +173,7 @@ function prerecordedLine(text: string) {
 let voices: SpeechSynthesisVoice[] = [];
 let preferredURI: string | null = null;
 let rate = 0.85;
+let masculineVoice = false;
 let listeners: (() => void)[] = [];
 
 const synth: SpeechSynthesis | null =
@@ -215,14 +207,16 @@ export const onVoicesChanged = (fn: () => void) => {
 export function configureSpeech(opts: {
   voiceURI?: string | null;
   rate?: number;
+  masculine?: boolean;
 }) {
   if (opts.voiceURI !== undefined) preferredURI = opts.voiceURI;
   if (opts.rate !== undefined) rate = opts.rate;
+  if (opts.masculine !== undefined) masculineVoice = opts.masculine;
 }
 
 function pickVoice(): SpeechSynthesisVoice | undefined {
   if (!voices.length) return undefined;
-  if (preferredURI) {
+  if (preferredURI && !masculineVoice) {
     const v = voices.find((x) => x.voiceURI === preferredURI);
     if (v) return v;
   }
@@ -230,9 +224,13 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
     let s = 0;
     if (v.lang === "fr-FR") s += 10;
     if (/google/i.test(v.name)) s += 5;
-    if (/(amélie|amelie|audrey|marie|denise|hortense|julie|céline|celine)/i.test(v.name))
-      s += 7;
-    if (/(thomas|paul|male)/i.test(v.name)) s -= 8;
+    if (masculineVoice) {
+      if (/(thomas|paul|male|homme|antoine|hervé|herve|nicolas|henri)/i.test(v.name)) s += 10;
+      if (/(amélie|amelie|audrey|marie|denise|hortense|julie|céline|celine)/i.test(v.name)) s -= 8;
+    } else {
+      if (/(amélie|amelie|audrey|marie|denise|hortense|julie|céline|celine)/i.test(v.name)) s += 7;
+      if (/(thomas|paul|male|homme)/i.test(v.name)) s -= 8;
+    }
     if (/natural|online|premium|enhanced/i.test(v.name)) s += 6;
     return s;
   };
@@ -304,7 +302,7 @@ function rawSpeak(
       }, 60);
     };
 
-    const src = prerecordedLine(text);
+    const src = masculineVoice ? undefined : prerecordedLine(text);
     if (src && typeof Audio !== "undefined") {
       audio = new Audio(src);
       activeAudio = audio;

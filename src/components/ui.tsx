@@ -1,6 +1,7 @@
 import {
   createContext,
   type ReactNode,
+  type CSSProperties,
   useContext,
   useEffect,
   useMemo,
@@ -19,28 +20,31 @@ import missingIcon from "../assets/missions/missing.png";
 import readWordIcon from "../assets/missions/read-word.png";
 import seeSoundIcon from "../assets/missions/see-sound.png";
 import vowelsIcon from "../assets/missions/vowels.png";
+import backIcon from "../assets/ui/back-world-map.png";
 import bookIcon from "../assets/ui/book.png";
 import closeIcon from "../assets/ui/close.png";
 import crownIcon from "../assets/ui/crown.png";
-import homeIcon from "../assets/ui/home.png";
 import lockIcon from "../assets/ui/lock.png";
 import mathIcon from "../assets/ui/math.png";
 import mapIcon from "../assets/ui/map.png";
 import replayIcon from "../assets/ui/replay.png";
-import settingsIcon from "../assets/ui/settings.png";
-import starIcon from "../assets/ui/star.png";
+import settingsIcon from "../assets/ui/settings-world-map.png";
+import starIcon from "../assets/ui/star-world-map.png";
 import hana from "../assets/hana.png";
 import king from "../assets/king.png";
 import mochi from "../assets/mochi.png";
 import momo from "../assets/momo.png";
+import milo from "../assets/milo.png";
 import yuki from "../assets/yuki.png";
+import zelane from "../assets/zelane.png";
 import type { MissionType, Speaker } from "../data/story";
+import type { HeroId } from "../lib/storage";
 import { cleanPart, type Word } from "../data/words";
 import { sfx } from "../lib/sfx";
 import { speak, speakSeq } from "../lib/speech";
 import { pick } from "../lib/utils";
 
-export const IMAGES = { hana, yuki, momo, mochi, king, demon };
+export const IMAGES = { hana, yuki, momo, milo, zelane, mochi, king, demon };
 
 export const MISSION_ICONS: Record<MissionType, string> = {
 	vowels: vowelsIcon,
@@ -57,10 +61,10 @@ export const MISSION_ICONS: Record<MissionType, string> = {
 };
 
 export const UI_ICONS = {
+	back: backIcon,
 	book: bookIcon,
 	close: closeIcon,
 	crown: crownIcon,
-	home: homeIcon,
 	lock: lockIcon,
 	math: mathIcon,
 	map: mapIcon,
@@ -69,6 +73,14 @@ export const UI_ICONS = {
 	star: starIcon,
 };
 
+export function StarIcon({ className = "h-5 w-5", style }: { className?: string; style?: CSSProperties }) {
+  return <img src={UI_ICONS.star} alt="" aria-hidden="true" style={style} className={`inline-block shrink-0 object-contain ${className}`} />;
+}
+
+export function BackIcon({ className = "h-7 w-7" }: { className?: string }) {
+  return <img src={UI_ICONS.back} alt="" aria-hidden="true" className={`inline-block shrink-0 object-contain ${className}`} />;
+}
+
 export const SPEAKER_INFO: Record<
   Speaker,
   { name: string; img: string; color: string }
@@ -76,6 +88,8 @@ export const SPEAKER_INFO: Record<
   hana: { name: "Hana", img: hana, color: "#ff4fa3" },
   yuki: { name: "Luna", img: yuki, color: "#34c3ff" },
   momo: { name: "Mia", img: momo, color: "#b36bff" },
+  milo: { name: "Milo", img: milo, color: "#35d5e7" },
+  zelane: { name: "Zélane", img: zelane, color: "#f6c445" },
   mochi: { name: "Mochi", img: mochi, color: "#ffffff" },
   king: { name: "Roi Chuuut", img: king, color: "#6b3cff" },
   boss: { name: "Démon", img: demon, color: "#6b3cff" },
@@ -84,7 +98,7 @@ export const SPEAKER_INFO: Record<
 // ---------- Contexte de jeu ----------
 export interface GameCtx {
   autoRead: boolean;
-  hero: "hana" | "yuki" | "momo";
+  hero: HeroId;
   name: string;
 }
 export const GameContext = createContext<GameCtx>({
@@ -93,6 +107,9 @@ export const GameContext = createContext<GameCtx>({
   name: "",
 });
 export const useGame = () => useContext(GameContext);
+export const playerText = (text: string, hero: GameCtx["hero"]) => hero === "milo"
+  ? text.replace(/championne/gi, "champion").replace(/fières/gi, "fiers").replace(/prête/gi, "prêt").replace(/toute seule/gi, "tout seul")
+  : text;
 
 // ---------- Boutons ----------
 export function SpeakButton({
@@ -216,9 +233,7 @@ export function Stars({ n, size = "text-2xl" }: { n: number; size?: string }) {
   return (
     <span className={`${size} tracking-tight`}>
       {[0, 1, 2].map((i) => (
-        <span key={i} className={i < n ? "" : "opacity-25 grayscale"}>
-          ⭐
-        </span>
+        <StarIcon key={i} className={`h-[1em] w-[1em] align-[-0.12em] ${i < n ? "" : "opacity-25 grayscale"}`} />
       ))}
     </span>
   );
@@ -277,7 +292,7 @@ export function Burst({
         id: trigger * 100 + i,
         dx: Math.cos(a) * r,
         dy: Math.sin(a) * r,
-        c: pick(["⭐", "💖", "✨", "🌸", "💫"]),
+        c: pick(["star", "💖", "✨", "🌸", "💫"]),
       };
     });
     setParts(p);
@@ -297,7 +312,7 @@ export function Burst({
             ["--dy" as string]: `${p.dy}px`,
           }}
         >
-          {p.c}
+          {p.c === "star" ? <StarIcon className="h-8 w-8" /> : p.c}
         </span>
       ))}
     </div>
@@ -397,8 +412,8 @@ export function MissionFrame({
   // Keep the sequence stable when callers recreate an equivalent text array.
   // biome-ignore lint/correctness/useExhaustiveDependencies: The content key intentionally prevents duplicate speech on rerenders.
   const seq = useMemo(
-    () => (Array.isArray(speakText) ? speakText : [speakText]),
-    [Array.isArray(speakText) ? speakText.join("\u0000") : speakText],
+    () => (Array.isArray(speakText) ? speakText : [speakText]).map((text) => playerText(text, h)),
+    [Array.isArray(speakText) ? speakText.join("\u0000") : speakText, h],
   );
   const hasReadInitial = useRef(false);
   useEffect(() => {
@@ -434,7 +449,7 @@ export function MissionFrame({
           className="w-14 h-14 object-contain anim-float"
         />
         <div className="flex-1 text-lg sm:text-xl font-semibold leading-snug">
-          {instruction}
+          {typeof instruction === "string" ? playerText(instruction, h) : instruction}
         </div>
         <button
           type="button"
