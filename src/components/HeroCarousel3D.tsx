@@ -160,7 +160,7 @@ export function HeroCarousel3D({
         if (object instanceof THREE.Mesh) {
           object.geometry.dispose();
           const materials = Array.isArray(object.material) ? object.material : [object.material];
-          materials.forEach((material) => material.dispose());
+          materials.forEach((material) => { material.dispose(); });
         }
       });
       renderer.dispose();
@@ -176,7 +176,7 @@ export function HeroCarousel3D({
 
   return (
     <div className="w-full">
-      <div
+      <section
         ref={mountRef}
         className={`relative w-full touch-pan-y ${compact ? "h-[150px] sm:h-[175px]" : "h-[280px] sm:h-[330px]"}`}
         onPointerDown={(event) => { pointerStart.current = event.clientX; }}
@@ -191,12 +191,12 @@ export function HeroCarousel3D({
       >
         {loaded < heroes.length && <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-sm font-bold text-cyan-100/80">Chargement des personnages…</div>}
         {failed && <div className="pointer-events-none absolute inset-x-0 bottom-3 z-10 text-center text-xs text-amber-100/80">Un modèle n’a pas pu être chargé.</div>}
-      </div>
+      </section>
       <div className="flex items-center justify-center gap-5">
         <button type="button" aria-label="Personnage précédent" onClick={() => selectStep(-1)} className="btn-pop grid h-11 w-11 place-items-center rounded-full border-2 border-white/50 bg-slate-950/50 text-2xl font-black shadow-lg">‹</button>
         <div className="min-w-28 text-center">
           <div className="text-2xl font-black drop-shadow" style={{ color: selectedOption.color }}>{selectedOption.label}</div>
-          <div className="mt-1 flex justify-center gap-1.5" aria-label={`${selectedIndex + 1} sur ${heroes.length}`}>
+          <div className="mt-1 flex justify-center gap-1.5" role="img" aria-label={`${selectedIndex + 1} sur ${heroes.length}`}>
             {heroes.map((hero) => <span key={hero.id} className={`h-1.5 rounded-full transition-all ${hero.id === selected ? "w-5 bg-yellow-300" : "w-1.5 bg-white/45"}`} />)}
           </div>
         </div>

@@ -134,8 +134,13 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 		}
 	};
 	const onEditorMove = (target: MapEditorSelection, x: number, z: number) => {
-		if (target.kind === "asset" && target.key) setLandmarks((current) => ({ ...current, [target.key!]: [x, z] }));
-		else if (target.kind === "stage" && target.region) setStageLayout((current) => ({ ...current, [target.region!]: current[target.region!].map((point, index) => index === target.index ? [x, z] : point) }));
+		if (target.kind === "asset" && target.key) {
+			const key = target.key;
+			setLandmarks((current) => ({ ...current, [key]: [x, z] }));
+		} else if (target.kind === "stage" && target.region) {
+			const region = target.region;
+			setStageLayout((current) => ({ ...current, [region]: current[region].map((point, index) => index === target.index ? [x, z] : point) }));
+		}
 		else if (target.kind === "river") setRiverPoints((current) => current.map((point, index) => index === target.index ? [x, z] : point));
 		else if (target.kind === "start") setSharedStart([x, z]);
 	};
@@ -171,9 +176,9 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			brushStrokeRef.current = { x, z, untilNext: 2.4 + Math.random() * 2.8 };
 			return;
 		}
-		let dx = x - stroke.x;
-		let dz = z - stroke.z;
-		let distance = Math.hypot(dx, dz);
+		const dx = x - stroke.x;
+		const dz = z - stroke.z;
+		const distance = Math.hypot(dx, dz);
 		if (distance < stroke.untilNext) {
 			brushStrokeRef.current = { x, z, untilNext: stroke.untilNext - distance };
 			return;
@@ -420,7 +425,8 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 							heroes={HEROES}
 							selected={pendingHero}
 							onSelect={(hero) => {
-								const option = HEROES.find((item) => item.id === hero)!;
+				const option = HEROES.find((item) => item.id === hero);
+				if (!option) return;
 								setPendingHero(hero);
 								configureSpeech({ masculine: hero === "milo" });
 								speak(option.label);

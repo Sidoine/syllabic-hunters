@@ -636,7 +636,11 @@ function buildInstancedLayer(scene: THREE.Scene, layer: LazyAssetLayer, isNearVi
 	const source = layer.source;
 	const bounds = layer.bounds;
 	if (!source || !bounds) return 0;
-	const chunks = layer.instancedChunks ?? (layer.instancedChunks = new Map());
+	let chunks = layer.instancedChunks;
+	if (!chunks) {
+		chunks = new Map();
+		layer.instancedChunks = chunks;
+	}
 	const neededKeys = new Set<string>();
 	layer.placements.forEach(([x, z], index) => {
 		if (!layer.loaded.has(index) && isNearViewport(x, z)) neededKeys.add(`${Math.floor(x / 32)}:${Math.floor(z / 32)}`);
@@ -1752,7 +1756,7 @@ export function IsoWorldScene({
 			for (const [url, placements] of Object.entries(creekTargets)) {
 				const layer = assetLayers.get(url);
 				if (!layer) continue;
-				placements.forEach((placement, index) => syncInstance(layer, index, placement));
+				placements.forEach((placement, index) => { syncInstance(layer, index, placement); });
 				for (const [index, model] of layer.models) if (index >= placements.length) model.visible = false;
 			}
 			const erasedIds = new Set(current.erasedDecorations);
@@ -2046,7 +2050,24 @@ export function IsoWorldScene({
 			renderer.dispose();
 			host.removeChild(renderer.domElement);
 		};
-	}, [containerRef]);
+	}, [
+		containerRef,
+		layoutKey,
+		stageLayout,
+		sharedStart,
+		riverPoints,
+		landmarks,
+		assetRotations.mathAbacus,
+		assetRotations.mathCrystals,
+		assetRotations.mountainObservatory,
+		assetRotations.readingArch,
+		assetRotations.readingBlossom,
+		assetRotations.readingBookstone,
+		assetRotations.readingMushrooms,
+		assetRotations.readingTree,
+		assetRotations.readingTreeLibrary,
+		assetRotations.storybookCottage,
+	]);
 
 	return <div ref={hostRef} aria-hidden="true" className="sticky left-0 top-0 z-0 h-screen w-screen overflow-hidden pointer-events-auto" />;
 }
