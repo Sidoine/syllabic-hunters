@@ -1,6 +1,6 @@
 import { syllablesOf, VOWELS } from "./syllables";
 
-export type Speaker = "hana" | "yuki" | "momo" | "milo" | "zelane" | "mochi" | "king" | "boss";
+export type Speaker = "hero" | "hana" | "yuki" | "momo" | "milo" | "zelane" | "mochi" | "king" | "boss";
 
 export interface Line {
 	who: Speaker;
@@ -8,9 +8,9 @@ export interface Line {
 }
 
 export const WORLD_INTRO_LINES: Line[] = [
-	{ who: "hana", text: "Bienvenue au carrefour des découvertes ! Deux chemins s’ouvrent devant nous." },
+	{ who: "hero", text: "Deux chemins s’ouvrent devant nous !" },
 	{ who: "mochi", text: "À l’ouest, la forêt de la lecture. À l’est, la montagne des nombres !" },
-	{ who: "hana", text: "Choisis le chemin qui te tente. Tu pourras toujours revenir ici pour explorer l’autre région." },
+	{ who: "hero", text: "Allons explorer ! On pourra toujours revenir pour découvrir l’autre région." },
 ];
 
 export type MissionType =
@@ -138,26 +138,26 @@ const RAW_CHAPTERS = [
 		[
 			{
 				who: "mochi",
-				text: "Au secours ! Le Roi Chuuut a volé tous les sons du monde !",
+				text: "Au secours ! Le Roi Chuuut a volé tous les sons du monde ! Aide-moi à les retrouver !",
 			},
 			{
 				who: "king",
 				text: "Chuuut ! Plus de sons, plus de mots ! Le silence pour toujours ! Mouahaha !",
 			},
 			{
-				who: "hana",
-				text: "Bonjour Alix ! Je suis Hana, des Lumi Stars. Nous chassons les démons avec la magie des syllabes !",
+				who: "hero",
+				text: "On va retrouver les sons et rendre les mots au monde !",
 			},
 			{
-				who: "yuki",
-				text: "Pour les battre, il faut apprendre les sons. On commence par les voyelles : a, i, o, u, é et ou !",
+				who: "mochi",
+				text: "Pour déjouer ses démons, apprenons les sons. On commence par les voyelles : a, i, o, u, é et ou !",
 			},
 		],
 		[
-			{ who: "momo", text: "Bravo Alix ! Les voyelles brillent à nouveau !" },
+			{ who: "mochi", text: "Bravo ! Les voyelles brillent à nouveau !" },
 			{
-				who: "hana",
-				text: "Maintenant, on va coller des lettres aux voyelles pour faire des syllabes. C'est ça, le B-A BA !",
+				who: "hero",
+				text: "Maintenant, collons des lettres aux voyelles pour former des syllabes !",
 			},
 		],
 	),
@@ -175,13 +175,13 @@ const RAW_CHAPTERS = [
 				text: "Un démon lézard a caché la lettre L dans le parc !",
 			},
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "La lettre L fait « llll » avec sa langue. Avec a, elle fait la. Avec i, elle fait li !",
 			},
 		],
 		[
 			{
-				who: "hana",
+				who: "hero",
 				text: "Lézardo est battu ! La, li, lo, lu, lé, lou : tu connais la lettre L !",
 			},
 		],
@@ -196,17 +196,17 @@ const RAW_CHAPTERS = [
 		"#ff7ad9",
 		[
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Mmmm... ça sent bon au marché ! Mais Maître Moustache a volé la lettre M !",
 			},
 			{
-				who: "hana",
+				who: "hero",
 				text: "M fait « mmmm » comme quand c'est délicieux. Avec a : ma !",
 			},
 		],
 		[
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Miam ! Ma, mi, mo, mu, mé, mou : la lettre M est libérée !",
 			},
 		],
@@ -221,7 +221,7 @@ const RAW_CHAPTERS = [
 		"#ff9a2e",
 		[
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "Rrrr ! Tu entends ? C'est Rakoro qui grogne près de la rivière !",
 			},
 			{
@@ -231,7 +231,7 @@ const RAW_CHAPTERS = [
 		],
 		[
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "Rakoro s'est enfui ! Ra, ri, ro, ru, ré, rou : super !",
 			},
 		],
@@ -246,17 +246,17 @@ const RAW_CHAPTERS = [
 		"#34c3ff",
 		[
 			{
-				who: "hana",
+				who: "hero",
 				text: "Ssss... Serpentine le serpent siffle dans notre studio !",
 			},
 			{
-				who: "momo",
+				who: "mochi",
 				text: "S siffle « ssss » comme un serpent. Avec a : sa !",
 			},
 		],
 		[
 			{
-				who: "hana",
+				who: "hero",
 				text: "Serpentine ne siffle plus ! Sa, si, so, su, sé, sou : bravo !",
 			},
 		],
@@ -275,13 +275,13 @@ const RAW_CHAPTERS = [
 				text: "Un pirate-poulpe a volé la lettre P dans son bateau !",
 			},
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "P fait un petit bruit « p » qui éclate comme une bulle. Avec a : pa !",
 			},
 		],
 		[
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Plouf ! Pirata Poulpe tombe à l'eau ! Pa, pi, po, pu, pé, pou !",
 			},
 		],
@@ -295,7 +295,7 @@ const RAW_CHAPTERS = [
 		60,
 		"#ffd23f",
 		[
-			{ who: "hana", text: "Tornado Toto fait tourner la Tour de la Télé !" },
+			{ who: "hero", text: "Tornado Toto fait tourner la Tour de la Télé !" },
 			{
 				who: "mochi",
 				text: "T tape « t, t, t » comme de petits pas. Avec a : ta !",
@@ -303,7 +303,7 @@ const RAW_CHAPTERS = [
 		],
 		[
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "La tornade s'arrête ! Ta, ti, to, tu, té, tou : génial !",
 			},
 		],
@@ -318,14 +318,14 @@ const RAW_CHAPTERS = [
 		"#8f7bff",
 		[
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Un ninja se cache dans les nuages ! Il a volé la lettre N !",
 			},
-			{ who: "yuki", text: "N fait « nnnn » dans le nez. Avec a : na !" },
+			{ who: "mochi", text: "N fait « nnnn » dans le nez. Avec a : na !" },
 		],
 		[
 			{
-				who: "hana",
+				who: "hero",
 				text: "Le ninja est démasqué ! Na, ni, no, nu, né, nou !",
 			},
 		],
@@ -341,13 +341,13 @@ const RAW_CHAPTERS = [
 		[
 			{ who: "mochi", text: "Dragonito crache du feu sur les diamants !" },
 			{
-				who: "hana",
+				who: "hero",
 				text: "D tape « d » avec la langue derrière les dents. Avec a : da !",
 			},
 		],
 		[
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Dragonito fait dodo ! Da, di, do, du, dé, dou : bien joué !",
 			},
 		],
@@ -361,7 +361,7 @@ const RAW_CHAPTERS = [
 		180,
 		"#ff4fa3",
 		[
-			{ who: "yuki", text: "Baba Boubou enferme les sons dans des bulles !" },
+			{ who: "mochi", text: "Baba Boubou enferme les sons dans des bulles !" },
 			{
 				who: "mochi",
 				text: "B fait « b » avec les lèvres qui se collent. Avec a : ba ! Comme B-A BA !",
@@ -369,7 +369,7 @@ const RAW_CHAPTERS = [
 		],
 		[
 			{
-				who: "hana",
+				who: "hero",
 				text: "Les bulles éclatent ! Ba, bi, bo, bu, bé, bou : tu es une championne !",
 			},
 		],
@@ -383,12 +383,12 @@ const RAW_CHAPTERS = [
 		220,
 		"#7ddc4a",
 		[
-			{ who: "momo", text: "Fifi Fantôme fait peur aux fées de la forêt !" },
-			{ who: "yuki", text: "F souffle « ffff » comme le vent. Avec a : fa !" },
+			{ who: "mochi", text: "Fifi Fantôme fait peur aux fées de la forêt !" },
+			{ who: "mochi", text: "F souffle « ffff » comme le vent. Avec a : fa !" },
 		],
 		[
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "Pfiou ! Fifi s'envole ! Fa, fi, fo, fu, fé, fou !",
 			},
 		],
@@ -402,7 +402,7 @@ const RAW_CHAPTERS = [
 		330,
 		"#b36bff",
 		[
-			{ who: "hana", text: "Vampirou s'est installé dans le volcan violet !" },
+			{ who: "hero", text: "Vampirou s'est installé dans le volcan violet !" },
 			{
 				who: "mochi",
 				text: "V vibre « vvvv » comme une abeille. Avec a : va !",
@@ -410,7 +410,7 @@ const RAW_CHAPTERS = [
 		],
 		[
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Vampirou va se coucher ! Va, vi, vo, vu, vé, vou : bravo !",
 			},
 		],
@@ -425,17 +425,17 @@ const RAW_CHAPTERS = [
 		"#ff7ad9",
 		[
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "Attention : C et H ensemble font « chhhh », comme pour dire chut !",
 			},
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Deux lettres, un seul son ! Avec a : cha, comme chat !",
 			},
 		],
 		[
 			{
-				who: "hana",
+				who: "hero",
 				text: "Chachat Noir ronronne maintenant ! Cha, chi, cho, chu, ché, chou !",
 			},
 		],
@@ -455,13 +455,13 @@ const RAW_CHAPTERS = [
 				text: "Jojo le Jongleur a volé tous les jouets de la jungle !",
 			},
 			{
-				who: "hana",
+				who: "hero",
 				text: "J fait « jjjj » comme un moteur doux. Avec a : ja !",
 			},
 		],
 		[
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "Les jouets sont sauvés ! Ja, ji, jo, ju, jé, jou !",
 			},
 		],
@@ -476,15 +476,15 @@ const RAW_CHAPTERS = [
 		"#34c3ff",
 		[
 			{
-				who: "yuki",
+				who: "mochi",
 				text: "Attention, c'est la grotte aux pièges ! C et G sont des lettres farceuses !",
 			},
 			{
-				who: "hana",
+				who: "hero",
 				text: "Devant a, o, u et ou, C fait le son de cadeau, et G celui de gâteau. Ca, co, cu, cou... ga, go, gou !",
 			},
 			{
-				who: "momo",
+				who: "mochi",
 				text: "Mais devant i et e, ils changent de voix ! Alors ici, on reste avec a, o, u et ou.",
 			},
 		],
@@ -510,8 +510,8 @@ const RAW_CHAPTERS = [
 				text: "Grrr ! Tu as libéré toutes les lettres ! Mais tu ne gagneras pas le Grand Défi !",
 			},
 			{
-				who: "hana",
-				text: "Alix, tu connais maintenant plein de syllabes. Utilisons-les ensemble pour battre le Roi Chuuut !",
+				who: "mochi",
+				text: "Tu connais maintenant plein de syllabes. Ensemble, nous pouvons battre le Roi Chuuut !",
 			},
 		],
 		[
@@ -520,12 +520,12 @@ const RAW_CHAPTERS = [
 				text: "Nooon ! Tous ces mots... c'est... trop joli ! Bon d'accord, j'arrête de faire chuuut !",
 			},
 			{
-				who: "hana",
-				text: "Alix, tu es une vraie star de la lecture ! Les Lumi Stars sont fières de toi !",
+				who: "hero",
+				text: "Les sons sont libres et les mots résonnent de nouveau !",
 			},
 			{
 				who: "mochi",
-				text: "Tu peux rejouer toutes les missions pour gagner encore plus d'étoiles !",
+				text: "On a réussi ensemble ! Tu peux rejouer les missions pour gagner encore plus d'étoiles !",
 			},
 		],
 	),

@@ -38,7 +38,7 @@ export function DialogScreen({
 	const { autoRead, hero } = useGame();
 	const line = lines[i];
 	const text = playerText(line.text, hero);
-	const info = SPEAKER_INFO[line.who];
+	const info = SPEAKER_INFO[line.who === "hero" ? hero : line.who];
 	const left = line.who !== "king" && line.who !== "boss";
 
 	useEffect(() => {

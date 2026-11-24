@@ -7,7 +7,7 @@ import type { HeroId } from "../lib/storage";
 import readingMarkerBadge from "../assets/ui/map-marker-reading.webp";
 import mathMarkerBadge from "../assets/ui/map-marker-math.webp";
 import lockedMarkerBadge from "../assets/ui/map-marker-locked.webp";
-import { MAP_BRIDGE_POSITIONS, MAP_BRIDGE_ROTATION, MAP_DIRECTION_SIGN_POSITION, MAP_LANDMARKS, MAP_RIVER_POINTS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS } from "./map-layout";
+import { MAP_BRIDGE_POSITIONS, MAP_BRIDGE_ROTATION, MAP_DIRECTION_SIGN_POSITION, MAP_LANDMARKS, MAP_RIVER_POINTS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS, type MapLandmarkKey, type MapLandmarkLayout } from "./map-layout";
 
 
 export const WORLD_WIDTH = MAP_WORLD_WIDTH;
@@ -28,10 +28,12 @@ const EDITABLE_ASSETS: Record<string, keyof typeof MAP_LANDMARKS> = {
 const ERASABLE_SCENERY_ASSETS = new Set([
 	"/models/forest-tree.glb", "/models/mountain-fir.glb", "/models/map-forest-flower-patch.glb",
 	"/models/mossy-boulders.glb", "/models/forest-understory.glb", "/models/map-riverbank-rock-cluster.glb",
+	"/models/mountain-wildflowers.glb", "/models/mountain-rock-cluster.glb", "/models/mountain-cushion-shrub.glb",
 ]);
 const INSTANCED_SCENERY_ASSETS = new Set([
 	"/models/forest-tree.glb", "/models/mountain-fir.glb", "/models/map-forest-flower-patch.glb",
 	"/models/mossy-boulders.glb", "/models/forest-understory.glb",
+	"/models/mountain-wildflowers.glb", "/models/mountain-rock-cluster.glb", "/models/mountain-cushion-shrub.glb",
 ]);
 
 const worldPath = (stops: readonly (readonly [number, number])[]) => stops.map(([x, y]) => {
@@ -226,7 +228,7 @@ function applyMapFogToObject(object: THREE.Object3D, state: MapFogState) {
 }
 
 export type MapLoadProgress = { loaded: number; total: number; complete: boolean };
-export type MapEditorSelection = { kind: "asset" | "stage" | "river" | "start"; index: number; region?: "reading" | "math"; key?: keyof typeof MAP_LANDMARKS };
+export type MapEditorSelection = { kind: "asset" | "stage" | "river" | "start"; index: number; region?: "reading" | "math"; key?: MapLandmarkKey };
 export type MapPaintMode = "select" | "tree" | "flower" | "rock" | "bush" | "erase";
 export type MapDecoration = { id: string; kind: Exclude<MapPaintMode, "select" | "erase">; x: number; z: number; modelUrl: string; scale: number; rotation: number };
 
@@ -906,6 +908,7 @@ export function IsoWorldScene({
 	layoutKey,
 	stageMarkers,
 	landmarks = MAP_LANDMARKS,
+	pendingAssetKey = null,
 	stageLayout,
 	sharedStart = MAP_SHARED_START,
 	riverPoints = MAP_RIVER_POINTS,
@@ -929,7 +932,8 @@ export function IsoWorldScene({
 	containerRef: React.RefObject<HTMLDivElement | null>;
 	layoutKey: string;
 	stageMarkers: StageMarkerData[];
-	landmarks?: typeof MAP_LANDMARKS;
+	landmarks?: MapLandmarkLayout;
+	pendingAssetKey?: MapLandmarkKey | null;
 	stageLayout?: { reading: number[][]; math: number[][] };
 	sharedStart?: readonly [number, number];
 	riverPoints?: readonly (readonly [number, number])[];
@@ -959,6 +963,8 @@ export function IsoWorldScene({
 	editorModeRef.current = editorMode;
 	const paintModeRef = useRef(paintMode);
 	paintModeRef.current = paintMode;
+	const pendingAssetKeyRef = useRef(pendingAssetKey);
+	pendingAssetKeyRef.current = pendingAssetKey;
 	const editorSelectRef = useRef(onEditorSelect);
 	editorSelectRef.current = onEditorSelect;
 	const editorMoveRef = useRef(onEditorMove);
@@ -1351,15 +1357,19 @@ export function IsoWorldScene({
 			assetLayers.set(url, layer);
 		};
 		const one = (x: number, z: number, height: number, rotation = 0): AssetPlacement[] => [[x, z, height, rotation]];
+		const oneLandmark = (key: MapLandmarkKey, height: number, rotation = 0): AssetPlacement[] => {
+			const position = landmarks[key];
+			return position ? one(position[0], position[1], height, rotation) : [];
+		};
 		// Each model type is requested only when at least one of its instances is near the viewport.
-		addLayer("/models/reading-tree.glb", one(...landmarks.readingTree, 4.4, assetRotations.readingTree ?? 0));
-		addLayer("/models/map-blossom-tree.glb", one(...landmarks.readingBlossom, 4.0, assetRotations.readingBlossom ?? 0));
-		addLayer("/models/storybook-reading-arch.glb", one(...landmarks.readingArch, 3.5, 1.0 + (assetRotations.readingArch ?? 0)));
-		addLayer("/models/storybook-tree-library.glb", one(...landmarks.readingTreeLibrary, 4.2, assetRotations.readingTreeLibrary ?? 0));
-		addLayer("/models/reading-bookstone.glb", one(...landmarks.readingBookstone, 2.8, assetRotations.readingBookstone ?? 0));
-		addLayer("/models/reading-mushroom-cluster.glb", one(...landmarks.readingMushrooms, 4.0, assetRotations.readingMushrooms ?? 0));
-		addLayer("/models/math-abacus.glb", one(...landmarks.mathAbacus, 3.1, Math.PI / 2 + (assetRotations.mathAbacus ?? 0)));
-		addLayer("/models/math-crystals.glb", one(...landmarks.mathCrystals, 3.6, assetRotations.mathCrystals ?? 0));
+		addLayer("/models/reading-tree.glb", oneLandmark("readingTree", 4.4, assetRotations.readingTree ?? 0));
+		addLayer("/models/map-blossom-tree.glb", oneLandmark("readingBlossom", 4.0, assetRotations.readingBlossom ?? 0));
+		addLayer("/models/storybook-reading-arch.glb", oneLandmark("readingArch", 3.5, 1.0 + (assetRotations.readingArch ?? 0)));
+		addLayer("/models/storybook-tree-library.glb", oneLandmark("readingTreeLibrary", 4.2, assetRotations.readingTreeLibrary ?? 0));
+		addLayer("/models/reading-bookstone.glb", oneLandmark("readingBookstone", 2.8, assetRotations.readingBookstone ?? 0));
+		addLayer("/models/reading-mushroom-cluster.glb", oneLandmark("readingMushrooms", 4.0, assetRotations.readingMushrooms ?? 0));
+		addLayer("/models/math-abacus.glb", oneLandmark("mathAbacus", 3.1, Math.PI / 2 + (assetRotations.mathAbacus ?? 0)));
+		addLayer("/models/math-crystals.glb", oneLandmark("mathCrystals", 3.6, assetRotations.mathCrystals ?? 0));
 		// Illustrated book and abacus arrows mark the two routes at their shared start.
 		addLayer("/models/direction-signpost.glb", one(...MAP_DIRECTION_SIGN_POSITION, 4.0));
 		addLayer("/models/forest-tree.glb", scatterProps("forest", 46, 71, 3.0));
@@ -1385,8 +1395,8 @@ export function IsoWorldScene({
 			...scatterProps("forest", 20, 1301, 3.2),
 			...scatterProps("mountain", 30, 1307, 3.1),
 		]);
-		addLayer("/models/storybook-cottage.glb", one(...landmarks.storybookCottage, 3.2, assetRotations.storybookCottage ?? 0));
-		addLayer("/models/mountain-observatory.glb", one(...landmarks.mountainObservatory, 3.8, assetRotations.mountainObservatory ?? 0));
+		addLayer("/models/storybook-cottage.glb", oneLandmark("storybookCottage", 3.2, assetRotations.storybookCottage ?? 0));
+		addLayer("/models/mountain-observatory.glb", oneLandmark("mountainObservatory", 3.8, assetRotations.mountainObservatory ?? 0));
 		// This TRELLIS.2 segment has an open channel along local Z. Orient its open
 		// ends along the winding course and overlap neighboring banks slightly.
 		const woodlandCreekPlacements: [number, number, number, number, number, number][] = [];
@@ -1512,6 +1522,13 @@ export function IsoWorldScene({
 		const findEditorTargetAtPointer = (clientX: number, clientY: number): MapEditorSelection | null => {
 			setRayFromPointer(clientX, clientY);
 			for (const intersection of raycaster.intersectObjects(scene.children, true)) {
+				let visibilityNode: THREE.Object3D | null = intersection.object;
+				let hiddenByParent = false;
+				while (visibilityNode) {
+					if (!visibilityNode.visible) { hiddenByParent = true; break; }
+					visibilityNode = visibilityNode.parent;
+				}
+				if (hiddenByParent) continue;
 				let object: THREE.Object3D | null = intersection.object;
 				while (object) {
 					if (object.userData.mapAssetKey) return { kind: "asset", key: object.userData.mapAssetKey as keyof typeof MAP_LANDMARKS, index: 0 };
@@ -1556,6 +1573,17 @@ export function IsoWorldScene({
 					editorSelectRef.current(activeEditorTarget);
 					renderer.domElement.style.cursor = "grabbing";
 					return;
+				}
+				const pendingAssetKey = pendingAssetKeyRef.current;
+				if (pendingAssetKey) {
+					const point = findGroundAtPointer(event.clientX, event.clientY);
+					if (point) {
+						const target: MapEditorSelection = { kind: "asset", key: pendingAssetKey, index: 0 };
+						event.preventDefault();
+						editorSelectRef.current(target);
+						editorMoveRef.current(target, THREE.MathUtils.clamp(point.x, 0, WORLD_WIDTH), THREE.MathUtils.clamp(point.z, 0, WORLD_DEPTH));
+						return;
+					}
 				}
 				editorSelectRef.current(null);
 			}
@@ -1666,8 +1694,15 @@ export function IsoWorldScene({
 				["/models/storybook-cottage.glb", "storybookCottage", 3.2, 0], ["/models/mountain-observatory.glb", "mountainObservatory", 3.8, 0],
 			];
 			for (const [url, key, height, baseRotation] of assetModels) {
-				const [x, z] = current.landmarks[key];
-				syncInstance(assetLayers.get(url), 0, [x, z, height, baseRotation + (current.assetRotations[key] ?? 0)]);
+				const position = current.landmarks[key];
+				const layer = assetLayers.get(url);
+				if (!position) {
+					const model = layer?.models.get(0);
+					if (model) model.visible = false;
+					continue;
+				}
+				const [x, z] = position;
+				syncInstance(layer, 0, [x, z, height, baseRotation + (current.assetRotations[key] ?? 0)]);
 			}
 			for (const marker of markerObjects) {
 				const data = marker.group.userData.stageMarker as { region: "reading" | "math" | "intro"; index: number };

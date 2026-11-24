@@ -14,6 +14,8 @@ export const MAP_LANDMARKS = {
 	mathCrystals: [97, 26],
 	mountainObservatory: [116, 47],
 } as const;
+export type MapLandmarkKey = keyof typeof MAP_LANDMARKS;
+export type MapLandmarkLayout = Record<MapLandmarkKey, readonly [number, number] | null>;
 
 export const MAP_RIVER_POINTS = [
 	[-5, 37], [4, 37], [14, 37], [21, 32], [28, 28],

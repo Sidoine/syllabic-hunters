@@ -8,7 +8,7 @@ import type { Save } from "../lib/storage";
 import { HeroCarousel3D, type HeroOption } from "../components/HeroCarousel3D";
 import { isMathMissionUnlocked } from "./Math";
 import { chapterMissions, isMissionUnlocked } from "./Map";
-import { MAP_LANDMARKS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS } from "./map-layout";
+import { MAP_LANDMARKS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS, type MapLandmarkKey, type MapLandmarkLayout } from "./map-layout";
 import {
 	IsoWorldScene,
 	MAP_ERASER_RADIUS,
@@ -31,6 +31,19 @@ const HEROES: HeroOption[] = [
 ];
 type MapStageRegion = MapRegion | "intro";
 export type MapStageSelection = { region: MapRegion; chapter: number } | { region: "intro"; chapter: 0 };
+
+const MAP_SPECIAL_ASSETS: { key: MapLandmarkKey; label: string; icon: string }[] = [
+	{ key: "readingTree", label: "Arbre lecteur", icon: "🌳" },
+	{ key: "readingBlossom", label: "Arbre fleuri", icon: "🌸" },
+	{ key: "readingArch", label: "Arche", icon: "🏛️" },
+	{ key: "readingTreeLibrary", label: "Bibliothèque", icon: "📚" },
+	{ key: "readingBookstone", label: "Pierre livre", icon: "📖" },
+	{ key: "storybookCottage", label: "Maison conte", icon: "🏡" },
+	{ key: "readingMushrooms", label: "Champignons", icon: "🍄" },
+	{ key: "mathAbacus", label: "Boulier", icon: "🧮" },
+	{ key: "mathCrystals", label: "Cristaux", icon: "💎" },
+	{ key: "mountainObservatory", label: "Observatoire", icon: "🔭" },
+];
 
 function stopPoint(region: MapStageRegion, index: number) {
 	if (region === "intro") return { x: MAP_SHARED_START[0] / MAP_WORLD_WIDTH * WORLD_PIXEL_WIDTH, y: MAP_SHARED_START[1] / MAP_WORLD_DEPTH * WORLD_PIXEL_HEIGHT };
@@ -85,12 +98,13 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	const [pendingHero, setPendingHero] = useState(save.hero);
 	const [heroSaving, setHeroSaving] = useState(false);
 	const [heroSaveError, setHeroSaveError] = useState("");
-	const [landmarks, setLandmarks] = useState<typeof MAP_LANDMARKS>(MAP_LANDMARKS);
+	const [landmarks, setLandmarks] = useState<MapLandmarkLayout>(MAP_LANDMARKS);
 	const [stageLayout, setStageLayout] = useState({ reading: READING_STOPS.map(([x, z]) => [x * MAP_WORLD_WIDTH, z * MAP_WORLD_DEPTH] as [number, number]), math: MATH_STOPS.map(([x, z]) => [x * MAP_WORLD_WIDTH, z * MAP_WORLD_DEPTH] as [number, number]) });
 	const [sharedStart, setSharedStart] = useState<[number, number]>([...MAP_SHARED_START]);
 	const [riverPoints, setRiverPoints] = useState<[number, number][]>([[ -5,37 ],[4,37],[14,37],[21,32],[28,28],[38,21.5],[48,17.5],[58,8.5],[68,5.5],[78,-2]]);
 	const [editorOpen, setEditorOpen] = useState(false);
 	const [landmarkKey, setLandmarkKey] = useState<keyof typeof MAP_LANDMARKS>("readingTree");
+	const [pendingAssetKey, setPendingAssetKey] = useState<MapLandmarkKey | null>(null);
 	const [editorTarget, setEditorTarget] = useState<MapEditorSelection | null>(null);
 	const [assetRotations, setAssetRotations] = useState<Record<string, number>>({});
 	const [decorations, setDecorations] = useState<MapDecoration[]>([]);
@@ -102,7 +116,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	const [editorMessage, setEditorMessage] = useState("");
 	useEffect(() => {
 		if (!import.meta.env.DEV) return;
-		void fetch("/api/dev/map-layout").then((r) => r.ok ? r.json() : null).then((data) => { if (data) { setLandmarks(data.landmarks ?? data); if (data.stages) setStageLayout(data.stages); if (data.river) setRiverPoints(data.river); if (data.rotations) setAssetRotations(data.rotations); if (data.sharedStart) setSharedStart(data.sharedStart); if (data.decorations) setDecorations(data.decorations); if (data.erasedDecorations) setErasedDecorations(data.erasedDecorations); } }).catch(() => undefined);
+		void fetch("/api/dev/map-layout").then((r) => r.ok ? r.json() : null).then((data) => { if (data) { setLandmarks({ ...MAP_LANDMARKS, ...(data.landmarks ?? data) }); if (data.stages) setStageLayout(data.stages); if (data.river) setRiverPoints(data.river); if (data.rotations) setAssetRotations(data.rotations); if (data.sharedStart) setSharedStart(data.sharedStart); if (data.decorations) setDecorations(data.decorations); if (data.erasedDecorations) setErasedDecorations(data.erasedDecorations); } }).catch(() => undefined);
 	}, []);
 	const saveMapLayout = async () => {
 		try {
@@ -133,9 +147,9 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			const mountain = mountainBlendAt(px, pz) >= 0.5;
 			const options: Record<Exclude<MapPaintMode, "select" | "erase">, string[]> = {
 				tree: mountain ? ["/models/mountain-fir.glb"] : ["/models/forest-tree.glb", "/models/reading-tree.glb"],
-				flower: mountain ? ["/models/map-forest-flower-patch.glb"] : ["/models/map-forest-flower-patch.glb", "/models/map-blossom-tree.glb"],
-				rock: ["/models/mossy-boulders.glb", "/models/map-riverbank-rock-cluster.glb"],
-				bush: ["/models/forest-understory.glb"],
+				flower: mountain ? ["/models/mountain-wildflowers.glb"] : ["/models/map-forest-flower-patch.glb", "/models/map-blossom-tree.glb"],
+				rock: mountain ? ["/models/mountain-rock-cluster.glb"] : ["/models/mossy-boulders.glb", "/models/map-riverbank-rock-cluster.glb"],
+				bush: mountain ? ["/models/mountain-cushion-shrub.glb"] : ["/models/forest-understory.glb"],
 			};
 			const kind = paintMode as Exclude<MapPaintMode, "select" | "erase">;
 			const modelUrl = options[kind][Math.floor(Math.random() * options[kind].length)];
@@ -349,7 +363,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				onPointerCancel={() => { dragRef.current = null; }}
 			>
 				<div className="relative" style={{ width: WORLD_PIXEL_WIDTH, height: WORLD_PIXEL_HEIGHT }}>
-					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} stageLayout={stageLayout} sharedStart={sharedStart} riverPoints={riverPoints} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) setLandmarkKey(target.key); }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(intro)} dialogueSpeaker={introLine?.who ?? null} dialogueCharacters={intro?.lines.map((line) => line.who) ?? []} dialogueExiting={introExiting} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
+					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} pendingAssetKey={pendingAssetKey} stageLayout={stageLayout} sharedStart={sharedStart} riverPoints={riverPoints} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) { setLandmarkKey(target.key); setPendingAssetKey(null); } }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(intro)} dialogueSpeaker={introLine ? introLine.who === "hero" ? save.hero : introLine.who : null} dialogueCharacters={intro?.lines.map((line) => line.who === "hero" ? save.hero : line.who) ?? []} dialogueExiting={introExiting} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
 					<nav className="sr-only" aria-label="Étapes accessibles de la carte">
 						<button type="button" aria-label={`Le carrefour des découvertes, histoire d’introduction${save.seenIntro[-1] ? ", déjà vue" : ""}`} onClick={() => chooseStage("intro", 0, onWorldIntro)}>Le carrefour des découvertes</button>
 					{CHAPTERS.map((chapter) => {
@@ -433,32 +447,59 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			</div>}
 			{!backgroundOnly && <div className="pointer-events-none absolute bottom-3 right-3 z-30 rounded-full glass bg-[#24163c]/75 px-3 py-1.5 text-[10px] sm:bottom-5 sm:right-5 sm:text-xs">Fais glisser la carte ↔ ↕ pour explorer</div>}
 			{import.meta.env.DEV && !backgroundOnly && <div className="pointer-events-auto absolute bottom-3 left-3 z-40">
-				<button type="button" onClick={() => { setEditorOpen((open) => !open); setEditorTarget(null); }} className="rounded-xl border border-white/30 bg-slate-950/85 px-3 py-2 text-sm font-bold shadow-xl">{editorOpen ? "Fermer éditeur" : "Éditer la carte"}</button>
-				{editorOpen && <div className="mt-2 w-64 rounded-2xl border border-white/20 bg-slate-950/95 p-3 shadow-2xl backdrop-blur">
+				<button type="button" onClick={() => { setEditorOpen((open) => !open); setEditorTarget(null); setPendingAssetKey(null); }} className="rounded-xl border border-white/30 bg-slate-950/85 px-3 py-2 text-sm font-bold shadow-xl">{editorOpen ? "Fermer éditeur" : "Éditer la carte"}</button>
+				{editorOpen && <div className="mt-2 max-h-[72vh] w-72 overflow-y-auto rounded-2xl border border-white/20 bg-slate-950/95 p-3 shadow-2xl backdrop-blur">
 					<p className="text-xs font-bold text-white">Clique et fais glisser un élément sur la carte.</p>
 					<div className="mt-2 grid grid-cols-3 gap-1.5">
-						{([ ["select", "Sélection"], ["tree", "🌲 Arbres"], ["flower", "🌼 Fleurs"], ["rock", "🪨 Rochers"], ["bush", "🌿 Buissons"], ["erase", "⌫ Gomme"] ] as [MapPaintMode, string][]).map(([mode, label]) => <button key={mode} type="button" onClick={() => { setPaintMode(mode); setEditorTarget(null); brushStrokeRef.current = null; }} className={`rounded-lg px-2 py-1.5 text-[11px] font-bold ${paintMode === mode ? "bg-fuchsia-600 text-white" : "bg-white/10 text-white/75"}`}>{label}</button>)}
+						{([ ["select", "Sélection"], ["tree", "🌲 Arbres"], ["flower", "🌼 Fleurs"], ["rock", "🪨 Rochers"], ["bush", "🌿 Buissons"], ["erase", "⌫ Gomme"] ] as [MapPaintMode, string][]).map(([mode, label]) => <button key={mode} type="button" onClick={() => { setPaintMode(mode); setEditorTarget(null); setPendingAssetKey(null); brushStrokeRef.current = null; }} className={`rounded-lg px-2 py-1.5 text-[11px] font-bold ${paintMode === mode ? "bg-fuchsia-600 text-white" : "bg-white/10 text-white/75"}`}>{label}</button>)}
 					</div>
 					<p className="mt-1 text-[11px] text-white/65">Clique/glisse sur la carte pour peindre ou gommer. En sélection, déplace les éléments et les poignées.</p>
+					{paintMode === "select" && <section className="mt-3 border-t border-white/15 pt-2">
+						<p className="mb-1 text-[11px] font-bold text-white/80">Assets spéciaux</p>
+						<div className="grid grid-cols-2 gap-1.5">
+							{MAP_SPECIAL_ASSETS.map(({ key, label, icon }) => {
+								const position = landmarks[key];
+								const isPending = pendingAssetKey === key;
+								return <button key={key} type="button" aria-label={`${label}, ${position ? "placé" : "à placer"}`} onClick={() => {
+									setPaintMode("select");
+									setLandmarkKey(key);
+									if (position) {
+										setPendingAssetKey(null);
+										setEditorTarget({ kind: "asset", key, index: 0 });
+										const map = scrollRef.current;
+										if (map) map.scrollTo({ left: position[0] * WORLD_PIXEL_WIDTH / MAP_WORLD_WIDTH - map.clientWidth / 2, top: position[1] * WORLD_PIXEL_HEIGHT / MAP_WORLD_DEPTH - map.clientHeight / 2, behavior: "smooth" });
+									} else {
+										setEditorTarget(null);
+										setPendingAssetKey(key);
+									}
+								}} title={`${label} · ${position ? "Placé" : isPending ? "Clique sur la carte pour placer" : "À placer"}`} className={`flex min-w-0 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-left ${isPending ? "border-amber-300 bg-amber-500/25" : "border-white/10 bg-white/5 hover:bg-white/10"}`}>
+									<span className="text-base">{icon}</span><span className="min-w-0 flex-1 truncate text-[10px] font-semibold">{label}</span><span className={`shrink-0 text-[9px] font-bold ${position ? "text-emerald-300" : "text-amber-200"}`}>{position ? "Placé" : isPending ? "Clique la carte" : "À placer"}</span>
+								</button>;
+							})}
+						</div>
+						{pendingAssetKey && <p className="mt-1.5 text-[10px] font-semibold text-amber-100">Clique sur un emplacement vide pour placer {MAP_SPECIAL_ASSETS.find((asset) => asset.key === pendingAssetKey)?.label}.</p>}
+					</section>}
 					{editorTarget && <p className="mt-2 rounded-lg bg-white/10 px-2 py-1.5 text-xs font-semibold text-amber-100">{editorTarget.kind === "asset" ? landmarkKey : editorTarget.kind === "stage" ? `Étape ${editorTarget.index + 1} · ${editorTarget.region === "reading" ? "lecture" : "maths"}` : editorTarget.kind === "river" ? `Rivière · poignée ${editorTarget.index + 1}` : "Départ commun"}</p>}
-					{editorTarget?.kind === "asset" && <div className="mt-2 flex items-center gap-2"><span className="min-w-0 flex-1 truncate text-xs font-semibold">{landmarkKey}</span><button type="button" aria-label="Tourner à gauche" onClick={()=>setAssetRotations(v=>({...v,[landmarkKey]:(v[landmarkKey]??0)-Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↶</button><span className="text-xs tabular-nums">{((assetRotations[landmarkKey]??0)*180/Math.PI).toFixed(0)}°</span><button type="button" aria-label="Tourner à droite" onClick={()=>setAssetRotations(v=>({...v,[landmarkKey]:(v[landmarkKey]??0)+Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↷</button></div>}
+					{editorTarget?.kind === "asset" && <div className="mt-2 flex items-center gap-2"><span className="min-w-0 flex-1 truncate text-xs font-semibold">{landmarkKey}</span><button type="button" aria-label="Tourner à gauche" onClick={()=>setAssetRotations(v=>({...v,[landmarkKey]:(v[landmarkKey]??0)-Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↶</button><span className="text-xs tabular-nums">{((assetRotations[landmarkKey]??0)*180/Math.PI).toFixed(0)}°</span><button type="button" aria-label="Tourner à droite" onClick={()=>setAssetRotations(v=>({...v,[landmarkKey]:(v[landmarkKey]??0)+Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↷</button><button type="button" aria-label="Retirer cet asset" onClick={()=>{setLandmarks(current=>({...current,[landmarkKey]:null}));setEditorTarget(null);setPendingAssetKey(null);}} className="rounded bg-rose-800 px-2 py-1 text-xs">Retirer</button></div>}
 					<button type="button" onClick={() => void saveMapLayout()} className="mt-3 w-full rounded-lg bg-fuchsia-700 px-3 py-2 text-sm font-bold">Enregistrer dans le dépôt</button>
 					{editorMessage && <p className="mt-2 text-xs text-emerald-200">{editorMessage}</p>}
 				</div>}
 			</div>}
 			{intro && introLine && <div className={`pointer-events-none absolute inset-0 z-20 overflow-hidden transition-opacity duration-500 ${introExiting ? "opacity-0" : "opacity-100"}`}>
+				{(() => { const speaker = SPEAKER_INFO[introLine.who === "hero" ? save.hero : introLine.who]; return <>
 				<div className="absolute inset-x-0 top-[5.5rem] text-center sm:top-24">
 					<span className="rounded-full border border-white/30 bg-slate-950/70 px-5 py-2 text-sm font-extrabold text-white shadow-lg backdrop-blur-md sm:text-base">{intro.title}</span>
 				</div>
-				{introLine.who === save.hero ? <div key={`${introIndex}-hero`} className="anim-pop absolute left-1/2 top-[22%] w-[min(88vw,34rem)] -translate-x-1/2 rounded-3xl border-2 border-white/90 bg-slate-950/85 px-5 py-4 text-center text-base font-bold leading-snug text-white shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md sm:text-xl">
-						<span className="mb-1 block text-xs font-black uppercase tracking-widest text-pink-200">{SPEAKER_INFO[introLine.who].name}</span>
+				{introLine.who === "hero" ? <div key={`${introIndex}-hero`} className="anim-pop absolute left-1/2 top-[22%] w-[min(88vw,34rem)] -translate-x-1/2 rounded-3xl border-2 border-white/90 bg-slate-950/85 px-5 py-4 text-center text-base font-bold leading-snug text-white shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md sm:text-xl">
+						<span className="mb-1 block text-xs font-black uppercase tracking-widest text-pink-200">{speaker.name}</span>
 						{playerText(introLine.text, save.hero)}<span className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b-2 border-r-2 border-white/90 bg-slate-950/85" />
 						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(playerText(introLine.text, save.hero))} size="sm" /></span>
-					</div> : <div key={`${introIndex}-npc`} className={`absolute left-[3%] ${introLine.who === "mochi" ? "top-[23%] sm:top-[32%]" : "top-[19%] sm:top-[20%]"} w-[min(78vw,29rem)] rounded-3xl border-2 border-white/90 px-4 py-3 text-base font-bold leading-snug shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md anim-pop sm:left-[8%] sm:px-5 sm:py-4 sm:text-xl`} style={{ backgroundColor: introLine.who === "mochi" ? "#f4edff" : `${SPEAKER_INFO[introLine.who].color}e8`, color: introLine.who === "mochi" ? "#321b50" : "#ffffff" }}>
-						<span className="mb-1 block text-xs font-black uppercase tracking-widest opacity-80">{SPEAKER_INFO[introLine.who].name}</span>
-						{introLine.text}<span className="absolute -bottom-2 left-[58%] h-4 w-4 rotate-45 border-b-2 border-r-2 border-white/90" style={{ backgroundColor: SPEAKER_INFO[introLine.who].color }} />
+					</div> : <div key={`${introIndex}-npc`} className={`absolute left-[3%] ${introLine.who === "mochi" ? "top-[23%] sm:top-[32%]" : "top-[19%] sm:top-[20%]"} w-[min(78vw,29rem)] rounded-3xl border-2 border-white/90 px-4 py-3 text-base font-bold leading-snug shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md anim-pop sm:left-[8%] sm:px-5 sm:py-4 sm:text-xl`} style={{ backgroundColor: introLine.who === "mochi" ? "#f4edff" : `${speaker.color}e8`, color: introLine.who === "mochi" ? "#321b50" : "#ffffff" }}>
+						<span className="mb-1 block text-xs font-black uppercase tracking-widest opacity-80">{speaker.name}</span>
+						{introLine.text}<span className="absolute -bottom-2 left-[58%] h-4 w-4 rotate-45 border-b-2 border-r-2 border-white/90" style={{ backgroundColor: speaker.color }} />
 						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(introLine.text)} size="sm" /></span>
-					</div>}
+				</div>}
+				</>; })()}
 				<div className="pointer-events-auto absolute inset-x-0 bottom-3 flex items-center justify-center gap-3 sm:bottom-5">
 					<span className="rounded-full border border-white/30 bg-slate-950/75 px-3 py-2 text-xs font-bold text-white shadow-lg">{introIndex + 1} / {intro.lines.length}</span>
 					<BigButton color="yellow" onClick={advanceIntro} className="!px-5 !py-2.5 !text-base sm:!px-6 sm:!py-3 sm:!text-lg">{introIndex + 1 < intro.lines.length ? "Suivant ▶" : "C'est parti ! ⚡"}</BigButton>
