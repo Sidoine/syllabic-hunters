@@ -39,14 +39,15 @@ type Screen =
   | { name: "maps" }
   | { name: "map-intro-world" }
   | { name: "map-intro-chapter"; region: "reading" | "math"; ch: number }
-  | { name: "chapter-video"; region: "reading" | "math"; ch: number; kind: "intro" | "outro" }
+  | { name: "map-outro-chapter"; region: "reading" | "math"; ch: number; replay?: boolean }
+  | { name: "chapter-video"; region: "reading" | "math"; ch: number; kind: "intro" | "outro"; replay?: boolean }
   | { name: "math-chapter"; ch: number; award?: { id: string; stars: number } }
   | { name: "math-mission"; id: string; run: number }
   | { name: "math-result"; id: string; stars: number }
   | { name: "coloring"; id: string; pageId: ColoringPageId; title: string; returnTo: { name: "chapter" | "math-chapter"; ch: number } }
   | { name: "chapter"; ch: number; award?: { id: string; stars: number } }
   | { name: "world-intro" }
-  | { name: "dialog"; region: "reading" | "math"; ch: number; kind: "intro" | "outro" }
+  | { name: "dialog"; region: "reading" | "math"; ch: number; kind: "intro" | "outro"; replay?: boolean }
   | { name: "mission"; id: string; run: number }
   | { name: "result"; id: string; stars: number };
 
@@ -82,6 +83,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: "title" });
   const [showSettings, setShowSettings] = useState(false);
   const [mapStage, setMapStage] = useState<MapStageSelection | null>(null);
+  const [storyChooser, setStoryChooser] = useState<{ region: "reading" | "math"; ch: number } | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authReady, setAuthReady] = useState(false);
 
@@ -158,8 +160,24 @@ export default function App() {
 
   const openChapterVictory = (region: "reading" | "math", ch: number) => {
     const chapter = region === "math" ? MATH_CHAPTERS[ch] : CHAPTERS[ch];
+    setMapStage({ region, chapter: ch });
     if (chapter.victoryVideo) go({ name: "chapter-video", region, ch, kind: "outro" });
-    else go({ name: "dialog", region, ch, kind: "outro" });
+    else go({ name: "map-outro-chapter", region, ch });
+  };
+
+  const chooseChapterStory = (region: "reading" | "math", ch: number) => {
+    const missions = region === "math" ? mathChapterMissions(ch) : chapterMissions(ch);
+    const completed = missions.length > 0 && missions.every((mission) => (save.stars[mission.id] ?? 0) > 0);
+    if (completed) setStoryChooser({ region, ch });
+    else showChapterIntro(region, ch);
+  };
+
+  const replayChapterVictory = (region: "reading" | "math", ch: number) => {
+    setStoryChooser(null);
+    setMapStage({ region, chapter: ch });
+    const chapter = region === "math" ? MATH_CHAPTERS[ch] : CHAPTERS[ch];
+    if (chapter.victoryVideo) go({ name: "chapter-video", region, ch, kind: "outro", replay: true });
+    else go({ name: "map-outro-chapter", region, ch, replay: true });
   };
 
   const renderMap = (intro?: { title: string; lines: Line[]; onEnd: () => void }, backgroundOnly = false) => (
@@ -188,11 +206,20 @@ export default function App() {
 
   const finishMission = (m: Mission, errors: number, rounds: number) => {
     const stars = starsFor(errors, rounds);
-    const earnedStars = Math.max(0, stars - (save.stars[m.id] ?? 0));
+    const previousStars = save.stars[m.id] ?? 0;
+    const earnedStars = Math.max(0, stars - previousStars);
     setSave((s) => ({
       ...s,
       stars: { ...s.stars, [m.id]: Math.max(s.stars[m.id] ?? 0, stars) },
     }));
+    const missions = chapterMissions(m.chapter);
+    const completesChapter = previousStars === 0 && missions.every(
+      (mission) => mission.id === m.id || (save.stars[mission.id] ?? 0) > 0,
+    );
+    if (completesChapter) {
+      openChapterVictory("reading", m.chapter);
+      return;
+    }
     go({ name: "chapter", ch: m.chapter, award: earnedStars > 0 ? { id: m.id, stars: earnedStars } : undefined });
   };
 
@@ -208,11 +235,20 @@ export default function App() {
 
   const finishMathMission = (mission: MathMission, errors: number, rounds: number) => {
     const stars = starsFor(errors, rounds);
-    const earnedStars = Math.max(0, stars - (save.stars[mission.id] ?? 0));
+    const previousStars = save.stars[mission.id] ?? 0;
+    const earnedStars = Math.max(0, stars - previousStars);
     setSave((current) => ({
       ...current,
       stars: { ...current.stars, [mission.id]: Math.max(current.stars[mission.id] ?? 0, stars) },
     }));
+    const missions = mathChapterMissions(mission.chapter);
+    const completesChapter = previousStars === 0 && missions.every(
+      (item) => item.id === mission.id || (save.stars[item.id] ?? 0) > 0,
+    );
+    if (completesChapter) {
+      openChapterVictory("math", mission.chapter);
+      return;
+    }
     go({ name: "math-chapter", ch: mission.chapter, award: earnedStars > 0 ? { id: mission.id, stars: earnedStars } : undefined });
   };
 
@@ -255,6 +291,28 @@ export default function App() {
       };
       break;
     }
+    case "map-outro-chapter": {
+      const chapter = screen.region === "math" ? MATH_CHAPTERS[screen.ch] : CHAPTERS[screen.ch];
+      const storyKey = screen.region === "math" ? mathStoryKey(screen.ch) : screen.ch;
+      mapIntro = {
+        title: "Victoire !",
+        lines: chapter.outro,
+        onEnd: () => {
+          setSave((current) => ({ ...current, seenOutro: { ...current.seenOutro, [storyKey]: true } }));
+          if (screen.replay) {
+            go(screen.region === "math" ? { name: "math-chapter", ch: screen.ch } : { name: "chapter", ch: screen.ch });
+            return;
+          }
+          const next = screen.ch + 1;
+          const chapterCount = screen.region === "math" ? MATH_CHAPTERS.length : CHAPTERS.length;
+          if (next < chapterCount) {
+            if (screen.region === "math") openMathChapter(next);
+            else openChapter(next);
+          } else go({ name: "maps" });
+        },
+      };
+      break;
+    }
     case "map-intro-world":
       mapIntro = {
         title: "Le carrefour des découvertes",
@@ -274,7 +332,7 @@ export default function App() {
           onMission={startMission}
           onBack={() => go({ name: "maps" })}
           onStory={() => {
-            showChapterIntro("reading", screen.ch);
+            chooseChapterStory("reading", screen.ch);
           }}
           onSettings={() => setShowSettings(true)}
           onReward={() => startColoring(`reading-coloring-${screen.ch}`, `Coloriage · ${CHAPTERS[screen.ch].title}`, { name: "chapter", ch: screen.ch })}
@@ -290,7 +348,7 @@ export default function App() {
           onMission={startMathMission}
           onBack={() => go({ name: "maps" })}
           onStory={() => {
-            showChapterIntro("math", screen.ch);
+            chooseChapterStory("math", screen.ch);
           }}
           onSettings={() => setShowSettings(true)}
           onReward={() => startColoring(`math-coloring-${screen.ch}`, `Coloriage · ${MATH_CHAPTERS[screen.ch].title}`, { name: "math-chapter", ch: screen.ch })}
@@ -336,6 +394,10 @@ export default function App() {
                 ...s,
                 seenOutro: { ...s.seenOutro, [storyKey]: true },
               }));
+              if (screen.replay) {
+                go(screen.region === "math" ? { name: "math-chapter", ch: screen.ch } : { name: "chapter", ch: screen.ch });
+                return;
+              }
               const next = screen.ch + 1;
               const chapterCount = screen.region === "math" ? MATH_CHAPTERS.length : CHAPTERS.length;
               if (next < chapterCount) {
@@ -362,7 +424,7 @@ export default function App() {
           title={chapter.title}
           onEnd={() => {
             if (screen.kind === "intro") go({ name: "map-intro-chapter", region: screen.region, ch: screen.ch });
-            else go({ name: "dialog", region: screen.region, ch: screen.ch, kind: "outro" });
+            else go({ name: "map-outro-chapter", region: screen.region, ch: screen.ch, replay: screen.replay });
           }}
         />
       );
@@ -448,8 +510,7 @@ export default function App() {
           onNext={() => {
             const next = list[idx + 1];
             if (next) startMathMission(next);
-            else if (MATH_CHAPTERS[mission.chapter].victoryVideo) openChapterVictory("math", mission.chapter);
-            else go({ name: "maps" });
+            else openChapterVictory("math", mission.chapter);
           }}
         />
       );
@@ -457,7 +518,7 @@ export default function App() {
     }
   }
 
-  const mapPrimaryScreens = ["maps", "map-intro-world", "map-intro-chapter"];
+  const mapPrimaryScreens = ["maps", "map-intro-world", "map-intro-chapter", "map-outro-chapter"];
   const mapOverlayScreens = ["chapter", "math-chapter", "mission", "math-mission", "coloring", "result", "math-result"];
   const mapIsPrimary = mapPrimaryScreens.includes(screen.name);
   const showMapBackdrop = mapOverlayScreens.includes(screen.name);
@@ -491,6 +552,18 @@ export default function App() {
               go({ name: "title" });
             }}
           />
+        )}
+        {storyChooser && (
+          <div className="fixed inset-0 z-[130] grid place-items-center bg-slate-950/75 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="story-chooser-title">
+            <div className="w-full max-w-md rounded-3xl border-2 border-white/80 bg-gradient-to-br from-violet-900 to-fuchsia-950 p-6 text-center text-white shadow-2xl">
+              <h2 id="story-chooser-title" className="mb-5 text-2xl font-bold">Quelle histoire veux-tu écouter ?</h2>
+              <div className="flex flex-col gap-3">
+                <button type="button" className="btn-pop rounded-2xl border-2 border-white/70 bg-sky-600 px-5 py-3 text-lg font-bold" onClick={() => { const choice = storyChooser; setStoryChooser(null); if (choice) showChapterIntro(choice.region, choice.ch); }}>Histoire d’introduction</button>
+                <button type="button" className="btn-pop rounded-2xl border-2 border-white/70 bg-amber-500 px-5 py-3 text-lg font-bold" onClick={() => replayChapterVictory(storyChooser.region, storyChooser.ch)}>Histoire de victoire</button>
+                <button type="button" className="mt-1 rounded-xl px-5 py-2 font-semibold text-white/80 hover:bg-white/10" onClick={() => setStoryChooser(null)}>Annuler</button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </GameContext.Provider>

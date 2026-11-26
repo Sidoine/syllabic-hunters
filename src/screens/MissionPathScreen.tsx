@@ -107,7 +107,7 @@ export function MissionPathScreen({
 			className="fixed inset-0 z-40 overflow-hidden bg-transparent text-white"
 		>
 
-			<div className="absolute inset-0 overflow-auto overscroll-contain">
+			<div className="absolute inset-0 overflow-x-hidden overflow-y-auto overscroll-contain">
 				<div className="relative w-full" style={{ height: mapHeight }}>
 					<svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox={`0 0 1000 ${mapHeight}`} preserveAspectRatio="none" aria-hidden="true">
 						<path d={path} fill="none" stroke="#50351e" strokeWidth="23" strokeLinecap="round" opacity="0.56" />
