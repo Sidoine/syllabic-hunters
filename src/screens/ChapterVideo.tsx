@@ -33,7 +33,7 @@ export function ChapterVideo({ src, title, onEnd }: { src: string; title: string
 				playsInline
 				preload="auto"
 				onEnded={onEnd}
-				className="h-auto w-auto max-h-full max-w-full object-contain"
+				className="h-full w-full object-contain"
 			><track kind="captions" srcLang="fr" label="Français" src={captionTrack} default /></video>
 			{playbackBlocked && (
 				<button

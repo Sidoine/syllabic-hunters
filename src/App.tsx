@@ -4,7 +4,7 @@ import { CHAPTERS, MISSIONS, type Mission } from "./data/reading";
 import { WORLD_INTRO_LINES } from "./data/story";
 import type { Line } from "./data/chapter";
 import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathMission } from "./data/math";
-import { setSfxEnabled } from "./lib/sfx";
+import { getSoundEventVersion, setSfxEnabled, sfx } from "./lib/sfx";
 import { configureSpeech, stopSpeech } from "./lib/speech";
 import {
   getCurrentUser,
@@ -32,6 +32,7 @@ import { VoiceReview } from "./screens/VoiceReview";
 import { CartoonStudio } from "./screens/CartoonStudio";
 import { ColoringActivity } from "./screens/ColoringActivity";
 import { ChapterVideo } from "./screens/ChapterVideo";
+import { SpeechFallbackToast } from "./components/SpeechFallbackToast";
 import { coloringPageForReward, type ColoringPageId } from "./data/coloring";
 
 type Screen =
@@ -91,6 +92,22 @@ export default function App() {
     writeSave(save);
     if (authReady && user) void saveRemoteSave(save).catch(() => undefined);
   }, [save, authReady, user]);
+
+  useEffect(() => {
+    const onButtonClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const button = event.target.closest("button");
+      if (!(button instanceof HTMLButtonElement) || button.disabled) return;
+
+      const soundVersion = getSoundEventVersion();
+      queueMicrotask(() => {
+        if (getSoundEventVersion() === soundVersion) sfx.tap();
+      });
+    };
+
+    document.addEventListener("click", onButtonClick, true);
+    return () => document.removeEventListener("click", onButtonClick, true);
+  }, []);
 
   useEffect(() => {
     getCurrentUser()
@@ -565,6 +582,7 @@ export default function App() {
             </div>
           </div>
         )}
+        <SpeechFallbackToast />
       </div>
     </GameContext.Provider>
   );

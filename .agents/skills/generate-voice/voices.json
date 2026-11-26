@@ -698,6 +698,1210 @@
     "source": "dialogue"
   },
   {
+    "name": "image-abeille",
+    "text": "abeille",
+    "speaker": "mochi",
+    "lookup_text": "abeille",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-ananas",
+    "text": "ananas",
+    "speaker": "mochi",
+    "lookup_text": "ananas",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-avion",
+    "text": "avion",
+    "speaker": "mochi",
+    "lookup_text": "avion",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-avocat",
+    "text": "avocat",
+    "speaker": "mochi",
+    "lookup_text": "avocat",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-balai",
+    "text": "balai",
+    "speaker": "mochi",
+    "lookup_text": "balai",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-baleine",
+    "text": "baleine",
+    "speaker": "mochi",
+    "lookup_text": "baleine",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-ballon",
+    "text": "ballon",
+    "speaker": "mochi",
+    "lookup_text": "ballon",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-banane",
+    "text": "banane",
+    "speaker": "mochi",
+    "lookup_text": "banane",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bateau",
+    "text": "bateau",
+    "speaker": "mochi",
+    "lookup_text": "bateau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bebe",
+    "text": "bébé",
+    "speaker": "mochi",
+    "lookup_text": "bébé",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-biberon",
+    "text": "biberon",
+    "speaker": "mochi",
+    "lookup_text": "biberon",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bijou",
+    "text": "bijou",
+    "speaker": "mochi",
+    "lookup_text": "bijou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bisou",
+    "text": "bisou",
+    "speaker": "mochi",
+    "lookup_text": "bisou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bouche",
+    "text": "bouche",
+    "speaker": "mochi",
+    "lookup_text": "bouche",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bouee",
+    "text": "bouée",
+    "speaker": "mochi",
+    "lookup_text": "bouée",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bougie",
+    "text": "bougie",
+    "speaker": "mochi",
+    "lookup_text": "bougie",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-bravo",
+    "text": "bravo",
+    "speaker": "mochi",
+    "lookup_text": "bravo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-cabane",
+    "text": "cabane",
+    "speaker": "mochi",
+    "lookup_text": "cabane",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-cadeau",
+    "text": "cadeau",
+    "speaker": "mochi",
+    "lookup_text": "cadeau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-cafe",
+    "text": "café",
+    "speaker": "mochi",
+    "lookup_text": "café",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-camera",
+    "text": "caméra",
+    "speaker": "mochi",
+    "lookup_text": "caméra",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-canard",
+    "text": "canard",
+    "speaker": "mochi",
+    "lookup_text": "canard",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-carotte",
+    "text": "carotte",
+    "speaker": "mochi",
+    "lookup_text": "carotte",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-chameau",
+    "text": "chameau",
+    "speaker": "mochi",
+    "lookup_text": "chameau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-chapeau",
+    "text": "chapeau",
+    "speaker": "mochi",
+    "lookup_text": "chapeau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-chateau",
+    "text": "château",
+    "speaker": "mochi",
+    "lookup_text": "château",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-chaussette",
+    "text": "chaussette",
+    "speaker": "mochi",
+    "lookup_text": "chaussette",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-chaussure",
+    "text": "chaussure",
+    "speaker": "mochi",
+    "lookup_text": "chaussure",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-chocolat",
+    "text": "chocolat",
+    "speaker": "mochi",
+    "lookup_text": "chocolat",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-cinema",
+    "text": "cinéma",
+    "speaker": "mochi",
+    "lookup_text": "cinéma",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-cochon",
+    "text": "cochon",
+    "speaker": "mochi",
+    "lookup_text": "cochon",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-coco",
+    "text": "coco",
+    "speaker": "mochi",
+    "lookup_text": "coco",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-couronne",
+    "text": "couronne",
+    "speaker": "mochi",
+    "lookup_text": "couronne",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-couteau",
+    "text": "couteau",
+    "speaker": "mochi",
+    "lookup_text": "couteau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-cravate",
+    "text": "cravate",
+    "speaker": "mochi",
+    "lookup_text": "cravate",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-dauphin",
+    "text": "dauphin",
+    "speaker": "mochi",
+    "lookup_text": "dauphin",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-dinosaure",
+    "text": "dinosaure",
+    "speaker": "mochi",
+    "lookup_text": "dinosaure",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-dodo",
+    "text": "dodo",
+    "speaker": "mochi",
+    "lookup_text": "dodo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-douche",
+    "text": "douche",
+    "speaker": "mochi",
+    "lookup_text": "douche",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-echelle",
+    "text": "échelle",
+    "speaker": "mochi",
+    "lookup_text": "échelle",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-ecole",
+    "text": "école",
+    "speaker": "mochi",
+    "lookup_text": "école",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-ecureuil",
+    "text": "écureuil",
+    "speaker": "mochi",
+    "lookup_text": "écureuil",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-elephant",
+    "text": "éléphant",
+    "speaker": "mochi",
+    "lookup_text": "éléphant",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-epee",
+    "text": "épée",
+    "speaker": "mochi",
+    "lookup_text": "épée",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-escargot",
+    "text": "escargot",
+    "speaker": "mochi",
+    "lookup_text": "escargot",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-etoile",
+    "text": "étoile",
+    "speaker": "mochi",
+    "lookup_text": "étoile",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-famille",
+    "text": "famille",
+    "speaker": "mochi",
+    "lookup_text": "famille",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-fantome",
+    "text": "fantôme",
+    "speaker": "mochi",
+    "lookup_text": "fantôme",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-filet",
+    "text": "filet",
+    "speaker": "mochi",
+    "lookup_text": "filet",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-foulard",
+    "text": "foulard",
+    "speaker": "mochi",
+    "lookup_text": "foulard",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-fourmi",
+    "text": "fourmi",
+    "speaker": "mochi",
+    "lookup_text": "fourmi",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-fromage",
+    "text": "fromage",
+    "speaker": "mochi",
+    "lookup_text": "fromage",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-fumee",
+    "text": "fumée",
+    "speaker": "mochi",
+    "lookup_text": "fumée",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-fusee",
+    "text": "fusée",
+    "speaker": "mochi",
+    "lookup_text": "fusée",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-gateau",
+    "text": "gâteau",
+    "speaker": "mochi",
+    "lookup_text": "gâteau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-girafe",
+    "text": "girafe",
+    "speaker": "mochi",
+    "lookup_text": "girafe",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-gorille",
+    "text": "gorille",
+    "speaker": "mochi",
+    "lookup_text": "gorille",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-goutte",
+    "text": "goutte",
+    "speaker": "mochi",
+    "lookup_text": "goutte",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-hibou",
+    "text": "hibou",
+    "speaker": "mochi",
+    "lookup_text": "hibou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-ile",
+    "text": "île",
+    "speaker": "mochi",
+    "lookup_text": "île",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-image",
+    "text": "image",
+    "speaker": "mochi",
+    "lookup_text": "image",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-jaguar",
+    "text": "jaguar",
+    "speaker": "mochi",
+    "lookup_text": "jaguar",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-joker",
+    "text": "joker",
+    "speaker": "mochi",
+    "lookup_text": "joker",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-judo",
+    "text": "judo",
+    "speaker": "mochi",
+    "lookup_text": "judo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-juge",
+    "text": "juge",
+    "speaker": "mochi",
+    "lookup_text": "juge",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-jumeaux",
+    "text": "jumeaux",
+    "speaker": "mochi",
+    "lookup_text": "jumeaux",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-kangourou",
+    "text": "kangourou",
+    "speaker": "mochi",
+    "lookup_text": "kangourou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-kimono",
+    "text": "kimono",
+    "speaker": "mochi",
+    "lookup_text": "kimono",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-lama",
+    "text": "lama",
+    "speaker": "mochi",
+    "lookup_text": "lama",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-lapin",
+    "text": "lapin",
+    "speaker": "mochi",
+    "lookup_text": "lapin",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-lezard",
+    "text": "lézard",
+    "speaker": "mochi",
+    "lookup_text": "lézard",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-licorne",
+    "text": "licorne",
+    "speaker": "mochi",
+    "lookup_text": "licorne",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-livre",
+    "text": "livre",
+    "speaker": "mochi",
+    "lookup_text": "livre",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-locomotive",
+    "text": "locomotive",
+    "speaker": "mochi",
+    "lookup_text": "locomotive",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-loupe",
+    "text": "loupe",
+    "speaker": "mochi",
+    "lookup_text": "loupe",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-lune",
+    "text": "lune",
+    "speaker": "mochi",
+    "lookup_text": "lune",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-lunettes",
+    "text": "lunettes",
+    "speaker": "mochi",
+    "lookup_text": "lunettes",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-lutin",
+    "text": "lutin",
+    "speaker": "mochi",
+    "lookup_text": "lutin",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-malade",
+    "text": "malade",
+    "speaker": "mochi",
+    "lookup_text": "malade",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-maman",
+    "text": "maman",
+    "speaker": "mochi",
+    "lookup_text": "maman",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-mamie",
+    "text": "mamie",
+    "speaker": "mochi",
+    "lookup_text": "mamie",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-marteau",
+    "text": "marteau",
+    "speaker": "mochi",
+    "lookup_text": "marteau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-medaille",
+    "text": "médaille",
+    "speaker": "mochi",
+    "lookup_text": "médaille",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-midi",
+    "text": "midi",
+    "speaker": "mochi",
+    "lookup_text": "midi",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-minou",
+    "text": "minou",
+    "speaker": "mochi",
+    "lookup_text": "minou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-miroir",
+    "text": "miroir",
+    "speaker": "mochi",
+    "lookup_text": "miroir",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-moto",
+    "text": "moto",
+    "speaker": "mochi",
+    "lookup_text": "moto",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-mouche",
+    "text": "mouche",
+    "speaker": "mochi",
+    "lookup_text": "mouche",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-moustique",
+    "text": "moustique",
+    "speaker": "mochi",
+    "lookup_text": "moustique",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-mouton",
+    "text": "mouton",
+    "speaker": "mochi",
+    "lookup_text": "mouton",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-muguet",
+    "text": "muguet",
+    "speaker": "mochi",
+    "lookup_text": "muguet",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-nez",
+    "text": "nez",
+    "speaker": "mochi",
+    "lookup_text": "nez",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-nouille",
+    "text": "nouille",
+    "speaker": "mochi",
+    "lookup_text": "nouille",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-nounours",
+    "text": "nounours",
+    "speaker": "mochi",
+    "lookup_text": "nounours",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-novembre",
+    "text": "novembre",
+    "speaker": "mochi",
+    "lookup_text": "novembre",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-numero",
+    "text": "numéro",
+    "speaker": "mochi",
+    "lookup_text": "numéro",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-olive",
+    "text": "olive",
+    "speaker": "mochi",
+    "lookup_text": "olive",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-orange",
+    "text": "orange",
+    "speaker": "mochi",
+    "lookup_text": "orange",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-oreille",
+    "text": "oreille",
+    "speaker": "mochi",
+    "lookup_text": "oreille",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-ouragan",
+    "text": "ouragan",
+    "speaker": "mochi",
+    "lookup_text": "ouragan",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-outil",
+    "text": "outil",
+    "speaker": "mochi",
+    "lookup_text": "outil",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-panda",
+    "text": "panda",
+    "speaker": "mochi",
+    "lookup_text": "panda",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-pantalon",
+    "text": "pantalon",
+    "speaker": "mochi",
+    "lookup_text": "pantalon",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-papa",
+    "text": "papa",
+    "speaker": "mochi",
+    "lookup_text": "papa",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-papillon",
+    "text": "papillon",
+    "speaker": "mochi",
+    "lookup_text": "papillon",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-parachute",
+    "text": "parachute",
+    "speaker": "mochi",
+    "lookup_text": "parachute",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-parapluie",
+    "text": "parapluie",
+    "speaker": "mochi",
+    "lookup_text": "parapluie",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-patate",
+    "text": "patate",
+    "speaker": "mochi",
+    "lookup_text": "patate",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-photo",
+    "text": "photo",
+    "speaker": "mochi",
+    "lookup_text": "photo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-pile",
+    "text": "pile",
+    "speaker": "mochi",
+    "lookup_text": "pile",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-pilule",
+    "text": "pilule",
+    "speaker": "mochi",
+    "lookup_text": "pilule",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-pirate",
+    "text": "pirate",
+    "speaker": "mochi",
+    "lookup_text": "pirate",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-pomme",
+    "text": "pomme",
+    "speaker": "mochi",
+    "lookup_text": "pomme",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-poney",
+    "text": "poney",
+    "speaker": "mochi",
+    "lookup_text": "poney",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-potiron",
+    "text": "potiron",
+    "speaker": "mochi",
+    "lookup_text": "potiron",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-poule",
+    "text": "poule",
+    "speaker": "mochi",
+    "lookup_text": "poule",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-poupee",
+    "text": "poupée",
+    "speaker": "mochi",
+    "lookup_text": "poupée",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-poussin",
+    "text": "poussin",
+    "speaker": "mochi",
+    "lookup_text": "poussin",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-punaise",
+    "text": "punaise",
+    "speaker": "mochi",
+    "lookup_text": "punaise",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-radio",
+    "text": "radio",
+    "speaker": "mochi",
+    "lookup_text": "radio",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-reveil",
+    "text": "réveil",
+    "speaker": "mochi",
+    "lookup_text": "réveil",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-rhinoceros",
+    "text": "rhinocéros",
+    "speaker": "mochi",
+    "lookup_text": "rhinocéros",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-robe",
+    "text": "robe",
+    "speaker": "mochi",
+    "lookup_text": "robe",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-robot",
+    "text": "robot",
+    "speaker": "mochi",
+    "lookup_text": "robot",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-rose",
+    "text": "rose",
+    "speaker": "mochi",
+    "lookup_text": "rose",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-route",
+    "text": "route",
+    "speaker": "mochi",
+    "lookup_text": "route",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-ruban",
+    "text": "ruban",
+    "speaker": "mochi",
+    "lookup_text": "ruban",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-salade",
+    "text": "salade",
+    "speaker": "mochi",
+    "lookup_text": "salade",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-sandale",
+    "text": "sandale",
+    "speaker": "mochi",
+    "lookup_text": "sandale",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-sapin",
+    "text": "sapin",
+    "speaker": "mochi",
+    "lookup_text": "sapin",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-scie",
+    "text": "scie",
+    "speaker": "mochi",
+    "lookup_text": "scie",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-sirene",
+    "text": "sirène",
+    "speaker": "mochi",
+    "lookup_text": "sirène",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-sofa",
+    "text": "sofa",
+    "speaker": "mochi",
+    "lookup_text": "sofa",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-soleil",
+    "text": "soleil",
+    "speaker": "mochi",
+    "lookup_text": "soleil",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-soupe",
+    "text": "soupe",
+    "speaker": "mochi",
+    "lookup_text": "soupe",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-sourire",
+    "text": "sourire",
+    "speaker": "mochi",
+    "lookup_text": "sourire",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-souris",
+    "text": "souris",
+    "speaker": "mochi",
+    "lookup_text": "souris",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-stylo",
+    "text": "stylo",
+    "speaker": "mochi",
+    "lookup_text": "stylo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-sucette",
+    "text": "sucette",
+    "speaker": "mochi",
+    "lookup_text": "sucette",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-sushi",
+    "text": "sushi",
+    "speaker": "mochi",
+    "lookup_text": "sushi",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-taxi",
+    "text": "taxi",
+    "speaker": "mochi",
+    "lookup_text": "taxi",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-tele",
+    "text": "télé",
+    "speaker": "mochi",
+    "lookup_text": "télé",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-telephone",
+    "text": "téléphone",
+    "speaker": "mochi",
+    "lookup_text": "téléphone",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-tigre",
+    "text": "tigre",
+    "speaker": "mochi",
+    "lookup_text": "tigre",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-tomate",
+    "text": "tomate",
+    "speaker": "mochi",
+    "lookup_text": "tomate",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-tortue",
+    "text": "tortue",
+    "speaker": "mochi",
+    "lookup_text": "tortue",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-tulipe",
+    "text": "tulipe",
+    "speaker": "mochi",
+    "lookup_text": "tulipe",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-univers",
+    "text": "univers",
+    "speaker": "mochi",
+    "lookup_text": "univers",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-usine",
+    "text": "usine",
+    "speaker": "mochi",
+    "lookup_text": "usine",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-vache",
+    "text": "vache",
+    "speaker": "mochi",
+    "lookup_text": "vache",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-valise",
+    "text": "valise",
+    "speaker": "mochi",
+    "lookup_text": "valise",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-vampire",
+    "text": "vampire",
+    "speaker": "mochi",
+    "lookup_text": "vampire",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-velo",
+    "text": "vélo",
+    "speaker": "mochi",
+    "lookup_text": "vélo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-video",
+    "text": "vidéo",
+    "speaker": "mochi",
+    "lookup_text": "vidéo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-vipere",
+    "text": "vipère",
+    "speaker": "mochi",
+    "lookup_text": "vipère",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-virus",
+    "text": "virus",
+    "speaker": "mochi",
+    "lookup_text": "virus",
+    "source": "recorded-line"
+  },
+  {
+    "name": "image-voiture",
+    "text": "voiture",
+    "speaker": "mochi",
+    "lookup_text": "voiture",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-b",
+    "text": "b",
+    "speaker": "mochi",
+    "lookup_text": "b",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-c",
+    "text": "c",
+    "speaker": "mochi",
+    "lookup_text": "c",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-ch",
+    "text": "c, h",
+    "speaker": "mochi",
+    "lookup_text": "c, h",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-d",
+    "text": "d",
+    "speaker": "mochi",
+    "lookup_text": "d",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-f",
+    "text": "f",
+    "speaker": "mochi",
+    "lookup_text": "f",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-g",
+    "text": "g",
+    "speaker": "mochi",
+    "lookup_text": "g",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-j",
+    "text": "j",
+    "speaker": "mochi",
+    "lookup_text": "j",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-l",
+    "text": "l",
+    "speaker": "mochi",
+    "lookup_text": "l",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-m",
+    "text": "m",
+    "speaker": "mochi",
+    "lookup_text": "m",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-n",
+    "text": "n",
+    "speaker": "mochi",
+    "lookup_text": "n",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-p",
+    "text": "p",
+    "speaker": "mochi",
+    "lookup_text": "p",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-r",
+    "text": "r",
+    "speaker": "mochi",
+    "lookup_text": "r",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-s",
+    "text": "s",
+    "speaker": "mochi",
+    "lookup_text": "s",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-t",
+    "text": "t",
+    "speaker": "mochi",
+    "lookup_text": "t",
+    "source": "recorded-line"
+  },
+  {
+    "name": "letter-v",
+    "text": "v",
+    "speaker": "mochi",
+    "lookup_text": "v",
+    "source": "recorded-line"
+  },
+  {
     "name": "math-number-00-zero",
     "text": "zéro",
     "tone": "calm",
@@ -1310,6 +2514,643 @@
     "seed": 2,
     "speaker": "mochi",
     "lookup_text": "bravo, tu lis très bien !",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-a",
+    "text": "a",
+    "speaker": "mochi",
+    "lookup_text": "a",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ba",
+    "text": "bas",
+    "speaker": "mochi",
+    "lookup_text": "bas",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-be",
+    "text": "bé",
+    "speaker": "mochi",
+    "lookup_text": "bé",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-bi",
+    "text": "bi",
+    "speaker": "mochi",
+    "lookup_text": "bi",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-bo",
+    "text": "beau",
+    "speaker": "mochi",
+    "lookup_text": "beau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-bou",
+    "text": "bout",
+    "speaker": "mochi",
+    "lookup_text": "bout",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-bu",
+    "text": "bu",
+    "speaker": "mochi",
+    "lookup_text": "bu",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ca",
+    "text": "cas",
+    "speaker": "mochi",
+    "lookup_text": "cas",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-cha",
+    "text": "chat",
+    "speaker": "mochi",
+    "lookup_text": "chat",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-che",
+    "text": "chez",
+    "speaker": "mochi",
+    "lookup_text": "chez",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-chi",
+    "text": "chi",
+    "speaker": "mochi",
+    "lookup_text": "chi",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-cho",
+    "text": "chaud",
+    "speaker": "mochi",
+    "lookup_text": "chaud",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-chou",
+    "text": "chou",
+    "speaker": "mochi",
+    "lookup_text": "chou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-chu",
+    "text": "chu",
+    "speaker": "mochi",
+    "lookup_text": "chu",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-co",
+    "text": "co",
+    "speaker": "mochi",
+    "lookup_text": "co",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-cou",
+    "text": "cou",
+    "speaker": "mochi",
+    "lookup_text": "cou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-cu",
+    "text": "cu",
+    "speaker": "mochi",
+    "lookup_text": "cu",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-da",
+    "text": "da",
+    "speaker": "mochi",
+    "lookup_text": "da",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-de",
+    "text": "dé",
+    "speaker": "mochi",
+    "lookup_text": "dé",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-di",
+    "text": "dit",
+    "speaker": "mochi",
+    "lookup_text": "dit",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-do",
+    "text": "dos",
+    "speaker": "mochi",
+    "lookup_text": "dos",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-dou",
+    "text": "doux",
+    "speaker": "mochi",
+    "lookup_text": "doux",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-du",
+    "text": "du",
+    "speaker": "mochi",
+    "lookup_text": "du",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-e",
+    "text": "é",
+    "speaker": "mochi",
+    "lookup_text": "é",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-fa",
+    "text": "fa",
+    "speaker": "mochi",
+    "lookup_text": "fa",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-fe",
+    "text": "fée",
+    "speaker": "mochi",
+    "lookup_text": "fée",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-fi",
+    "text": "fi",
+    "speaker": "mochi",
+    "lookup_text": "fi",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-fo",
+    "text": "faux",
+    "speaker": "mochi",
+    "lookup_text": "faux",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-fou",
+    "text": "fou",
+    "speaker": "mochi",
+    "lookup_text": "fou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-fu",
+    "text": "fut",
+    "speaker": "mochi",
+    "lookup_text": "fut",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ga",
+    "text": "gars",
+    "speaker": "mochi",
+    "lookup_text": "gars",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-go",
+    "text": "go",
+    "speaker": "mochi",
+    "lookup_text": "go",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-gou",
+    "text": "goût",
+    "speaker": "mochi",
+    "lookup_text": "goût",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-i",
+    "text": "i",
+    "speaker": "mochi",
+    "lookup_text": "i",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ja",
+    "text": "ja",
+    "speaker": "mochi",
+    "lookup_text": "ja",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-je",
+    "text": "j'ai",
+    "speaker": "mochi",
+    "lookup_text": "j'ai",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ji",
+    "text": "j'y",
+    "speaker": "mochi",
+    "lookup_text": "j'y",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-jo",
+    "text": "jo",
+    "speaker": "mochi",
+    "lookup_text": "jo",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-jou",
+    "text": "joue",
+    "speaker": "mochi",
+    "lookup_text": "joue",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ju",
+    "text": "jus",
+    "speaker": "mochi",
+    "lookup_text": "jus",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-la",
+    "text": "la",
+    "speaker": "mochi",
+    "lookup_text": "la",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-le",
+    "text": "les",
+    "speaker": "mochi",
+    "lookup_text": "les",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-li",
+    "text": "lit",
+    "speaker": "mochi",
+    "lookup_text": "lit",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-lo",
+    "text": "lot",
+    "speaker": "mochi",
+    "lookup_text": "lot",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-lou",
+    "text": "loup",
+    "speaker": "mochi",
+    "lookup_text": "loup",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-lu",
+    "text": "lu",
+    "speaker": "mochi",
+    "lookup_text": "lu",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ma",
+    "text": "ma",
+    "speaker": "mochi",
+    "lookup_text": "ma",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-me",
+    "text": "mes",
+    "speaker": "mochi",
+    "lookup_text": "mes",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-mi",
+    "text": "mie",
+    "speaker": "mochi",
+    "lookup_text": "mie",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-mo",
+    "text": "mot",
+    "speaker": "mochi",
+    "lookup_text": "mot",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-mou",
+    "text": "mou",
+    "speaker": "mochi",
+    "lookup_text": "mou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-mu",
+    "text": "mue",
+    "speaker": "mochi",
+    "lookup_text": "mue",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-na",
+    "text": "na",
+    "speaker": "mochi",
+    "lookup_text": "na",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ne",
+    "text": "né",
+    "speaker": "mochi",
+    "lookup_text": "né",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ni",
+    "text": "nid",
+    "speaker": "mochi",
+    "lookup_text": "nid",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-no",
+    "text": "nos",
+    "speaker": "mochi",
+    "lookup_text": "nos",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-nou",
+    "text": "nous",
+    "speaker": "mochi",
+    "lookup_text": "nous",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-nu",
+    "text": "nu",
+    "speaker": "mochi",
+    "lookup_text": "nu",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-o",
+    "text": "oh",
+    "speaker": "mochi",
+    "lookup_text": "oh",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ou",
+    "text": "où",
+    "speaker": "mochi",
+    "lookup_text": "où",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-pa",
+    "text": "pas",
+    "speaker": "mochi",
+    "lookup_text": "pas",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-pe",
+    "text": "pé",
+    "speaker": "mochi",
+    "lookup_text": "pé",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-pi",
+    "text": "pie",
+    "speaker": "mochi",
+    "lookup_text": "pie",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-po",
+    "text": "pot",
+    "speaker": "mochi",
+    "lookup_text": "pot",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-pou",
+    "text": "pou",
+    "speaker": "mochi",
+    "lookup_text": "pou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-pu",
+    "text": "pu",
+    "speaker": "mochi",
+    "lookup_text": "pu",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ra",
+    "text": "rat",
+    "speaker": "mochi",
+    "lookup_text": "rat",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-re",
+    "text": "ré",
+    "speaker": "mochi",
+    "lookup_text": "ré",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ri",
+    "text": "riz",
+    "speaker": "mochi",
+    "lookup_text": "riz",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ro",
+    "text": "rot",
+    "speaker": "mochi",
+    "lookup_text": "rot",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-rou",
+    "text": "roue",
+    "speaker": "mochi",
+    "lookup_text": "roue",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ru",
+    "text": "rue",
+    "speaker": "mochi",
+    "lookup_text": "rue",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-sa",
+    "text": "sa",
+    "speaker": "mochi",
+    "lookup_text": "sa",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-se",
+    "text": "ses",
+    "speaker": "mochi",
+    "lookup_text": "ses",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-si",
+    "text": "si",
+    "speaker": "mochi",
+    "lookup_text": "si",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-so",
+    "text": "seau",
+    "speaker": "mochi",
+    "lookup_text": "seau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-sou",
+    "text": "sou",
+    "speaker": "mochi",
+    "lookup_text": "sou",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-su",
+    "text": "su",
+    "speaker": "mochi",
+    "lookup_text": "su",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ta",
+    "text": "ta",
+    "speaker": "mochi",
+    "lookup_text": "ta",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-te",
+    "text": "thé",
+    "speaker": "mochi",
+    "lookup_text": "thé",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ti",
+    "text": "ti",
+    "speaker": "mochi",
+    "lookup_text": "ti",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-to",
+    "text": "tôt",
+    "speaker": "mochi",
+    "lookup_text": "tôt",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-tou",
+    "text": "tout",
+    "speaker": "mochi",
+    "lookup_text": "tout",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-tu",
+    "text": "tu",
+    "speaker": "mochi",
+    "lookup_text": "tu",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-u",
+    "text": "u",
+    "speaker": "mochi",
+    "lookup_text": "u",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-va",
+    "text": "va",
+    "speaker": "mochi",
+    "lookup_text": "va",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-ve",
+    "text": "vé",
+    "speaker": "mochi",
+    "lookup_text": "vé",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-vi",
+    "text": "vie",
+    "speaker": "mochi",
+    "lookup_text": "vie",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-vo",
+    "text": "veau",
+    "speaker": "mochi",
+    "lookup_text": "veau",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-vou",
+    "text": "vous",
+    "speaker": "mochi",
+    "lookup_text": "vous",
+    "source": "recorded-line"
+  },
+  {
+    "name": "syllable-vu",
+    "text": "vu",
+    "speaker": "mochi",
+    "lookup_text": "vu",
     "source": "recorded-line"
   },
   {

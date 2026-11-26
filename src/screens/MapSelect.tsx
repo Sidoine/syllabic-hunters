@@ -11,17 +11,16 @@ import type { Save } from "../lib/storage";
 import { HeroCarousel3D, type HeroOption } from "../components/HeroCarousel3D";
 import { isMathMissionUnlocked } from "./Math";
 import { chapterMissions, isMissionUnlocked } from "./Map";
-import { MAP_LANDMARKS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS, type MapLandmarkKey, type MapLandmarkLayout } from "./map-layout";
+import { MAP_ERASER_RADIUS, MAP_LANDMARKS, MAP_RIVER_POINTS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS, WORLD_PIXEL_HEIGHT, WORLD_PIXEL_WIDTH, type MapLandmarkKey, type MapLandmarkLayout } from "./map-layout";
 import {
 	IsoWorldScene,
-	MAP_ERASER_RADIUS,
 	type MapEditorSelection,
 	type MapDecoration,
 	type MapPaintMode,
+	type MapSplineElement,
+	type MapSplineType,
 	type MapLoadProgress,
 	type StageMarkerData,
-	WORLD_PIXEL_HEIGHT,
-	WORLD_PIXEL_WIDTH,
 } from "./IsoWorldScene";
 
 export type MapRegion = "reading" | "math";
@@ -47,6 +46,29 @@ const MAP_SPECIAL_ASSETS: { key: MapLandmarkKey; label: string; icon: string }[]
 	{ key: "mathCrystals", label: "Cristaux", icon: "💎" },
 	{ key: "mountainObservatory", label: "Observatoire", icon: "🔭" },
 ];
+const AUTOMATIC_BRUSH_MODEL = "auto";
+const MAP_SPLINE_LABELS: Record<MapSplineType, string> = { river: "Rivière", fence: "Clôture", cliff: "Falaise", talus: "Talus" };
+const MAP_BRUSH_ASSETS: Record<MapDecoration["kind"], { label: string; modelUrl: string }[]> = {
+	tree: [
+		{ label: "Arbre de forêt", modelUrl: "/models/forest-tree.glb" },
+		{ label: "Arbre de lecture", modelUrl: "/models/reading-tree.glb" },
+		{ label: "Sapin de montagne", modelUrl: "/models/mountain-fir.glb" },
+	],
+	flower: [
+		{ label: "Fleurs de forêt", modelUrl: "/models/map-forest-flower-patch.glb" },
+		{ label: "Arbre fleuri", modelUrl: "/models/map-blossom-tree.glb" },
+		{ label: "Fleurs de montagne", modelUrl: "/models/mountain-wildflowers.glb" },
+	],
+	rock: [
+		{ label: "Rochers moussus", modelUrl: "/models/mossy-boulders.glb" },
+		{ label: "Rochers de rivière", modelUrl: "/models/map-riverbank-rock-cluster.glb" },
+		{ label: "Rochers de montagne", modelUrl: "/models/mountain-rock-cluster.glb" },
+	],
+	bush: [
+		{ label: "Sous-bois", modelUrl: "/models/forest-understory.glb" },
+		{ label: "Arbuste de montagne", modelUrl: "/models/mountain-cushion-shrub.glb" },
+	],
+};
 
 function stopPoint(region: MapStageRegion, index: number) {
 	if (region === "intro") return { x: MAP_SHARED_START[0] / MAP_WORLD_WIDTH * WORLD_PIXEL_WIDTH, y: MAP_SHARED_START[1] / MAP_WORLD_DEPTH * WORLD_PIXEL_HEIGHT };
@@ -110,7 +132,8 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	const [landmarks, setLandmarks] = useState<MapLandmarkLayout>(MAP_LANDMARKS);
 	const [stageLayout, setStageLayout] = useState({ reading: READING_STOPS.map(([x, z]) => [x * MAP_WORLD_WIDTH, z * MAP_WORLD_DEPTH] as [number, number]), math: MATH_STOPS.map(([x, z]) => [x * MAP_WORLD_WIDTH, z * MAP_WORLD_DEPTH] as [number, number]) });
 	const [sharedStart, setSharedStart] = useState<[number, number]>([...MAP_SHARED_START]);
-	const [riverPoints, setRiverPoints] = useState<[number, number][]>([[ -5,37 ],[4,37],[14,37],[21,32],[28,28],[38,21.5],[48,17.5],[58,8.5],[68,5.5],[78,-2]]);
+	const [splineElements, setSplineElements] = useState<MapSplineElement[]>([{ id: "river-main", type: "river", points: MAP_RIVER_POINTS.map(([x, z]) => [x, z]) }]);
+	const [splineType, setSplineType] = useState<MapSplineType>("river");
 	const [editorOpen, setEditorOpen] = useState(false);
 	const [landmarkKey, setLandmarkKey] = useState<keyof typeof MAP_LANDMARKS>("readingTree");
 	const [pendingAssetKey, setPendingAssetKey] = useState<MapLandmarkKey | null>(null);
@@ -121,11 +144,13 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	const decorationsRef = useRef(decorations);
 	decorationsRef.current = decorations;
 	const [paintMode, setPaintMode] = useState<MapPaintMode>("select");
+	const [brushKind, setBrushKind] = useState<MapDecoration["kind"]>("tree");
+	const [brushModels, setBrushModels] = useState<Record<MapDecoration["kind"], string>>({ tree: AUTOMATIC_BRUSH_MODEL, flower: AUTOMATIC_BRUSH_MODEL, rock: AUTOMATIC_BRUSH_MODEL, bush: AUTOMATIC_BRUSH_MODEL });
 	const brushStrokeRef = useRef<{ x: number; z: number; untilNext: number } | null>(null);
 	const [editorMessage, setEditorMessage] = useState("");
 	useEffect(() => {
 		if (!import.meta.env.DEV) return;
-		void fetch("/api/dev/map-layout").then((r) => r.ok ? r.json() : null).then((data) => { if (data) { setLandmarks({ ...MAP_LANDMARKS, ...(data.landmarks ?? data) }); if (data.stages) setStageLayout(data.stages); if (data.river) setRiverPoints(data.river); if (data.rotations) setAssetRotations(data.rotations); if (data.sharedStart) setSharedStart(data.sharedStart); if (data.decorations) setDecorations(data.decorations); if (data.erasedDecorations) setErasedDecorations(data.erasedDecorations); } }).catch(() => undefined);
+		void fetch("/api/dev/map-layout").then((r) => r.ok ? r.json() : null).then((data) => { if (data) { setLandmarks({ ...MAP_LANDMARKS, ...(data.landmarks ?? data) }); if (data.stages) setStageLayout(data.stages); if (Array.isArray(data.splines)) setSplineElements(data.splines); else if (data.river) setSplineElements([{ id: "river-main", type: "river", points: data.river }]); if (data.rotations) setAssetRotations(data.rotations); if (data.sharedStart) setSharedStart(data.sharedStart); if (data.decorations) setDecorations(data.decorations); if (data.erasedDecorations) setErasedDecorations(data.erasedDecorations); } }).catch(() => undefined);
 	}, []);
 	const saveMapLayout = async () => {
 		try {
@@ -134,7 +159,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				headers: { "Content-Type": "application/json" },
 				// Root landmark coordinates keep an already-running dev server compatible;
 				// the nested copy is used by the current API and by the next page load.
-				body: JSON.stringify({ ...landmarks, landmarks, stages: stageLayout, river: riverPoints, rotations: assetRotations, sharedStart, decorations, erasedDecorations }),
+				body: JSON.stringify({ ...landmarks, landmarks, stages: stageLayout, river: splineElements.find((element) => element.id === "river-main")?.points ?? [], splines: splineElements, rotations: assetRotations, sharedStart, decorations, erasedDecorations }),
 			});
 			const result = await response.json().catch(() => null) as { error?: string } | null;
 			setEditorMessage(response.ok ? "Enregistré dans src/data/map-layout.json" : `Échec (${response.status}) : ${result?.error ?? response.statusText}`);
@@ -150,23 +175,62 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			const region = target.region;
 			setStageLayout((current) => ({ ...current, [region]: current[region].map((point, index) => index === target.index ? [x, z] : point) }));
 		}
-		else if (target.kind === "river") setRiverPoints((current) => current.map((point, index) => index === target.index ? [x, z] : point));
+		else if (target.kind === "splinePoint" && target.splineId) setSplineElements((current) => current.map((element) => element.id === target.splineId ? { ...element, points: element.points.map((point, index) => index === target.index ? [x, z] : point) } : element));
 		else if (target.kind === "start") setSharedStart([x, z]);
 	};
-	const onEditorPaint = (x: number, z: number, phase: "start" | "move" | "end") => {
+	const addSplineEndpoint = (splineId: string, atStart: boolean) => {
+		const spline = splineElements.find((element) => element.id === splineId);
+		if (!spline || spline.points.length < 2) return;
+		const first = atStart ? spline.points[0] : spline.points[spline.points.length - 1];
+		const neighbor = atStart ? spline.points[1] : spline.points[spline.points.length - 2];
+		let dx = first[0] - neighbor[0];
+		let dz = first[1] - neighbor[1];
+		const length = Math.hypot(dx, dz) || 1;
+		dx = dx / length * 5;
+		dz = dz / length * 5;
+		const point: [number, number] = [Math.max(-5, Math.min(MAP_WORLD_WIDTH + 5, first[0] + dx)), Math.max(-5, Math.min(MAP_WORLD_DEPTH + 5, first[1] + dz))];
+		setSplineElements((current) => current.map((element) => element.id === splineId ? { ...element, points: atStart ? [point, ...element.points] : [...element.points, point] } : element));
+		setEditorTarget({ kind: "splinePoint", splineId, index: atStart ? 0 : spline.points.length });
+	};
+	const removeSplinePoint = (splineId: string, index: number) => {
+		const spline = splineElements.find((element) => element.id === splineId);
+		if (!spline || spline.points.length <= 2) return;
+		setSplineElements((current) => current.map((element) => element.id === splineId ? { ...element, points: element.points.filter((_, pointIndex) => pointIndex !== index) } : element));
+		setEditorTarget({ kind: "splinePoint", splineId, index: Math.max(0, Math.min(index, spline.points.length - 2)) });
+	};
+	const removeSpline = (splineId: string) => {
+		setSplineElements((current) => current.filter((element) => element.id !== splineId));
+		setEditorTarget(null);
+	};
+	const onEditorPaint = (x: number, z: number, phase: "start" | "move" | "end", previewModelUrl?: string) => {
 		if (phase === "end") { brushStrokeRef.current = null; return; }
-		if (paintMode === "select") return;
+		if (paintMode === "spline") {
+			if (phase === "start") {
+				const left = Math.max(-5, x - 4);
+				const right = Math.min(MAP_WORLD_WIDTH + 5, x + 4);
+				const element: MapSplineElement = { id: `${splineType}-${crypto.randomUUID()}`, type: splineType, points: [[left, z], [right, z]] };
+				setSplineElements((current) => [...current, element]);
+				setEditorTarget({ kind: "splinePoint", splineId: element.id, index: 0 });
+				setPaintMode("select");
+			}
+			return;
+		}
+		if (paintMode === "select" || paintMode === "asset") return;
 		if (phase === "start") brushStrokeRef.current = null;
 		const makeDecoration = (px: number, pz: number): MapDecoration => {
-			const mountain = mountainBlendAt(px, pz) >= 0.5;
-			const options: Record<Exclude<MapPaintMode, "select" | "erase">, string[]> = {
-				tree: mountain ? ["/models/mountain-fir.glb"] : ["/models/forest-tree.glb", "/models/reading-tree.glb"],
-				flower: mountain ? ["/models/mountain-wildflowers.glb"] : ["/models/map-forest-flower-patch.glb", "/models/map-blossom-tree.glb"],
-				rock: mountain ? ["/models/mountain-rock-cluster.glb"] : ["/models/mossy-boulders.glb", "/models/map-riverbank-rock-cluster.glb"],
-				bush: mountain ? ["/models/mountain-cushion-shrub.glb"] : ["/models/forest-understory.glb"],
-			};
-			const kind = paintMode as Exclude<MapPaintMode, "select" | "erase">;
-			const modelUrl = options[kind][Math.floor(Math.random() * options[kind].length)];
+			const kind = brushKind;
+			let modelUrl = previewModelUrl ?? brushModels[kind];
+			if (modelUrl === AUTOMATIC_BRUSH_MODEL) {
+				const mountain = mountainBlendAt(px, pz) >= 0.5;
+				const biomeModels: Record<MapDecoration["kind"], string[]> = {
+					tree: mountain ? ["/models/mountain-fir.glb"] : ["/models/forest-tree.glb", "/models/reading-tree.glb"],
+					flower: mountain ? ["/models/mountain-wildflowers.glb"] : ["/models/map-forest-flower-patch.glb", "/models/map-blossom-tree.glb"],
+					rock: mountain ? ["/models/mountain-rock-cluster.glb"] : ["/models/mossy-boulders.glb", "/models/map-riverbank-rock-cluster.glb"],
+					bush: mountain ? ["/models/mountain-cushion-shrub.glb"] : ["/models/forest-understory.glb"],
+				};
+				const options = biomeModels[kind];
+				modelUrl = options[Math.floor(Math.random() * options.length)];
+			}
 			return { id: crypto.randomUUID(), kind, x: px, z: pz, modelUrl, scale: 0.72 + Math.random() * 0.68, rotation: Math.random() * Math.PI * 2 };
 		};
 		if (paintMode === "erase") {
@@ -214,6 +278,13 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	};
 	const [introState, setIntroState] = useState<{ title?: string; index: number }>({ title: intro?.title, index: 0 });
 	const [introExiting, setIntroExiting] = useState(false);
+	const [dialogueBubblePosition, setDialogueBubblePosition] = useState<{ x: number; y: number } | null>(null);
+	const onDialogueBubblePosition = useCallback((position: { x: number; y: number } | null) => {
+		setDialogueBubblePosition((current) => {
+			if (!position || !current) return position;
+			return Math.abs(current.x - position.x) < 3 && Math.abs(current.y - position.y) < 3 ? current : position;
+		});
+	}, []);
 	const exitTimer = useRef<number | null>(null);
 	if (introState.title !== intro?.title) setIntroState({ title: intro?.title, index: 0 });
 	if (!intro && introExiting) setIntroExiting(false);
@@ -337,7 +408,15 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			};
 		}),
 	];
-	const mapLayoutKey = `${MAP_WORLD_WIDTH}x${MAP_WORLD_DEPTH}:${JSON.stringify(sharedStart)}:${JSON.stringify(stageLayout)}:${JSON.stringify(riverPoints)}:${JSON.stringify(landmarks)}:${JSON.stringify(assetRotations)}:${stageMarkers.map(({ region, index }) => `${region}-${index}`).join(",")}`;
+	const splineTopology = splineElements.map(({ id, type, points }) => [id, type, points.length]);
+	const mapLayoutKey = `${MAP_WORLD_WIDTH}x${MAP_WORLD_DEPTH}:${JSON.stringify(sharedStart)}:${JSON.stringify(stageLayout)}:${JSON.stringify(splineTopology)}:${JSON.stringify(landmarks)}:${JSON.stringify(assetRotations)}:${stageMarkers.map(({ region, index }) => `${region}-${index}`).join(",")}`;
+	const selectedMapPosition = editorTarget?.kind === "asset" && editorTarget.key
+		? landmarks[editorTarget.key]
+		: editorTarget?.kind === "stage" && editorTarget.region
+			? stageLayout[editorTarget.region][editorTarget.index]
+			: editorTarget?.kind === "splinePoint" && editorTarget.splineId
+				? splineElements.find(({ id }) => id === editorTarget.splineId)?.points[editorTarget.index]
+				: editorTarget?.kind === "start" ? sharedStart : null;
 	const onSceneStageClick = (region: MapStageRegion, index: number) => {
 		if (region === "intro") {
 			chooseStage("intro", 0, onWorldIntro);
@@ -379,7 +458,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				onPointerCancel={() => { dragRef.current = null; }}
 			>
 				<div className="relative" style={{ width: WORLD_PIXEL_WIDTH, height: WORLD_PIXEL_HEIGHT }}>
-					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} pendingAssetKey={pendingAssetKey} stageLayout={stageLayout} sharedStart={sharedStart} riverPoints={riverPoints} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) { setLandmarkKey(target.key); setPendingAssetKey(null); } }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(intro)} dialogueSpeaker={introLine ? introLine.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : introLine.who : null} dialogueCharacters={intro?.lines.map((line) => line.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : line.who) ?? []} dialogueExiting={introExiting} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
+					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} pendingAssetKey={pendingAssetKey} stageLayout={stageLayout} sharedStart={sharedStart} splineElements={splineElements} splineType={splineType} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} brushKind={brushKind} brushModel={brushModels[brushKind]} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) { setLandmarkKey(target.key); setPendingAssetKey(null); } }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(intro)} dialogueSpeaker={introLine ? introLine.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : introLine.who : null} dialogueCharacters={intro?.lines.map((line) => line.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : line.who) ?? []} dialogueExiting={introExiting} onDialogueBubblePosition={onDialogueBubblePosition} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
 					<nav className="sr-only" aria-label="Étapes accessibles de la carte">
 						<button type="button" aria-label={`Le carrefour des découvertes, histoire d’introduction${save.seenIntro[-1] ? ", déjà vue" : ""}`} onClick={() => chooseStage("intro", 0, onWorldIntro)}>Le carrefour des découvertes</button>
 					{CHAPTERS.map((chapter) => {
@@ -464,41 +543,53 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			</div>}
 			{!backgroundOnly && <div className="pointer-events-none absolute bottom-3 right-3 z-30 rounded-full glass bg-[#24163c]/75 px-3 py-1.5 text-[10px] sm:bottom-5 sm:right-5 sm:text-xs">Fais glisser la carte ↔ ↕ pour explorer</div>}
 			{import.meta.env.DEV && !backgroundOnly && <div className="pointer-events-auto absolute bottom-3 left-3 z-40">
-				<button type="button" onClick={() => { setEditorOpen((open) => !open); setEditorTarget(null); setPendingAssetKey(null); }} className="rounded-xl border border-white/30 bg-slate-950/85 px-3 py-2 text-sm font-bold shadow-xl">{editorOpen ? "Fermer éditeur" : "Éditer la carte"}</button>
-				{editorOpen && <div className="mt-2 max-h-[72vh] w-72 overflow-y-auto rounded-2xl border border-white/20 bg-slate-950/95 p-3 shadow-2xl backdrop-blur">
-					<p className="text-xs font-bold text-white">Clique et fais glisser un élément sur la carte.</p>
-					<div className="mt-2 grid grid-cols-3 gap-1.5">
-						{([ ["select", "Sélection"], ["tree", "🌲 Arbres"], ["flower", "🌼 Fleurs"], ["rock", "🪨 Rochers"], ["bush", "🌿 Buissons"], ["erase", "⌫ Gomme"] ] as [MapPaintMode, string][]).map(([mode, label]) => <button key={mode} type="button" onClick={() => { setPaintMode(mode); setEditorTarget(null); setPendingAssetKey(null); brushStrokeRef.current = null; }} className={`rounded-lg px-2 py-1.5 text-[11px] font-bold ${paintMode === mode ? "bg-fuchsia-600 text-white" : "bg-white/10 text-white/75"}`}>{label}</button>)}
+				{!editorOpen && <button type="button" onClick={() => { setEditorOpen(true); setEditorTarget(null); setPendingAssetKey(null); }} className="rounded-xl border border-white/30 bg-slate-950/85 px-3 py-2 text-sm font-bold shadow-xl">Éditer la carte</button>}
+				{editorOpen && <div className="mt-2 max-h-[78vh] w-[min(960px,calc(100vw-1.5rem))] overflow-y-auto rounded-2xl border border-white/20 bg-slate-950/95 p-2 shadow-2xl backdrop-blur">
+					<div className={`grid grid-cols-1 gap-2 ${paintMode === "select" ? "md:grid-cols-[220px_220px]" : "md:grid-cols-[220px_minmax(220px,1fr)_220px]"}`}>
+					<div className="rounded-xl border border-white/10 bg-slate-900/60 p-2.5">
+					<p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/50">Outils de carte</p>
+					<div className="mt-2 grid grid-cols-4 gap-1.5">
+						{([ ["select", "↖", "Sélection"], ["brush", "🖌️", "Pinceau"], ["spline", "〰️", "Spline"], ["asset", "🏛️", "Assets spéciaux"], ["erase", "⌫", "Gomme"] ] as [MapPaintMode, string, string][]).map(([mode, icon, label]) => <button key={mode} type="button" aria-pressed={paintMode === mode} onClick={() => { setPaintMode(mode); setEditorTarget(null); setPendingAssetKey(null); brushStrokeRef.current = null; }} className={`flex min-h-14 flex-col items-center justify-center gap-0.5 rounded-xl border px-1 py-1.5 text-[10px] font-bold ${paintMode === mode ? "border-fuchsia-300 bg-fuchsia-600/80 text-white shadow-[0_0_16px_rgba(217,70,239,.25)]" : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10"}`}><span className="text-base" aria-hidden="true">{icon}</span><span className="text-center leading-tight">{label}</span></button>)}
 					</div>
-					<p className="mt-1 text-[11px] text-white/65">Clique/glisse sur la carte pour peindre ou gommer. En sélection, déplace les éléments et les poignées.</p>
-					{paintMode === "select" && <section className="mt-3 border-t border-white/15 pt-2">
-						<p className="mb-1 text-[11px] font-bold text-white/80">Assets spéciaux</p>
-						<div className="grid grid-cols-2 gap-1.5">
-							{MAP_SPECIAL_ASSETS.map(({ key, label, icon }) => {
-								const position = landmarks[key];
-								const isPending = pendingAssetKey === key;
-								return <button key={key} type="button" aria-label={`${label}, ${position ? "placé" : "à placer"}`} onClick={() => {
-									setPaintMode("select");
-									setLandmarkKey(key);
-									if (position) {
-										setPendingAssetKey(null);
-										setEditorTarget({ kind: "asset", key, index: 0 });
-										const map = scrollRef.current;
-										if (map) map.scrollTo({ left: position[0] * WORLD_PIXEL_WIDTH / MAP_WORLD_WIDTH - map.clientWidth / 2, top: position[1] * WORLD_PIXEL_HEIGHT / MAP_WORLD_DEPTH - map.clientHeight / 2, behavior: "smooth" });
-									} else {
-										setEditorTarget(null);
-										setPendingAssetKey(key);
-									}
-								}} title={`${label} · ${position ? "Placé" : isPending ? "Clique sur la carte pour placer" : "À placer"}`} className={`flex min-w-0 items-center gap-1.5 rounded-lg border px-2 py-1.5 text-left ${isPending ? "border-amber-300 bg-amber-500/25" : "border-white/10 bg-white/5 hover:bg-white/10"}`}>
-									<span className="text-base">{icon}</span><span className="min-w-0 flex-1 truncate text-[10px] font-semibold">{label}</span><span className={`shrink-0 text-[9px] font-bold ${position ? "text-emerald-300" : "text-amber-200"}`}>{position ? "Placé" : isPending ? "Clique la carte" : "À placer"}</span>
-								</button>;
-							})}
-						</div>
-						{pendingAssetKey && <p className="mt-1.5 text-[10px] font-semibold text-amber-100">Clique sur un emplacement vide pour placer {MAP_SPECIAL_ASSETS.find((asset) => asset.key === pendingAssetKey)?.label}.</p>}
+					<div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-white/10 pt-3">
+						<button type="button" onClick={() => { setEditorOpen(false); setEditorTarget(null); setPendingAssetKey(null); }} className="rounded-lg border border-white/10 bg-white/5 px-2 py-2 text-[10px] font-bold text-white/75 hover:bg-white/10">Fermer éditeur</button>
+						<button type="button" onClick={() => void saveMapLayout()} className="rounded-lg bg-fuchsia-700 px-2 py-2 text-[10px] font-bold text-white hover:bg-fuchsia-600">Enregistrer dans le dépôt</button>
+					</div>
+					</div>
+					{paintMode !== "select" && <div className="min-h-32 rounded-xl border border-white/10 bg-slate-900/60 p-2.5">
+					<p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-white/50">Éléments à poser</p>
+					{paintMode === "brush" && <section className="mt-1">
+						<div className="mb-2 grid grid-cols-2 gap-1">{([ ["tree", "🌲 Arbres"], ["flower", "🌼 Fleurs"], ["rock", "🪨 Rochers"], ["bush", "🌿 Buissons"] ] as [MapDecoration["kind"], string][]).map(([kind, label]) => <button key={kind} type="button" aria-pressed={brushKind === kind} onClick={() => setBrushKind(kind)} className={`rounded-lg border px-2 py-1.5 text-[10px] font-bold ${brushKind === kind ? "border-cyan-300 bg-cyan-800/50 text-white" : "border-white/10 bg-white/5 text-white/65"}`}>{label}</button>)}</div>
+						<p className="mb-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/55">Modèles · {brushKind === "tree" ? "arbres" : brushKind === "flower" ? "fleurs" : brushKind === "rock" ? "rochers" : "buissons"}</p>
+						<button type="button" aria-pressed={brushModels[brushKind] === AUTOMATIC_BRUSH_MODEL} onClick={() => setBrushModels((current) => ({ ...current, [brushKind]: AUTOMATIC_BRUSH_MODEL }))} className={`mb-1.5 w-full rounded-lg border px-2 py-2 text-left text-[10px] font-bold ${brushModels[brushKind] === AUTOMATIC_BRUSH_MODEL ? "border-emerald-300 bg-emerald-700/30 text-white" : "border-white/10 bg-white/5 text-white/70"}`}>✨ Automatique · aléatoire selon le biome</button>
+						<div className="grid grid-cols-2 gap-1.5">{MAP_BRUSH_ASSETS[brushKind].map(({ label, modelUrl }) => <button key={modelUrl} type="button" aria-pressed={brushModels[brushKind] === modelUrl} onClick={() => setBrushModels((current) => ({ ...current, [brushKind]: modelUrl }))} className={`rounded-lg border px-2 py-2 text-left text-[10px] font-semibold ${brushModels[brushKind] === modelUrl ? "border-emerald-300 bg-emerald-700/30 text-white" : "border-white/10 bg-white/5 text-white/70"}`}>{label}</button>)}</div>
+						<p className="mt-1.5 text-[10px] text-white/50">Automatique choisit un modèle compatible à chaque élément peint.</p>
 					</section>}
-					{editorTarget && <p className="mt-2 rounded-lg bg-white/10 px-2 py-1.5 text-xs font-semibold text-amber-100">{editorTarget.kind === "asset" ? landmarkKey : editorTarget.kind === "stage" ? `Étape ${editorTarget.index + 1} · ${editorTarget.region === "reading" ? "lecture" : "maths"}` : editorTarget.kind === "river" ? `Rivière · poignée ${editorTarget.index + 1}` : "Départ commun"}</p>}
-					{editorTarget?.kind === "asset" && <div className="mt-2 flex items-center gap-2"><span className="min-w-0 flex-1 truncate text-xs font-semibold">{landmarkKey}</span><button type="button" aria-label="Tourner à gauche" onClick={()=>setAssetRotations(v=>({...v,[landmarkKey]:(v[landmarkKey]??0)-Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↶</button><span className="text-xs tabular-nums">{((assetRotations[landmarkKey]??0)*180/Math.PI).toFixed(0)}°</span><button type="button" aria-label="Tourner à droite" onClick={()=>setAssetRotations(v=>({...v,[landmarkKey]:(v[landmarkKey]??0)+Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↷</button><button type="button" aria-label="Retirer cet asset" onClick={()=>{setLandmarks(current=>({...current,[landmarkKey]:null}));setEditorTarget(null);setPendingAssetKey(null);}} className="rounded bg-rose-800 px-2 py-1 text-xs">Retirer</button></div>}
-					<button type="button" onClick={() => void saveMapLayout()} className="mt-3 w-full rounded-lg bg-fuchsia-700 px-3 py-2 text-sm font-bold">Enregistrer dans le dépôt</button>
+					{paintMode === "spline" && <section className="mt-3 border-t border-white/10 pt-3">
+						<p className="mb-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/55">Type de spline</p>
+						<div className="grid grid-cols-2 gap-1.5">{([ ["river", "🌊", "Rivière"], ["fence", "🪵", "Clôture"], ["cliff", "🪨", "Falaise"], ["talus", "⛰️", "Talus"] ] as [MapSplineType, string, string][]).map(([type, icon, label]) => <button key={type} type="button" aria-pressed={splineType === type} onClick={() => setSplineType(type)} className={`rounded-lg border px-2 py-2 text-left text-[10px] font-bold ${splineType === type ? "border-cyan-300 bg-cyan-800/50 text-white" : "border-white/10 bg-white/5 text-white/70"}`}>{icon} {label}</button>)}</div>
+						<p className="mt-2 text-[10px] text-white/55">Clique sur la carte pour ajouter un tracé.</p>
+					</section>}
+					{paintMode === "asset" && <section className="mt-3 border-t border-white/10 pt-3">
+						<p className="mb-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/55">Assets spéciaux</p>
+						<div className="grid grid-cols-3 gap-1">{MAP_SPECIAL_ASSETS.map(({ key, label, icon }) => { const position = landmarks[key]; const isPending = pendingAssetKey === key; return <button key={key} type="button" aria-label={`${label}, ${position ? "placé" : "à placer"}`} title={`${label} · ${position ? "Placé" : isPending ? "À placer" : "Disponible"}`} onClick={() => { setLandmarkKey(key); if (position) { setPaintMode("select"); setPendingAssetKey(null); setEditorTarget({ kind: "asset", key, index: 0 }); const map = scrollRef.current; if (map) map.scrollTo({ left: position[0] * WORLD_PIXEL_WIDTH / MAP_WORLD_WIDTH - map.clientWidth / 2, top: position[1] * WORLD_PIXEL_HEIGHT / MAP_WORLD_DEPTH - map.clientHeight / 2, behavior: "smooth" }); } else { setEditorTarget(null); setPendingAssetKey(key); } }} className={`relative flex h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-md border px-1 py-0.5 text-center ${isPending ? "border-amber-300 bg-amber-500/25" : "border-white/10 bg-white/5 hover:bg-white/10"}`}><span className="text-sm leading-none">{icon}</span><span className="w-full truncate text-[8px] font-semibold leading-tight">{label}</span><span aria-hidden="true" className={`absolute right-1 top-1 text-[7px] leading-none ${position ? "text-emerald-300" : isPending ? "text-amber-200" : "text-white/25"}`}>{position ? "●" : isPending ? "◉" : "○"}</span></button>; })}</div>
+						{pendingAssetKey && <p className="mt-2 rounded-lg bg-amber-500/10 px-2 py-1.5 text-[10px] font-semibold text-amber-100">Clique sur la carte pour placer {MAP_SPECIAL_ASSETS.find((asset) => asset.key === pendingAssetKey)?.label}.</p>}
+					</section>}
+					{paintMode === "erase" && <p className="rounded-lg bg-white/5 px-2 py-2 text-[10px] text-white/55">La gomme retire les éléments peints au passage du curseur.</p>}
+					</div>}
+					<div className="min-h-32 rounded-xl border border-white/10 bg-slate-900/60 p-2.5">
+					<section>
+						<p className="mb-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/55">Propriétés de la sélection</p>
+						{paintMode !== "select" && <p className="rounded-lg bg-white/5 px-2 py-2 text-[10px] text-white/50">Passe en mode sélection pour consulter ou modifier les propriétés.</p>}
+						{paintMode === "select" && !editorTarget && <p className="rounded-lg bg-white/5 px-2 py-2 text-[10px] text-white/50">Sélectionne un élément ou une poignée sur la carte.</p>}
+						{paintMode === "select" && editorTarget && <><p className="rounded-lg bg-white/10 px-2 py-1.5 text-xs font-semibold text-amber-100">{editorTarget.kind === "asset" ? MAP_SPECIAL_ASSETS.find(({ key }) => key === editorTarget.key)?.label ?? landmarkKey : editorTarget.kind === "stage" ? `Étape ${editorTarget.index + 1} · ${editorTarget.region === "reading" ? "lecture" : "maths"}` : editorTarget.kind === "splinePoint" ? `${MAP_SPLINE_LABELS[splineElements.find(({ id }) => id === editorTarget.splineId)?.type ?? "river"]} · point ${editorTarget.index + 1}` : "Départ commun"}</p>
+							{selectedMapPosition && <p className="mt-1 px-1 text-[10px] tabular-nums text-white/55">Position · X {selectedMapPosition[0].toFixed(1)} / Z {selectedMapPosition[1].toFixed(1)}</p>}
+							{editorTarget.kind === "splinePoint" && editorTarget.splineId && <div className="mt-2 grid grid-cols-2 gap-1.5"><button type="button" onClick={() => addSplineEndpoint(editorTarget.splineId!, true)} className="rounded-lg bg-cyan-900/80 px-2 py-1.5 text-[10px] font-bold">＋ Début de spline</button><button type="button" onClick={() => addSplineEndpoint(editorTarget.splineId!, false)} className="rounded-lg bg-cyan-900/80 px-2 py-1.5 text-[10px] font-bold">＋ Fin de spline</button><button type="button" disabled={(splineElements.find((element) => element.id === editorTarget.splineId)?.points.length ?? 0) <= 2} onClick={() => removeSplinePoint(editorTarget.splineId!, editorTarget.index)} className="rounded-lg bg-rose-900/80 px-2 py-1.5 text-[10px] font-bold disabled:opacity-40">⌫ Supprimer ce point</button><button type="button" onClick={() => removeSpline(editorTarget.splineId!)} className="rounded-lg bg-rose-950 px-2 py-1.5 text-[10px] font-bold">Retirer ce tracé</button></div>}
+							{editorTarget.kind === "asset" && editorTarget.key && <div className="mt-2 flex items-center gap-1.5"><button type="button" aria-label="Tourner à gauche" onClick={()=>setAssetRotations(v=>({...v,[editorTarget.key!]: (v[editorTarget.key!]??0)-Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↶</button><span className="flex-1 text-center text-xs tabular-nums">{((assetRotations[editorTarget.key]??0)*180/Math.PI).toFixed(0)}°</span><button type="button" aria-label="Tourner à droite" onClick={()=>setAssetRotations(v=>({...v,[editorTarget.key!]: (v[editorTarget.key!]??0)+Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↷</button><button type="button" aria-label="Retirer cet asset" onClick={()=>{setLandmarks(current=>({...current,[editorTarget.key!]:null}));setEditorTarget(null);}} className="rounded bg-rose-800 px-2 py-1 text-xs">Retirer</button></div>}
+						</>}
+					</section>
+					</div>
+					</div>
 					{editorMessage && <p className="mt-2 text-xs text-emerald-200">{editorMessage}</p>}
 				</div>}
 			</div>}
@@ -507,15 +598,29 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				<div className="absolute inset-x-0 top-[5.5rem] text-center sm:top-24">
 					<span className="rounded-full border border-white/30 bg-slate-950/70 px-5 py-2 text-sm font-extrabold text-white shadow-lg backdrop-blur-md sm:text-base">{intro.title}</span>
 				</div>
-				{introLine.who === "hero" ? <div key={`${introIndex}-hero`} className="anim-pop absolute left-1/2 top-[22%] w-[min(88vw,34rem)] -translate-x-1/2 rounded-3xl border-2 border-white/90 bg-slate-950/85 px-5 py-4 text-center text-base font-bold leading-snug text-white shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md sm:text-xl">
-						<span className="mb-1 block text-xs font-black uppercase tracking-widest text-pink-200">{speaker.name}</span>
-						{playerText(introLine.text, save.hero)}<span className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b-2 border-r-2 border-white/90 bg-slate-950/85" />
-						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(playerText(introLine.text, save.hero))} speechOptions={{ masculine: save.hero === "milo", recordedText: playerText(introLine.text, save.hero) }} size="sm" /></span>
-					</div> : <div key={`${introIndex}-npc`} className={`absolute left-[3%] ${introLine.who === "mochi" ? "top-[23%] sm:top-[32%]" : "top-[19%] sm:top-[20%]"} w-[min(78vw,29rem)] rounded-3xl border-2 border-white/90 px-4 py-3 text-base font-bold leading-snug shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md anim-pop sm:left-[8%] sm:px-5 sm:py-4 sm:text-xl`} style={{ backgroundColor: introLine.who === "mochi" ? "#f4edff" : `${speaker.color}e8`, color: introLine.who === "mochi" ? "#321b50" : "#ffffff" }}>
+				{(() => {
+					const speakers = [...new Set(intro.lines.map(({ who }) => who).filter((who) => who !== "hero"))];
+					const participantCount = speakers.length + 1;
+					const participantIndex = introLine.who === "hero" ? 0 : speakers.indexOf(introLine.who) + 1;
+					const leftSlot = participantCount === 2 ? [0.35, 0.65][participantIndex]
+						: participantCount === 3 ? [0.22, 0.5, 0.78][participantIndex]
+							: 0.15 + 0.7 * participantIndex / Math.max(1, participantCount - 1);
+					const left = window.innerWidth * leftSlot;
+					const top = dialogueBubblePosition ? Math.max(150, dialogueBubblePosition.y - 12) : window.innerHeight * 0.3;
+					const text = introLine.who === "hero" ? playerText(introLine.text, save.hero) : introLine.text;
+					const background = introLine.who === "mochi" ? "#f4edff" : `${speaker.color}e8`;
+					const foreground = introLine.who === "mochi" ? "#321b50" : "#ffffff";
+					return <div
+						key={`${introIndex}-${introLine.who}`}
+						className={`absolute w-[min(88vw,34rem)] rounded-3xl border-2 border-white/90 px-4 py-3 text-center text-base font-bold leading-snug shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md transition-opacity sm:px-5 sm:py-4 sm:text-xl ${dialogueBubblePosition ? "opacity-100" : "opacity-0"}`}
+						style={{ left, top, transform: "translate(-50%, -100%)", backgroundColor: background, color: foreground }}
+					>
 						<span className="mb-1 block text-xs font-black uppercase tracking-widest opacity-80">{speaker.name}</span>
-						{introLine.text}<span className="absolute -bottom-2 left-[58%] h-4 w-4 rotate-45 border-b-2 border-r-2 border-white/90" style={{ backgroundColor: speaker.color }} />
-						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(introLine.text)} speechOptions={{ recordedText: introLine.text }} size="sm" /></span>
-				</div>}
+						{text}
+						<span className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b-2 border-r-2 border-white/90" style={{ backgroundColor: background }} />
+						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(text)} speechOptions={{ masculine: introLine.who === "hero" ? save.hero === "milo" : undefined, recordedText: text }} size="sm" /></span>
+					</div>;
+				})()}
 				</>; })()}
 				<div className="pointer-events-auto absolute inset-x-0 bottom-3 flex items-center justify-center gap-3 sm:bottom-5">
 					<span className="rounded-full border border-white/30 bg-slate-950/75 px-3 py-2 text-xs font-bold text-white shadow-lg">{introIndex + 1} / {intro.lines.length}</span>

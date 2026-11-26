@@ -1,5 +1,12 @@
 export const MAP_WORLD_WIDTH = 136;
 export const MAP_WORLD_DEPTH = 64;
+export const WORLD_WIDTH = MAP_WORLD_WIDTH;
+export const WORLD_DEPTH = MAP_WORLD_DEPTH;
+export const MAP_ERASER_RADIUS = 3.4;
+export const WORLD_SCALE = 52;
+export const WORLD_PITCH = 0.82;
+export const WORLD_PIXEL_WIDTH = WORLD_WIDTH * WORLD_SCALE;
+export const WORLD_PIXEL_HEIGHT = WORLD_DEPTH * WORLD_SCALE * WORLD_PITCH;
 export const MAP_SHARED_START = [68, 32] as const;
 export const MAP_DIRECTION_SIGN_POSITION = [68, 28] as const;
 export const MAP_LANDMARKS = {

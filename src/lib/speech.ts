@@ -12,6 +12,17 @@ export type RecordedVoice = {
   available: boolean;
 };
 
+export const SPEECH_FALLBACK_EVENT = "game:speech-fallback";
+export type SpeechFallbackNotice = { text: string; reason: string; file?: string };
+
+function reportSpeechFallback(notice: SpeechFallbackNotice, error?: unknown) {
+	const details = { ...notice, error };
+	console.error("[voix] Repli vers la synthèse vocale du navigateur", details);
+	if (typeof window !== "undefined") {
+		window.dispatchEvent(new CustomEvent<SpeechFallbackNotice>(SPEECH_FALLBACK_EVENT, { detail: notice }));
+	}
+}
+
 const GENDER_VARIANT_RE = /\[([^\]|]+)\|([^\]]+)\]/g;
 const resolveGenderVariant = (text: string, masculine: boolean) =>
 	text.replace(GENDER_VARIANT_RE, (_match, male: string, female: string) => masculine ? male : female);
@@ -212,6 +223,8 @@ function rawSpeak(
     let stopAudio: (() => void) | null = null;
     let audioFallbackTimer: ReturnType<typeof setTimeout> | undefined;
     let fallbackStarted = false;
+    const lookupText = opts.recordedText ?? text;
+    const src = prerecordedLine(lookupText, speakMasculine);
     const finish = () => {
       if (done) return;
       done = true;
@@ -220,7 +233,7 @@ function rawSpeak(
       if (stopActiveAudio === stopAudio) stopActiveAudio = null;
       resolve();
     };
-    const fallbackToSynthesis = () => {
+    const fallbackToSynthesis = (reason: string, error?: unknown) => {
       if (done || fallbackStarted) return;
       fallbackStarted = true;
       if (audioFallbackTimer) clearTimeout(audioFallbackTimer);
@@ -231,6 +244,9 @@ function rawSpeak(
       if (activeAudio === audio) activeAudio = null;
       if (stopActiveAudio === stopAudio) stopActiveAudio = null;
       if (!synth || token !== speakToken) return finish();
+
+      const file = src?.split("/").pop();
+      reportSpeechFallback({ text, reason, file }, error);
 
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "fr-FR";
@@ -248,7 +264,6 @@ function rawSpeak(
       }, 60);
     };
 
-    const src = prerecordedLine(opts.recordedText ?? text, speakMasculine);
     if (src && typeof Audio !== "undefined") {
       audio = new Audio(src);
       activeAudio = audio;
@@ -259,12 +274,23 @@ function rawSpeak(
       };
       stopActiveAudio = stopAudio;
       audio.onended = finish;
-      audio.onerror = fallbackToSynthesis;
+      audio.onerror = () => fallbackToSynthesis(
+        "Le fichier audio généré n’a pas pu être chargé ou décodé.",
+        { mediaErrorCode: audio?.error?.code, networkState: audio?.networkState, readyState: audio?.readyState, src: audio?.currentSrc || src },
+      );
       // Laisse finir les répliques longues avant d'utiliser la synthèse de secours.
-      audioFallbackTimer = setTimeout(fallbackToSynthesis, 30000);
-      audio.play().catch(fallbackToSynthesis);
+      audioFallbackTimer = setTimeout(() => fallbackToSynthesis(
+        "Le fichier audio généré ne s’est pas terminé dans les 30 secondes.",
+        { src },
+      ), 30000);
+      audio.play().catch((error: unknown) => fallbackToSynthesis(
+        "Le navigateur a refusé de lire le fichier audio généré.",
+        error,
+      ));
     } else {
-      fallbackToSynthesis();
+      fallbackToSynthesis(src
+        ? "L’API Audio est indisponible dans ce navigateur."
+        : "Aucun fichier audio généré ne correspond exactement au texte.");
     }
   });
 }

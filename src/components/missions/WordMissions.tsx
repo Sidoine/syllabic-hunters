@@ -23,6 +23,8 @@ import {
   wordsForTargets,
 } from "./helpers";
 
+const countWords = ["zéro", "un", "deux", "trois"];
+
 // ======================= Images ensorcelées =======================
 export function FindImagesMission({ mission, onDone }: MissionProps) {
   const start = !!mission.startMode;
@@ -91,6 +93,7 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
   };
 
   const verb = start ? "qui commencent par le son" : "où on entend le son";
+  const countWord = countWords[r.good.length] ?? String(r.good.length);
   return (
     <MissionFrame
       instruction={
@@ -101,8 +104,8 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
         </>
       }
       dialogue={dialogue("mochi", start
-        ? [`${r.good.length === 1 ? "Trouve une image qui commence" : `Trouve ${r.good.length} images qui commencent`} par le son :`, sayOf(r.t)]
-        : [`${r.good.length === 1 ? "Trouve une image" : `Trouve ${r.good.length} images`} où on entend le son :`, sayOf(r.t)])}
+        ? [`${r.good.length === 1 ? "Trouve une image qui commence" : `Trouve ${countWord} images qui commencent`} par le son :`, sayOf(r.t)]
+        : [`${r.good.length === 1 ? "Trouve une image" : `Trouve ${countWord} images`} où on entend le son :`, sayOf(r.t)])}
       round={ri}
       total={rounds.length}
     >

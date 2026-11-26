@@ -1,6 +1,13 @@
 // Petits effets sonores kawaii générés avec WebAudio (aucun fichier).
 let ctx: AudioContext | null = null;
 let enabled = true;
+let soundEventVersion = 0;
+
+export const getSoundEventVersion = () => soundEventVersion;
+
+function markSoundEvent() {
+  soundEventVersion++;
+}
 
 export const setSfxEnabled = (v: boolean) => {
   enabled = v;
@@ -42,29 +49,40 @@ function tone(
 }
 
 export const sfx = {
-  tap: () => tone(880, 0, 0.08, "triangle", 0.1),
+  tap: () => {
+    markSoundEvent();
+    tone(880, 0, 0.08, "triangle", 0.1);
+  },
   good: () => {
+    markSoundEvent();
     tone(784, 0, 0.15, "triangle");
     tone(1047, 0.1, 0.15, "triangle");
     tone(1319, 0.2, 0.25, "triangle");
   },
   bad: () => {
+    markSoundEvent();
     tone(330, 0, 0.18, "square", 0.06);
     tone(262, 0.15, 0.25, "square", 0.06);
   },
   hit: () => {
+    markSoundEvent();
     tone(1200, 0, 0.06, "sawtooth", 0.08);
     tone(600, 0.05, 0.15, "triangle", 0.12);
   },
   fuse: () => {
+    markSoundEvent();
     [523, 659, 784, 1047].forEach((f, i) => {
       tone(f, i * 0.06, 0.2, "sine", 0.12);
     });
   },
   win: () => {
+    markSoundEvent();
     [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => {
       tone(f, i * 0.12, 0.3, "triangle", 0.14);
     });
   },
-  flip: () => tone(660, 0, 0.07, "sine", 0.1),
+  flip: () => {
+    markSoundEvent();
+    tone(660, 0, 0.07, "sine", 0.1);
+  },
 };

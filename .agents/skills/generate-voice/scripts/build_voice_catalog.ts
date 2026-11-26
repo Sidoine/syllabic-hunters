@@ -39,6 +39,7 @@ const speakerFromFilename = (name: string, text: string) => {
 	if (["king", "mochi", "yuki", "narrator", "default"].includes(oldSpeaker ?? "")) return oldSpeaker!;
 	if (name.startsWith("story-king-") || name.startsWith("king-")) return "king";
 	if (name.startsWith("story-yuki-") || name.startsWith("math-")) return "yuki";
+	if (name.startsWith("image-") || name.startsWith("syllable-") || name.startsWith("vowel-") || name.startsWith("letter-")) return "mochi";
 	if (name.startsWith("story-mochi-") || name.startsWith("mochi-") || name.startsWith("mission-") || name.startsWith("battle-") || name.startsWith("cheer-") || name.startsWith("try-") || name === "read-praise" || name === "playful-rate") return "mochi";
 	return oldSpeaker ?? "default";
 };

@@ -1,4 +1,44 @@
+import { CONSONANTS, SAY, VOWELS } from "./syllables";
+import { WORDS } from "./words";
+
+const slug = (text: string) =>
+	text
+		.normalize("NFKD")
+		.replace(/[\u0300-\u036f]/g, "")
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-|-$/g, "");
+const normalize = (text: string) =>
+	text
+		.trim()
+		.normalize("NFC")
+		.replace(/[’]/g, "'")
+		.replace(/\s+/g, " ")
+		.toLowerCase();
+
+const learningVoiceLines: Record<string, string> = {};
+const addLearningLine = (text: string, filename: string) => {
+	const key = normalize(text);
+	if (key && !learningVoiceLines[key]) learningVoiceLines[key] = filename;
+};
+
+// Les tuiles de syllabes sont lues avec leurs mots repères (« lit », « loup », etc.).
+for (const [syllable, spokenText] of Object.entries(SAY)) {
+	addLearningLine(spokenText, `syllable-${slug(syllable)}.wav`);
+}
+for (const vowel of VOWELS) {
+	addLearningLine(vowel.say, `vowel-${slug(vowel.id)}.wav`);
+}
+for (const consonant of CONSONANTS) {
+	const spokenText = consonant.id === "ch" ? "c, h" : consonant.id;
+	addLearningLine(spokenText, `letter-${slug(consonant.id)}.wav`);
+}
+for (const word of WORDS) {
+	addLearningLine(word.say, `image-${slug(word.word)}.wav`);
+}
+
 export const RECORDED_LINES: Record<string, string> = {
+	...learningVoiceLines,
   "bravo !": "cheer-bravo.wav",
   "super !": "cheer-super.wav",
   "génial !": "cheer-genial.wav",
