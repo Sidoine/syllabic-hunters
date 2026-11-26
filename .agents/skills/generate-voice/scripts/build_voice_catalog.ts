@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { CHAPTERS } from "../../../../src/data/reading.ts";
 import { MATH_CHAPTERS } from "../../../../src/data/math.ts";
 import { WORLD_INTRO_LINES } from "../../../../src/data/story.ts";
-import { RECORDED_LINES } from "../../../../src/data/recordedVoiceLines.ts";
+import { RECORDED_LINES, RECORDED_TTS_OVERRIDES } from "../../../../src/data/recordedVoiceLines.ts";
 
 type VoiceJob = {
 	name: string;
@@ -50,10 +50,12 @@ for (const [lookupText, filename] of Object.entries(RECORDED_LINES)) {
 	if (name.startsWith("story-") && !sourceLine) continue;
 	const old = oldByName.get(name);
 	const speaker = sourceLine?.speaker ?? speakerFromFilename(name, lookupText);
+	const ttsText = RECORDED_TTS_OVERRIDES[filename];
 	jobs.set(name, {
 		...old,
 		name,
-		text: old?.text ?? lookupText,
+		text: lookupText,
+		tts_text: ttsText,
 		speaker,
 		lookup_text: lookupText,
 		source: sourceLine ? "dialogue" : "recorded-line",

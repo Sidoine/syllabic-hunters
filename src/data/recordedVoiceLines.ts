@@ -23,6 +23,12 @@ export const RECORDED_LINES: Record<string, string> = {
   "écris le mot ! touche les syllabes dans le bon ordre.": "mission-build.wav",
   "lis le mot secret toute seule, syllabe par syllabe. puis touche la bonne image.": "mission-read-word.wav",
   "écoute le mot mystère, et trouve comment il s'écrit.": "mission-listen-word.wav",
+  "trouve une image qui commence par le son :": "mission-find-one-start-sound.wav",
+  "trouve deux images qui commencent par le son :": "mission-find-two-start-sound.wav",
+  "trouve trois images qui commencent par le son :": "mission-find-three-start-sound.wav",
+  "trouve une image où on entend le son :": "mission-find-one-heard-sound.wav",
+  "trouve deux images où on entend le son :": "mission-find-two-heard-sound.wav",
+  "trouve trois images où on entend le son :": "mission-find-three-heard-sound.wav",
   "un démon lézard a caché la lettre l dans le parc!": "story-mochi-un-demon-lezard-a-cache-la-lettre-l-dans-le-parc-a78351.wav",
   "la lettre l chante avec sa langue. avec a, elle fait la. avec i, elle fait lit!": "story-yuki-la-lettre-l-chante-avec-sa-langue-avec-a-elle-fait-la-a-2e72f2.wav",
   "rrrr! tu entends? c'est rakoro qui grogne près de la rivière!": "story-yuki-rrrr-tu-entends-c-est-rakoro-qui-grogne-pres-de-la-rivi-1475fc.wav",
@@ -86,4 +92,10 @@ export const RECORDED_LINES: Record<string, string> = {
   "mission réussie !": "math-praise-complete.wav",
   "tu peux rejouer pour gagner plus d'étoiles.": "math-praise-replay.wav",
 
+};
+
+/** Pronunciation-only spellings; lookup and displayed text remain RECORDED_LINES. */
+export const RECORDED_TTS_OVERRIDES: Record<string, string> = {
+  "math-op-plus.wav": "plusse",
+  "math-title-calculs-eclairs.wav": "Calculs é-clère !",
 };

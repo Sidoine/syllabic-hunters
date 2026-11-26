@@ -1,7 +1,7 @@
 [
   {
     "name": "battle-instruction-touch-demon",
-    "text": "Écoute et touche le démon qui porte la bonne syllabe !",
+    "text": "écoute et touche le démon qui porte la bonne syllabe !",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, énergique et naturelle.",
@@ -12,7 +12,7 @@
   },
   {
     "name": "cheer-bien-joue",
-    "text": "Bravo, bien joué !",
+    "text": "bravo, bien joué !",
     "tone": "cheer",
     "seed": 2,
     "speaker": "mochi",
@@ -21,7 +21,7 @@
   },
   {
     "name": "cheer-bravo",
-    "text": "Bravo !",
+    "text": "bravo !",
     "tone": "cheer",
     "seed": 2,
     "speaker": "mochi",
@@ -30,7 +30,7 @@
   },
   {
     "name": "cheer-genial",
-    "text": "Génial !",
+    "text": "génial !",
     "tone": "cheer",
     "seed": 2,
     "speaker": "mochi",
@@ -39,7 +39,7 @@
   },
   {
     "name": "cheer-magnifique",
-    "text": "Magnifique !",
+    "text": "magnifique !",
     "tone": "cheer",
     "seed": 2,
     "speaker": "mochi",
@@ -48,7 +48,7 @@
   },
   {
     "name": "cheer-oui-cest-ca",
-    "text": "Oui, c'est ça !",
+    "text": "oui, c'est ça !",
     "tone": "cheer",
     "seed": 2,
     "speaker": "mochi",
@@ -57,7 +57,7 @@
   },
   {
     "name": "cheer-super",
-    "text": "Super !",
+    "text": "super !",
     "tone": "cheer",
     "seed": 2,
     "speaker": "mochi",
@@ -66,7 +66,7 @@
   },
   {
     "name": "cheer-trop-forte",
-    "text": "Trop forte !",
+    "text": "trop forte !",
     "tone": "cheer",
     "seed": 2,
     "speaker": "mochi",
@@ -941,18 +941,19 @@
   },
   {
     "name": "math-op-plus",
-    "text": "plusse",
+    "text": "plus",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
     "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette.",
     "speaker": "yuki",
     "lookup_text": "plus",
-    "source": "recorded-line"
+    "source": "recorded-line",
+    "tts_text": "plusse"
   },
   {
     "name": "math-praise-complete",
-    "text": "Mission réussie !",
+    "text": "mission réussie !",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -963,7 +964,7 @@
   },
   {
     "name": "math-praise-perfect",
-    "text": "Parfait !",
+    "text": "parfait !",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -974,7 +975,7 @@
   },
   {
     "name": "math-praise-replay",
-    "text": "Tu peux rejouer pour gagner plus d’étoiles.",
+    "text": "tu peux rejouer pour gagner plus d'étoiles.",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -985,7 +986,7 @@
   },
   {
     "name": "math-praise-three-stars",
-    "text": "Trois étoiles !",
+    "text": "trois étoiles !",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -996,7 +997,7 @@
   },
   {
     "name": "math-praise-two-stars",
-    "text": "Deux étoiles !",
+    "text": "deux étoiles !",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1018,7 +1019,7 @@
   },
   {
     "name": "math-prompt-missing",
-    "text": "Quel nombre manque ?",
+    "text": "quel nombre manque ?",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1051,7 +1052,7 @@
   },
   {
     "name": "math-story-addition-end",
-    "text": "étoiles. Combien en gagne-t-elle en tout ?",
+    "text": "étoiles. combien en gagne-t-elle en tout ?",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1062,7 +1063,7 @@
   },
   {
     "name": "math-story-complement-end",
-    "text": "étoiles. Combien lui en manque-t-il pour en avoir dix ?",
+    "text": "étoiles. combien lui en manque-t-il pour en avoir dix ?",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1084,7 +1085,7 @@
   },
   {
     "name": "math-story-hana-a",
-    "text": "Hana a",
+    "text": "hana a",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1095,7 +1096,7 @@
   },
   {
     "name": "math-story-mia-a",
-    "text": "Mia a",
+    "text": "mia a",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1106,7 +1107,7 @@
   },
   {
     "name": "math-story-mia-offre",
-    "text": "étoiles. Elle en offre",
+    "text": "étoiles. elle en offre",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1117,7 +1118,7 @@
   },
   {
     "name": "math-story-subtraction-end",
-    "text": "étoiles. Combien lui en reste-t-il ?",
+    "text": "étoiles. combien lui en reste-t-il ?",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1128,7 +1129,7 @@
   },
   {
     "name": "math-story-yuki-gagne",
-    "text": "Luna gagne",
+    "text": "luna gagne",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1139,18 +1140,19 @@
   },
   {
     "name": "math-title-calculs-eclairs",
-    "text": "Calculs é-clère !",
+    "text": "calculs-éclairs",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
     "tone_text": "Ton pédagogique, calme et encourageant, avec une intonation vivante et une articulation nette.",
     "speaker": "yuki",
     "lookup_text": "calculs-éclairs",
-    "source": "recorded-line"
+    "source": "recorded-line",
+    "tts_text": "Calculs é-clère !"
   },
   {
     "name": "math-title-histoires",
-    "text": "Petites histoires de calcul",
+    "text": "petites histoires de calcul",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1161,7 +1163,7 @@
   },
   {
     "name": "math-title-nombre-mystere",
-    "text": "Le nombre mystère",
+    "text": "le nombre mystère",
     "tone": "calm",
     "seed": 2,
     "voice_text": "Voix de jeune femme native du français de Paris, claire, chaleureuse et naturelle.",
@@ -1172,7 +1174,7 @@
   },
   {
     "name": "mission-build",
-    "text": "Écris le mot ! Touche les syllabes dans le bon ordre.",
+    "text": "écris le mot ! touche les syllabes dans le bon ordre.",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1181,8 +1183,50 @@
     "source": "recorded-line"
   },
   {
+    "name": "mission-find-one-heard-sound",
+    "text": "trouve une image où on entend le son :",
+    "speaker": "mochi",
+    "lookup_text": "trouve une image où on entend le son :",
+    "source": "recorded-line"
+  },
+  {
+    "name": "mission-find-one-start-sound",
+    "text": "trouve une image qui commence par le son :",
+    "speaker": "mochi",
+    "lookup_text": "trouve une image qui commence par le son :",
+    "source": "recorded-line"
+  },
+  {
+    "name": "mission-find-three-heard-sound",
+    "text": "trouve trois images où on entend le son :",
+    "speaker": "mochi",
+    "lookup_text": "trouve trois images où on entend le son :",
+    "source": "recorded-line"
+  },
+  {
+    "name": "mission-find-three-start-sound",
+    "text": "trouve trois images qui commencent par le son :",
+    "speaker": "mochi",
+    "lookup_text": "trouve trois images qui commencent par le son :",
+    "source": "recorded-line"
+  },
+  {
+    "name": "mission-find-two-heard-sound",
+    "text": "trouve deux images où on entend le son :",
+    "speaker": "mochi",
+    "lookup_text": "trouve deux images où on entend le son :",
+    "source": "recorded-line"
+  },
+  {
+    "name": "mission-find-two-start-sound",
+    "text": "trouve deux images qui commencent par le son :",
+    "speaker": "mochi",
+    "lookup_text": "trouve deux images qui commencent par le son :",
+    "source": "recorded-line"
+  },
+  {
     "name": "mission-fusion-quiz",
-    "text": "Écoute bien. Quelle voyelle faut-il coller ?",
+    "text": "écoute bien. quelle voyelle faut-il coller ?",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1192,7 +1236,7 @@
   },
   {
     "name": "mission-listen-syllable",
-    "text": "Écoute bien, et touche la syllabe que tu entends.",
+    "text": "écoute bien, et touche la syllabe que tu entends.",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1202,7 +1246,7 @@
   },
   {
     "name": "mission-listen-word",
-    "text": "Écoute le mot mystère, et trouve comment il s'écrit.",
+    "text": "écoute le mot mystère, et trouve comment il s'écrit.",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1212,7 +1256,7 @@
   },
   {
     "name": "mission-memory",
-    "text": "Retourne deux cartes. Trouve une syllabe et l'image qui commence par ce son !",
+    "text": "retourne deux cartes. trouve une syllabe et l'image qui commence par ce son !",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1222,7 +1266,7 @@
   },
   {
     "name": "mission-missing",
-    "text": "Un démon a cassé le mot ! Écoute le mot, et trouve la syllabe qui manque.",
+    "text": "un démon a cassé le mot ! écoute le mot, et trouve la syllabe qui manque.",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1232,7 +1276,7 @@
   },
   {
     "name": "mission-read-word",
-    "text": "Lis le mot secret toute seule, syllabe par syllabe. Puis touche la bonne image.",
+    "text": "lis le mot secret toute seule, syllabe par syllabe. puis touche la bonne image.",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1242,7 +1286,7 @@
   },
   {
     "name": "mission-see-sound",
-    "text": "Regarde la syllabe. Touche les bulles pour les écouter, puis choisis celle qui chante la bonne syllabe.",
+    "text": "regarde la syllabe. touche les bulles pour les écouter, puis choisis celle qui chante la bonne syllabe.",
     "tone": "calm",
     "seed": 2,
     "tone_text": "Voix féminine jeune, française de Paris, claire, chaleureuse et pédagogique. Articulation soignée, débit adapté à une enfant, intonation vivante.",
@@ -1252,7 +1296,7 @@
   },
   {
     "name": "playful-rate",
-    "text": "Hihihi ! Raté !",
+    "text": "hihihi ! raté !",
     "tone": "playful",
     "seed": 2,
     "speaker": "mochi",
@@ -1261,7 +1305,7 @@
   },
   {
     "name": "read-praise",
-    "text": "Bravo, tu lis très bien !",
+    "text": "bravo, tu lis très bien !",
     "tone": "praise",
     "seed": 2,
     "speaker": "mochi",
@@ -1270,7 +1314,7 @@
   },
   {
     "name": "try-essaie-encore",
-    "text": "Essaie encore !",
+    "text": "essaie encore !",
     "tone": "encourage",
     "seed": 2,
     "speaker": "mochi",
@@ -1279,7 +1323,7 @@
   },
   {
     "name": "try-oups-encore",
-    "text": "Oups ! Encore une fois.",
+    "text": "oups ! encore une fois.",
     "tone": "encourage",
     "seed": 2,
     "speaker": "mochi",
@@ -1288,7 +1332,7 @@
   },
   {
     "name": "try-presque-reessaie",
-    "text": "Presque ! Réessaie.",
+    "text": "presque ! réessaie.",
     "tone": "encourage",
     "seed": 2,
     "speaker": "mochi",

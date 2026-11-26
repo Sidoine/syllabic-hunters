@@ -90,17 +90,19 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
     }
   };
 
-  const verb = start ? "commence par le son" : "on entend le son";
+  const verb = start ? "qui commencent par le son" : "où on entend le son";
   return (
     <MissionFrame
       instruction={
         <>
-          Trouve les <b>{r.good.length}</b> images où {verb}{" "}
+          Trouve les <b>{r.good.length}</b> images {verb}{" "}
           <b className="font-read text-3xl text-yellow-200">{r.t}</b>. Touche 🔊
           pour écouter le nom.
         </>
       }
-      dialogue={dialogue("mochi", [`Trouve les ${r.good.length} images où ${verb}`, sayOf(r.t)])}
+      dialogue={dialogue("mochi", start
+        ? [`${r.good.length === 1 ? "Trouve une image qui commence" : `Trouve ${r.good.length} images qui commencent`} par le son :`, sayOf(r.t)]
+        : [`${r.good.length === 1 ? "Trouve une image" : `Trouve ${r.good.length} images`} où on entend le son :`, sayOf(r.t)])}
       round={ri}
       total={rounds.length}
     >
