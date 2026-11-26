@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { BackIcon, IMAGES, StarIcon, UI_ICONS } from "../components/ui";
-import readingMarkerBadge from "../assets/ui/map-marker-reading.webp";
-import mathMarkerBadge from "../assets/ui/map-marker-math.webp";
-import lockedMarkerBadge from "../assets/ui/map-marker-locked.webp";
-import rewardColoringBadge from "../assets/ui/reward-coloring-badge.png";
+import { assetUrl } from "../lib/assets";
+const readingMarkerBadge = assetUrl("final/ui/map-marker-reading.webp");
+const mathMarkerBadge = assetUrl("final/ui/map-marker-math.webp");
+const lockedMarkerBadge = assetUrl("final/ui/map-marker-locked.webp");
+const rewardColoringBadge = assetUrl("final/ui/reward-coloring-badge.png");
 
 export type MissionPathItem = {
 	id: string;

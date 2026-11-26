@@ -6,7 +6,7 @@ export interface Settings {
 	unlockAll: boolean;
 }
 
-export type HeroId = "hana" | "yuki" | "momo" | "milo" | "zelane";
+export type HeroId = "hana" | "luna" | "mia" | "milo" | "zelane";
 
 export interface Save {
 	name: string;
@@ -42,6 +42,19 @@ export const defaultSave = (): Save => ({
 	},
 });
 
+export function migrateHeroId(hero: unknown): HeroId {
+	switch (hero) {
+		case "yuki": return "luna";
+		case "momo": return "mia";
+		case "hana":
+		case "luna":
+		case "mia":
+		case "milo":
+		case "zelane": return hero;
+		default: return defaultSave().hero;
+	}
+}
+
 export function loadSave(): Save {
 	try {
 		const raw = localStorage.getItem(KEY);
@@ -51,6 +64,7 @@ export function loadSave(): Save {
 		return {
 			...base,
 			...d,
+			hero: migrateHeroId(d.hero),
 			// Saves created before the explicit confirmation flow already passed
 			// through the character picker, so preserve that choice.
 			heroChosen: d.heroChosen ?? true,

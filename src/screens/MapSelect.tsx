@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { BigButton, IMAGES, SPEAKER_INFO, SpeakButton, UI_ICONS, playerText } from "../components/ui";
+import { BigButton, HERO_INFO, IMAGES, SPEAKER_INFO, SpeakButton, UI_ICONS, playerText } from "../components/ui";
 import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathChapter } from "../data/math";
-import { CHAPTERS, MISSIONS, WORLD_INTRO_LINES, type Chapter, type Line } from "../data/story";
+import { CHAPTERS, MISSIONS, type LetterChapter } from "../data/reading";
+import { WORLD_INTRO_LINES } from "../data/story";
+import { heroSceneSpeaker } from "../data/dialogue";
+import type { Line } from "../data/chapter";
 import { configureSpeech, speak, stopSpeech } from "../lib/speech";
 import { speakable } from "./Dialog";
 import type { Save } from "../lib/storage";
@@ -24,8 +27,8 @@ import {
 export type MapRegion = "reading" | "math";
 const HEROES: HeroOption[] = [
 	{ id: "hana", label: "Hana", color: "#ff4fa3" },
-	{ id: "yuki", label: "Luna", color: "#34c3ff" },
-	{ id: "momo", label: "Mia", color: "#b36bff" },
+	{ id: "luna", label: "Luna", color: "#34c3ff" },
+	{ id: "mia", label: "Mia", color: "#b36bff" },
 	{ id: "milo", label: "Milo", color: "#35d5e7" },
 	{ id: "zelane", label: "Zélane", color: "#f6c445" },
 ];
@@ -78,9 +81,15 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 		: { region: "math", chapter: incompleteMath < 0 ? MATH_CHAPTERS.length - 1 : incompleteMath };
 	const selected = selection ?? initialSelection;
 	useEffect(() => {
-		const lines = selected.region === "intro" ? WORLD_INTRO_LINES : CHAPTERS[selected.chapter]?.intro ?? [];
-		const models = new Set(lines.map(({ who }) => who).filter((who) => who !== save.hero).map((who) =>
-			who === "mochi" ? "/models/dialogue/mochi.glb?v=map-assets-optimized-1" : who === "king" ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1" : who === "zelane" ? "/models/heroes/hero-zelane-compressed.glb?v=map-assets-optimized-1" : `/models/heroes/hero-${who}.glb?v=map-assets-optimized-1`,
+		const lines = selected.region === "intro"
+			? WORLD_INTRO_LINES
+			: selected.region === "math"
+				? MATH_CHAPTERS[selected.chapter]?.intro ?? []
+				: CHAPTERS[selected.chapter]?.intro ?? [];
+	const playerSpeaker = heroSceneSpeaker(save.hero === "milo");
+	const speakers = new Set(lines.map(({ who }) => who === "hero" ? playerSpeaker : who));
+	const models = new Set([...speakers].filter((who) => who !== playerSpeaker).map((who) =>
+		who === "mochi" ? "/models/dialogue/mochi.glb?v=map-assets-optimized-1" : who === "king" ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1" : who === "hero_male" ? "/models/heroes/hero-milo.glb?v=map-assets-optimized-1" : who === "hero_female" ? "/models/heroes/hero-hana.glb?v=map-assets-optimized-1" : who === "yuki" ? "/models/dialogue/yuki.glb?v=dialogue-yuki-1" : `/models/heroes/hero-${who}.glb?v=map-assets-optimized-1`,
 		));
 		for (const url of models) {
 			if (preloadedDialogueModels.current.has(url)) continue;
@@ -213,9 +222,11 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	const introLine = intro?.lines[introIndex];
 	const introText = introLine ? playerText(introLine.text, save.hero) : undefined;
 	useEffect(() => {
-		if (introText && save.settings.autoRead) speak(speakable(introText));
+		if (introText && save.settings.autoRead) {
+			speak(speakable(introText), { recordedText: introText, ...(introLine?.who === "hero" ? { masculine: save.hero === "milo" } : {}) });
+		}
 		return () => stopSpeech();
-	}, [introText, save.settings.autoRead]);
+	}, [introText, introLine?.who, save.hero, save.settings.autoRead]);
 	const advanceIntro = () => {
 		stopSpeech();
 		if (!intro || !introLine) return;
@@ -368,7 +379,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				onPointerCancel={() => { dragRef.current = null; }}
 			>
 				<div className="relative" style={{ width: WORLD_PIXEL_WIDTH, height: WORLD_PIXEL_HEIGHT }}>
-					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} pendingAssetKey={pendingAssetKey} stageLayout={stageLayout} sharedStart={sharedStart} riverPoints={riverPoints} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) { setLandmarkKey(target.key); setPendingAssetKey(null); } }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(intro)} dialogueSpeaker={introLine ? introLine.who === "hero" ? save.hero : introLine.who : null} dialogueCharacters={intro?.lines.map((line) => line.who === "hero" ? save.hero : line.who) ?? []} dialogueExiting={introExiting} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
+					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} pendingAssetKey={pendingAssetKey} stageLayout={stageLayout} sharedStart={sharedStart} riverPoints={riverPoints} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) { setLandmarkKey(target.key); setPendingAssetKey(null); } }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(intro)} dialogueSpeaker={introLine ? introLine.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : introLine.who : null} dialogueCharacters={intro?.lines.map((line) => line.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : line.who) ?? []} dialogueExiting={introExiting} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
 					<nav className="sr-only" aria-label="Étapes accessibles de la carte">
 						<button type="button" aria-label={`Le carrefour des découvertes, histoire d’introduction${save.seenIntro[-1] ? ", déjà vue" : ""}`} onClick={() => chooseStage("intro", 0, onWorldIntro)}>Le carrefour des découvertes</button>
 					{CHAPTERS.map((chapter) => {
@@ -492,18 +503,18 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				</div>}
 			</div>}
 			{intro && introLine && <div className={`pointer-events-none absolute inset-0 z-20 overflow-hidden transition-opacity duration-500 ${introExiting ? "opacity-0" : "opacity-100"}`}>
-				{(() => { const speaker = SPEAKER_INFO[introLine.who === "hero" ? save.hero : introLine.who]; return <>
+				{(() => { const speaker = introLine.who === "hero" ? HERO_INFO[save.hero] ?? HERO_INFO.hana : SPEAKER_INFO[introLine.who] ?? SPEAKER_INFO.mochi; return <>
 				<div className="absolute inset-x-0 top-[5.5rem] text-center sm:top-24">
 					<span className="rounded-full border border-white/30 bg-slate-950/70 px-5 py-2 text-sm font-extrabold text-white shadow-lg backdrop-blur-md sm:text-base">{intro.title}</span>
 				</div>
 				{introLine.who === "hero" ? <div key={`${introIndex}-hero`} className="anim-pop absolute left-1/2 top-[22%] w-[min(88vw,34rem)] -translate-x-1/2 rounded-3xl border-2 border-white/90 bg-slate-950/85 px-5 py-4 text-center text-base font-bold leading-snug text-white shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md sm:text-xl">
 						<span className="mb-1 block text-xs font-black uppercase tracking-widest text-pink-200">{speaker.name}</span>
 						{playerText(introLine.text, save.hero)}<span className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b-2 border-r-2 border-white/90 bg-slate-950/85" />
-						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(playerText(introLine.text, save.hero))} size="sm" /></span>
+						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(playerText(introLine.text, save.hero))} speechOptions={{ masculine: save.hero === "milo", recordedText: playerText(introLine.text, save.hero) }} size="sm" /></span>
 					</div> : <div key={`${introIndex}-npc`} className={`absolute left-[3%] ${introLine.who === "mochi" ? "top-[23%] sm:top-[32%]" : "top-[19%] sm:top-[20%]"} w-[min(78vw,29rem)] rounded-3xl border-2 border-white/90 px-4 py-3 text-base font-bold leading-snug shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md anim-pop sm:left-[8%] sm:px-5 sm:py-4 sm:text-xl`} style={{ backgroundColor: introLine.who === "mochi" ? "#f4edff" : `${speaker.color}e8`, color: introLine.who === "mochi" ? "#321b50" : "#ffffff" }}>
 						<span className="mb-1 block text-xs font-black uppercase tracking-widest opacity-80">{speaker.name}</span>
 						{introLine.text}<span className="absolute -bottom-2 left-[58%] h-4 w-4 rotate-45 border-b-2 border-r-2 border-white/90" style={{ backgroundColor: speaker.color }} />
-						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(introLine.text)} size="sm" /></span>
+						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(introLine.text)} speechOptions={{ recordedText: introLine.text }} size="sm" /></span>
 				</div>}
 				</>; })()}
 				<div className="pointer-events-auto absolute inset-x-0 bottom-3 flex items-center justify-center gap-3 sm:bottom-5">
@@ -528,7 +539,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	);
 }
 
-function chapterComplete(chapter: Chapter, save: Save) {
+function chapterComplete(chapter: LetterChapter, save: Save) {
 	const missions = MISSIONS.filter((mission) => mission.chapter === chapter.id);
 	return missions.length > 0 && missions.every((mission) => (save.stars[mission.id] ?? 0) > 0);
 }
@@ -539,7 +550,7 @@ function mathChapterComplete(chapter: MathChapter, save: Save) {
 }
 
 function MapStop({ chapter, region, unlocked, done, current, confirming, onClick }: {
-	chapter: Chapter | MathChapter; region: MapRegion; unlocked: boolean;
+	chapter: LetterChapter | MathChapter; region: MapRegion; unlocked: boolean;
 	done: boolean; current: boolean; confirming: boolean; onClick: () => void;
 }) {
 	const state = !unlocked ? "verrouillé" : confirming ? "reclique pour lancer l’exercice" : current ? "étape actuelle" : done ? "terminé" : "accessible";

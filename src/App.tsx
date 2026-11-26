@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { GameContext, StarField } from "./components/ui";
-import { CHAPTERS, MISSIONS, WORLD_INTRO_LINES, type Mission } from "./data/story";
+import { CHAPTERS, MISSIONS, type Mission } from "./data/reading";
+import { WORLD_INTRO_LINES } from "./data/story";
+import type { Line } from "./data/chapter";
 import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathMission } from "./data/math";
 import { setSfxEnabled } from "./lib/sfx";
 import { configureSpeech, stopSpeech } from "./lib/speech";
@@ -14,6 +16,7 @@ import {
   clearSave,
   defaultSave,
   loadSave,
+  migrateHeroId,
   type Save,
   type Settings,
   writeSave,
@@ -26,21 +29,24 @@ import { MapSelectScreen, type MapStageSelection } from "./screens/MapSelect";
 import { MathChapterScreen, MathMissionExercise, MathResultScreen } from "./screens/Math";
 import { TitleScreen } from "./screens/Title";
 import { VoiceReview } from "./screens/VoiceReview";
+import { CartoonStudio } from "./screens/CartoonStudio";
 import { ColoringActivity } from "./screens/ColoringActivity";
+import { ChapterVideo } from "./screens/ChapterVideo";
 import { coloringPageForReward, type ColoringPageId } from "./data/coloring";
 
 type Screen =
   | { name: "title" }
   | { name: "maps" }
   | { name: "map-intro-world" }
-  | { name: "map-intro-chapter"; ch: number }
+  | { name: "map-intro-chapter"; region: "reading" | "math"; ch: number }
+  | { name: "chapter-video"; region: "reading" | "math"; ch: number; kind: "intro" | "outro" }
   | { name: "math-chapter"; ch: number; award?: { id: string; stars: number } }
   | { name: "math-mission"; id: string; run: number }
   | { name: "math-result"; id: string; stars: number }
   | { name: "coloring"; id: string; pageId: ColoringPageId; title: string; returnTo: { name: "chapter" | "math-chapter"; ch: number } }
   | { name: "chapter"; ch: number; award?: { id: string; stars: number } }
   | { name: "world-intro" }
-  | { name: "dialog"; ch: number; kind: "intro" | "outro" }
+  | { name: "dialog"; region: "reading" | "math"; ch: number; kind: "intro" | "outro" }
   | { name: "mission"; id: string; run: number }
   | { name: "result"; id: string; stars: number };
 
@@ -54,7 +60,7 @@ function mergeSaves(local: Save, remote: Save): Save {
     // The account save owns the player's identity. Local progress can still
     // add stars and story flags without replacing its name or character.
     name: remote.name || local.name,
-    hero: remote.hero,
+    hero: remote.hero == null ? local.hero : migrateHeroId(remote.hero),
     // A legacy remote save was created after the old character picker, so
     // treat it as an existing choice when the new flag is absent.
     heroChosen: remote.heroChosen ?? true,
@@ -67,6 +73,9 @@ function mergeSaves(local: Save, remote: Save): Save {
     settings: local.settings,
   };
 }
+
+// Keep math story flags separate from reading chapter indexes in the shared save maps.
+const mathStoryKey = (chapter: number) => 1000 + chapter;
 
 export default function App() {
   const [save, setSave] = useState<Save>(() => loadSave());
@@ -130,15 +139,30 @@ export default function App() {
     setScreen(s);
   };
 
+  const showChapterIntro = (region: "reading" | "math", ch: number) => {
+    setMapStage({ region, chapter: ch });
+    const chapter = region === "math" ? MATH_CHAPTERS[ch] : CHAPTERS[ch];
+    if (chapter.introVideo) go({ name: "chapter-video", region, ch, kind: "intro" });
+    else go({ name: "map-intro-chapter", region, ch });
+  };
+
   const openChapter = (ch: number) => {
-    if (!save.seenIntro[ch]) {
-      setMapStage({ region: "reading", chapter: ch });
-      go({ name: "map-intro-chapter", ch });
-    }
+    if (!save.seenIntro[ch]) showChapterIntro("reading", ch);
     else go({ name: "chapter", ch });
   };
 
-  const renderMap = (intro?: { title: string; lines: typeof WORLD_INTRO_LINES; onEnd: () => void }, backgroundOnly = false) => (
+  const openMathChapter = (ch: number) => {
+    if (!save.seenIntro[mathStoryKey(ch)]) showChapterIntro("math", ch);
+    else go({ name: "math-chapter", ch });
+  };
+
+  const openChapterVictory = (region: "reading" | "math", ch: number) => {
+    const chapter = region === "math" ? MATH_CHAPTERS[ch] : CHAPTERS[ch];
+    if (chapter.victoryVideo) go({ name: "chapter-video", region, ch, kind: "outro" });
+    else go({ name: "dialog", region, ch, kind: "outro" });
+  };
+
+  const renderMap = (intro?: { title: string; lines: Line[]; onEnd: () => void }, backgroundOnly = false) => (
     <MapSelectScreen
       save={save}
       selection={mapStage}
@@ -150,7 +174,7 @@ export default function App() {
       }}
       onSelectStage={setMapStage}
       onReading={openChapter}
-      onMath={(chapter) => go({ name: "math-chapter", ch: chapter })}
+      onMath={openMathChapter}
       onWorldIntro={() => go({ name: "map-intro-world" })}
       onSettings={() => setShowSettings(true)}
       intro={intro ? { title: intro.title, lines: intro.lines } : undefined}
@@ -198,9 +222,12 @@ export default function App() {
   if (new URLSearchParams(window.location.search).has("voice-review")) {
     return <VoiceReview />;
   }
+  if (new URLSearchParams(window.location.search).has("cartoon-studio")) {
+    return <CartoonStudio />;
+  }
 
   let content: React.ReactNode = null;
-  let mapIntro: { title: string; lines: typeof WORLD_INTRO_LINES; onEnd: () => void } | undefined;
+  let mapIntro: { title: string; lines: Line[]; onEnd: () => void } | undefined;
   switch (screen.name) {
     case "title":
       content = (
@@ -216,13 +243,14 @@ export default function App() {
     case "maps":
       break;
     case "map-intro-chapter": {
-      const ch = CHAPTERS[screen.ch];
+      const chapter = screen.region === "math" ? MATH_CHAPTERS[screen.ch] : CHAPTERS[screen.ch];
+      const storyKey = screen.region === "math" ? mathStoryKey(screen.ch) : screen.ch;
       mapIntro = {
-        title: `${ch.title} · ${ch.place}`,
-        lines: ch.intro,
+        title: chapter.title,
+        lines: chapter.intro,
         onEnd: () => {
-          setSave((current) => ({ ...current, seenIntro: { ...current.seenIntro, [screen.ch]: true } }));
-          go({ name: "chapter", ch: screen.ch });
+          setSave((current) => ({ ...current, seenIntro: { ...current.seenIntro, [storyKey]: true } }));
+          go(screen.region === "math" ? { name: "math-chapter", ch: screen.ch } : { name: "chapter", ch: screen.ch });
         },
       };
       break;
@@ -246,11 +274,10 @@ export default function App() {
           onMission={startMission}
           onBack={() => go({ name: "maps" })}
           onStory={() => {
-            setMapStage({ region: "reading", chapter: screen.ch });
-            go({ name: "map-intro-chapter", ch: screen.ch });
+            showChapterIntro("reading", screen.ch);
           }}
           onSettings={() => setShowSettings(true)}
-          onReward={() => startColoring(`reading-coloring-${screen.ch}`, `Coloriage · ${CHAPTERS[screen.ch].place}`, { name: "chapter", ch: screen.ch })}
+          onReward={() => startColoring(`reading-coloring-${screen.ch}`, `Coloriage · ${CHAPTERS[screen.ch].title}`, { name: "chapter", ch: screen.ch })}
         />
       );
       break;
@@ -262,8 +289,11 @@ export default function App() {
           award={screen.award}
           onMission={startMathMission}
           onBack={() => go({ name: "maps" })}
+          onStory={() => {
+            showChapterIntro("math", screen.ch);
+          }}
           onSettings={() => setShowSettings(true)}
-          onReward={() => startColoring(`math-coloring-${screen.ch}`, `Coloriage · ${MATH_CHAPTERS[screen.ch].place}`, { name: "math-chapter", ch: screen.ch })}
+          onReward={() => startColoring(`math-coloring-${screen.ch}`, `Coloriage · ${MATH_CHAPTERS[screen.ch].title}`, { name: "math-chapter", ch: screen.ch })}
         />
       );
       break;
@@ -284,31 +314,55 @@ export default function App() {
       );
       break;
     case "dialog": {
-      const ch = CHAPTERS[screen.ch];
+      const ch = screen.region === "math" ? MATH_CHAPTERS[screen.ch] : CHAPTERS[screen.ch];
+      const storyKey = screen.region === "math" ? mathStoryKey(screen.ch) : screen.ch;
       const lines = screen.kind === "intro" ? ch.intro : ch.outro;
       content = (
         <DialogScreen
-          key={screen.ch + screen.kind}
+          key={`${screen.region}-${screen.ch}-${screen.kind}`}
           lines={lines}
           title={
-            screen.kind === "intro" ? `${ch.title} · ${ch.place}` : "Victoire !"
+            screen.kind === "intro" ? ch.title : "Victoire !"
           }
           onEnd={() => {
             if (screen.kind === "intro") {
               setSave((s) => ({
                 ...s,
-                seenIntro: { ...s.seenIntro, [screen.ch]: true },
+                seenIntro: { ...s.seenIntro, [storyKey]: true },
               }));
-              go({ name: "chapter", ch: screen.ch });
+              go(screen.region === "math" ? { name: "math-chapter", ch: screen.ch } : { name: "chapter", ch: screen.ch });
             } else {
               setSave((s) => ({
                 ...s,
-                seenOutro: { ...s.seenOutro, [screen.ch]: true },
+                seenOutro: { ...s.seenOutro, [storyKey]: true },
               }));
               const next = screen.ch + 1;
-              if (next < CHAPTERS.length) openChapter(next);
+              const chapterCount = screen.region === "math" ? MATH_CHAPTERS.length : CHAPTERS.length;
+              if (next < chapterCount) {
+                if (screen.region === "math") openMathChapter(next);
+                else openChapter(next);
+              }
               else go({ name: "maps" });
             }
+          }}
+        />
+      );
+      break;
+    }
+    case "chapter-video": {
+      const chapter = screen.region === "math" ? MATH_CHAPTERS[screen.ch] : CHAPTERS[screen.ch];
+      const video = screen.kind === "intro" ? chapter.introVideo : chapter.victoryVideo;
+      if (!video) {
+        content = null;
+        break;
+      }
+      content = (
+        <ChapterVideo
+          src={video}
+          title={chapter.title}
+          onEnd={() => {
+            if (screen.kind === "intro") go({ name: "map-intro-chapter", region: screen.region, ch: screen.ch });
+            else go({ name: "dialog", region: screen.region, ch: screen.ch, kind: "outro" });
           }}
         />
       );
@@ -371,7 +425,7 @@ export default function App() {
           onMap={() => go({ name: "maps" })}
           onReplay={() => startMission(m)}
           onNext={() => {
-            if (isLast) go({ name: "dialog", ch: m.chapter, kind: "outro" });
+            if (isLast) openChapterVictory("reading", m.chapter);
             else startMission(list[idx + 1]);
           }}
         />
@@ -394,6 +448,7 @@ export default function App() {
           onNext={() => {
             const next = list[idx + 1];
             if (next) startMathMission(next);
+            else if (MATH_CHAPTERS[mission.chapter].victoryVideo) openChapterVictory("math", mission.chapter);
             else go({ name: "maps" });
           }}
         />

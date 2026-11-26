@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { dialogue } from "../../data/dialogue";
 import { SAY, sayOf } from "../../data/syllables";
 import { cleanPart, WORDS, type Word } from "../../data/words";
 import { sfx } from "../../lib/sfx";
@@ -99,7 +100,7 @@ export function FindImagesMission({ mission, onDone }: MissionProps) {
           pour écouter le nom.
         </>
       }
-      speakText={[`Trouve les ${r.good.length} images où ${verb}`, sayOf(r.t)]}
+      dialogue={dialogue("mochi", [`Trouve les ${r.good.length} images où ${verb}`, sayOf(r.t)])}
       round={ri}
       total={rounds.length}
     >
@@ -195,10 +196,10 @@ export function MissingMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Un démon a cassé le mot ! Quelle syllabe manque ?"
-      speakText={[
+      dialogue={dialogue("mochi", [
         "Un démon a cassé le mot ! Écoute le mot, et trouve la syllabe qui manque.",
         r.word.say,
-      ]}
+      ])}
       round={ri}
       total={rounds.length}
     >
@@ -310,10 +311,10 @@ export function BuildMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Écris le mot ! Touche les syllabes dans le bon ordre."
-      speakText={[
+      dialogue={dialogue("mochi", [
         "Écris le mot ! Touche les syllabes dans le bon ordre.",
         r.w.say,
-      ]}
+      ])}
       round={ri}
       total={rounds.length}
     >
@@ -424,8 +425,8 @@ export function ReadWordMission({ mission, onDone }: MissionProps) {
 
   return (
     <MissionFrame
-      instruction="Lis le mot secret toute seule, syllabe par syllabe, puis touche la bonne image."
-      speakText="Lis le mot secret toute seule, syllabe par syllabe. Puis touche la bonne image."
+      instruction="Lis le mot secret [tout seul|toute seule], syllabe par syllabe, puis touche la bonne image."
+      dialogue={dialogue("mochi", "Lis le mot secret [tout seul|toute seule], syllabe par syllabe. Puis touche la bonne image.")}
       round={ri}
       total={rounds.length}
     >
@@ -522,10 +523,10 @@ export function ListenWordMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Écoute le mot mystère et trouve comment il s'écrit."
-      speakText={[
+      dialogue={dialogue("mochi", [
         "Écoute le mot mystère, et trouve comment il s'écrit.",
         r.w.say,
-      ]}
+      ])}
       round={ri}
       total={rounds.length}
     >

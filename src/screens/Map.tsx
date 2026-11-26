@@ -1,5 +1,5 @@
 import { BackIcon, IMAGES, MISSION_ICONS, StarIcon, UI_ICONS } from "../components/ui";
-import { CHAPTERS, MISSION_INFO, type Chapter, MISSIONS, type Mission } from "../data/story";
+import { CHAPTERS, MISSION_INFO, type LetterChapter, MISSIONS, type Mission } from "../data/reading";
 import { syllablesOf, VOWELS } from "../data/syllables";
 import type { Save } from "../lib/storage";
 import { MissionPathScreen } from "./MissionPathScreen";
@@ -101,7 +101,7 @@ function ChapterNode({
 	stars,
 	onClick,
 }: {
-	chapter: Chapter;
+	chapter: LetterChapter;
 	unlocked: boolean;
 	stars: { got: number; max: number; done: boolean };
 	onClick: () => void;
@@ -141,7 +141,7 @@ function ChapterNode({
 			</div>
 			<div className="flex-1">
 				<div className="font-bold text-lg leading-tight">{chapter.title}</div>
-				<div className="text-xs text-white/80">{chapter.place}</div>
+				<div className="text-xs text-white/80">{chapter.title}</div>
 				<div className="text-sm">
 					<StarIcon className="mr-1 h-4 w-4 align-[-3px]" /> {stars.got}/{stars.max}
 				</div>
@@ -172,7 +172,7 @@ export function ChapterScreen({
 	onReward,
 }: {
 	save: Save;
-	chapter: Chapter;
+	chapter: LetterChapter;
 	award?: { id: string; stars: number };
 	onMission: (m: Mission) => void;
 	onBack: () => void;
@@ -192,7 +192,7 @@ export function ChapterScreen({
 	return (
 		<MissionPathScreen
 			title={chapter.title}
-			place={chapter.place}
+			place={chapter.title}
 			hero={save.hero}
 			name={save.name}
 			region="reading"

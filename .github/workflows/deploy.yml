@@ -46,6 +46,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Configure Seafile access on Dokku
+        env:
+          DOKKU_SSH_PRIVATE_KEY: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
+          SEAFILE_TOKEN: ${{ secrets.SEAFILE_TOKEN }}
+        run: |
+          test -n "$SEAFILE_TOKEN"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DOKKU_SSH_PRIVATE_KEY" > ~/.ssh/dokku_deploy
+          chmod 600 ~/.ssh/dokku_deploy
+          ssh-keyscan -H "$DOKKU_HOST" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/dokku_deploy -o IdentitiesOnly=yes "dokku@$DOKKU_HOST" "config:set --no-restart $DOKKU_APP SEAFILE_TOKEN=$SEAFILE_TOKEN"
+
       - name: Push to dokku
         uses: dokku/github-action@master
         with:

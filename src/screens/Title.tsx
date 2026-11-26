@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { login, register, type AuthUser } from "../lib/api";
 import type { Save } from "../lib/storage";
-import titleAdventure from "../assets/title-adventure.png";
+import { assetUrl } from "../lib/assets";
+const titleAdventure = assetUrl("final/title-adventure.png");
 
 export function TitleScreen({
   save,

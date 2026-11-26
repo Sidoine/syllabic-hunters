@@ -1,6 +1,8 @@
 node_modules/
 dist/
 dist-server/
+assets/
+**/__pycache__/
 .env
 .env.*
 !.env.example

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { Line } from "../data/story";
+import { useEffect, useMemo, useState } from "react";
+import type { Line } from "../data/chapter";
 import { SAY } from "../data/syllables";
 import { speak, stopSpeech } from "../lib/speech";
 
@@ -17,6 +17,7 @@ export function speakable(text: string) {
 
 import {
 	BigButton,
+	HERO_INFO,
 	SPEAKER_INFO,
 	SpeakButton,
 	playerText,
@@ -27,23 +28,25 @@ export function DialogScreen({
 	lines,
 	title,
 	onEnd,
-	bossImgStyle,
 }: {
 	lines: Line[];
 	title: string;
 	onEnd: () => void;
-	bossImgStyle?: React.CSSProperties;
 }) {
 	const [i, setI] = useState(0);
 	const { autoRead, hero } = useGame();
 	const line = lines[i];
 	const text = playerText(line.text, hero);
-	const info = SPEAKER_INFO[line.who === "hero" ? hero : line.who];
-	const left = line.who !== "king" && line.who !== "boss";
+	const speechOptions = useMemo(
+		() => ({ recordedText: text, ...(line.who === "hero" ? { masculine: hero === "milo" } : {}) }),
+		[line.who, text, hero],
+	);
+	const info = line.who === "hero" ? HERO_INFO[hero] ?? HERO_INFO.hana : SPEAKER_INFO[line.who] ?? SPEAKER_INFO.mochi;
+	const left = line.who !== "king";
 
 	useEffect(() => {
-		if (autoRead) speak(speakable(text));
-	}, [text, autoRead]);
+		if (autoRead) speak(speakable(text), speechOptions);
+	}, [text, autoRead, speechOptions]);
 
 	const next = () => {
 		stopSpeech();
@@ -64,7 +67,6 @@ export function DialogScreen({
 					src={info.img}
 					alt={info.name}
 					className={`w-32 h-40 sm:w-48 sm:h-60 object-contain anim-float drop-shadow-[0_0_20px_rgba(255,120,230,0.6)] ${left ? "anim-slideL" : "anim-slideR"}`}
-					style={line.who === "boss" ? bossImgStyle : undefined}
 				/>
 				<div className="flex-1 anim-pop">
 					<div
@@ -79,7 +81,7 @@ export function DialogScreen({
 					<div className="card-kawaii rounded-3xl p-5 text-xl sm:text-2xl font-semibold leading-relaxed relative">
 						{text}
 						<div className="absolute -bottom-3 -right-3">
-							<SpeakButton text={speakable(text)} size="sm" />
+						<SpeakButton text={speakable(text)} speechOptions={speechOptions} size="sm" />
 						</div>
 					</div>
 				</div>

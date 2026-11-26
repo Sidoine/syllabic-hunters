@@ -1,0 +1,65 @@
+{
+  "narrator": {
+    "reference_file": "../../../assets/input/references/voice/narrator.wav",
+    "reference_text": "Il était une fois dans un lointain royaume. Les collines baignaient dans la lumière du matin, et la rivière scintillait près du vieux château. Tout semblait paisible, comme au début d'une belle histoire.",
+    "voice_text": "Voix féminine adulte française, locutrice native de France métropolitaine, accent français standard naturel, timbre médium-grave, chaud et doux.",
+    "tone_text": "Narratrice française de conte, diction française native, débit lent et posé, pauses naturelles entre les phrases, voix calme et chaleureuse.",
+    "seed": 43
+  },
+  "default": {
+    "reference_file": "../../../assets/input/references/voice/default.wav",
+    "reference_text": "Bonjour, je suis là pour t'aider. Écoute bien chaque son, puis répète les mots avec moi. Tu vas réussir à lire toutes ces nouvelles syllabes, bravo !",
+    "voice_text": "Voix féminine adulte jeune, locutrice native du français de France, accent parisien naturel, timbre médium clair et chaleureux, articulation française précise.",
+    "tone_text": "Parole naturelle, calme et souriante, débit modéré, sans accent étranger.",
+    "seed": 12
+  },
+  "hana": {
+    "reference_file": "../../../assets/input/references/voice/hana.wav",
+    "reference_text": "Lézardo est battu! La, lit, lot, lu, les, loup : tu connais la lettre L!",
+    "voice_text": "Voix féminine jeune adulte, lumineuse, assurée et chaleureuse, locutrice native du français de France.",
+    "tone_text": "Voix claire, souriante et encourageante.",
+    "seed": 12
+  },
+  "yuki": {
+    "reference_file": "../../../assets/input/references/voice/yuki.wav",
+    "reference_text": "Luna gagne trois étoiles, puis deux étoiles. Combien en gagne-t-elle en tout ? Quel nombre manque ? Sept moins combien font trois ? Hana a quatre étoiles. Combien lui en manque-t-il pour en avoir dix ?",
+    "voice_text": "Voix féminine jeune adulte native du français de France, accent parisien naturel, timbre légèrement grave, douce et posée, articulation nette.",
+    "tone_text": "Parole calme, claire et pédagogique, sans accent étranger.",
+    "seed": 12
+  },
+  "mia": {
+    "reference_file": "../../../assets/input/references/voice/mia.wav",
+    "reference_text": "Miam ! Quelle jolie mélodie ! Avec un peu de courage, nous allons retrouver les sons. Allez, chantons et amusons-nous !",
+    "voice_text": "Voix féminine jeune adulte native du français de France, accent parisien naturel, timbre clair, enjoué, pétillant et souriant.",
+    "tone_text": "Parole joyeuse et malicieuse, avec une intonation vive, sans accent étranger.",
+    "seed": 12
+  },
+  "mochi": {
+    "reference_file": "../../../assets/input/references/voice/mochi-seed-27.wav",
+    "reference_text": "Coucou, c'est Mochi ! Ça sent bon, et la musique brille autour de nous. Viens, on écoute les sons et on part à l'aventure !",
+    "voice_text": "Locutrice native du français de France métropolitaine. Accent français standard, voyelles et consonnes françaises naturelles, articulation française claire. Voix féminine de petite créature de dessin animé, mignonne et légèrement aiguë.",
+    "tone_text": "Voix adorable, animée et espiègle avec une mélodie française naturelle. Prononciation française native, sans accent anglais.",
+    "seed": 27
+  },
+  "king": {
+    "reference_file": "../../../assets/input/references/voice/king-seed-27.wav",
+    "reference_text": "Chute ! Je suis le Roi Chute. Plus de chansons, plus de mots ! Le silence régnera pour toujours. Mouahaha !",
+    "voice_text": "Locuteur natif du français de France métropolitaine. Accent français standard, voyelles et consonnes françaises naturelles, articulation très claire. Voix masculine adulte grave et théâtrale, comme un acteur de doublage français.",
+    "tone_text": "Roi méchant de dessin animé, dramatique avec un ricanement bref. Garder la phonologie et la mélodie du français de France, sans intonation anglaise.",
+    "seed": 27
+  },
+  "hero-masculine": {
+    "reference_file": "../../../assets/input/references/voice/hero-masculine.wav",
+    "reference_text": "Salut, c'est moi ! Je suis prêt à partir en mission. Écoute le son, trouve la bonne syllabe, et nous allons réussir ensemble !",
+    "voice_text": "Voix masculine jeune, claire et chaleureuse, locuteur natif du français de France, accent parisien naturel.",
+    "tone_text": "Parole expressive et encourageante, articulation française nette, sans accent étranger.",
+    "seed": 12
+  },
+  "hero-feminine": {
+    "reference_file": "../../../assets/input/references/voice/hero-feminine.wav",
+    "reference_text": "Salut, c'est moi ! Je suis prête à partir en mission. Écoute le son, trouve la bonne syllabe, et nous allons réussir ensemble !",
+    "voice_text": "Voix féminine jeune, claire et chaleureuse, locutrice native du français de France, accent parisien naturel.",
+    "tone_text": "Parole expressive et encourageante, articulation française nette, sans accent étranger.",
+    "seed": 12
+  }
+}

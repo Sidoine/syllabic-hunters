@@ -139,13 +139,14 @@ def main() -> int:
         if not glbs:
             raise RuntimeError(f"No GLB was downloaded for prompt {prompt_id}.")
         source_glb = max(glbs, key=lambda path: path.stat().st_mtime)
-        resized_glb = Path(temp_dir) / "resized.glb"
+        optimized_glb = Path(temp_dir) / "optimized.glb"
         npx = shutil.which("npx")
         if not npx:
-            raise RuntimeError("npx is required to resize the baked textures for a lightweight game asset.")
-        run([npx, "--yes", "@gltf-transform/cli", "resize", str(source_glb), str(resized_glb),
-             "--width", str(args.texture_size), "--height", str(args.texture_size)])
-        shutil.copy2(resized_glb, args.output)
+            raise RuntimeError("npx is required to convert textures to WebP and compress the game mesh with Meshopt.")
+        run([npx, "--yes", "@gltf-transform/cli", "optimize", str(source_glb), str(optimized_glb),
+             "--texture-compress", "webp", "--texture-size", str(args.texture_size),
+             "--compress", "meshopt", "--simplify", "false", "--instance", "false", "--join", "false"])
+        shutil.copy2(optimized_glb, args.output)
 
     print(json.dumps({"prompt_id": prompt_id, "output": str(args.output.resolve())}, ensure_ascii=False))
     return 0

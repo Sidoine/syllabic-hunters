@@ -1,55 +1,73 @@
 ---
 name: generate-voice
-description: Génère ou régénère les répliques vocales françaises du jeu (voix féminine, accent natif, ton expressif) en fichiers WAV avec Qwen3-TTS VoiceDesign. À utiliser pour créer une nouvelle réplique ("Bravo !", "Essaie encore !"…), changer le ton d'une voix, ou produire des candidats à comparer.
+description: Génère et régénère les répliques vocales françaises du jeu avec des identités vocales réutilisables par clonage Qwen3-TTS. À utiliser pour ajouter une réplique, corriger une prononciation ou refaire les voix.
 ---
 
 # generate-voice
 
-Produit des WAV dans `src/assets/voice/` avec le modèle **Qwen3-TTS 1.7B VoiceDesign**. Le script `scripts/generate_voice.py` est autonome : il réutilise le **venv de ComfyUI** (torch + CUDA déjà installés) et ajoute, dans un dossier isolé, transformers 4.57.3 + `qwen-tts`. Le venv de ComfyUI n'est jamais modifié, et ComfyUI n'a pas besoin de tourner.
+Les voix du jeu sont générées avec **Qwen3-TTS 1.7B Base**, en clonant une référence audio propre à chaque personnage. Les références et leurs transcriptions sont définies dans [voice_profiles.json](voice_profiles.json) et stockées dans `assets/input/references/voice/`. Le générateur réutilise le même profil pour toutes les répliques d'un personnage. Les références manquantes sont créées avec **VoiceDesign**, puis les répliques sont synthétisées par **Base**.
+
+Le catalogue [voices.json](voices.json) est généré depuis les dialogues de `src/data/` et les associations de sons du jeu. Après toute modification des dialogues ou des sons préenregistrés, le reconstruire avec `npm run voice:catalog`. Voice Review et ce skill utilisent ce même catalogue : il indique les textes, profils et fichiers attendus, y compris ceux qui restent à générer.
+
+Le script `scripts/generate_voice.py` réutilise le venv de ComfyUI et une surcouche Python isolée (transformers 4.57.3 + `qwen-tts`). Il ne modifie pas le venv de ComfyUI. Les modèles sont conservés dans `<ComfyUI>/models/qwen-tts/`.
 
 ## Prérequis
 
-- Une installation ComfyUI locale avec son `.venv`, trouvée via `COMFYUI_PATH` ou, à défaut, le workspace par défaut de comfy-cli (`%LOCALAPPDATA%\comfy-cli\config.ini`).
-- N'importe quel `python` (le script n'utilise que la bibliothèque standard pour se relancer dans le venv ComfyUI).
-- GPU NVIDIA (≈ 5–10 s par réplique après chargement du modèle).
-- Premier lancement : installation de la surcouche dans `~/.cache/syllabic-hunters-voice/overlay` (changer avec `SH_VOICE_HOME`), puis téléchargement du modèle (~4 Go) dans `<ComfyUI>/models/qwen-tts/Qwen3-TTS-12Hz-1.7B-VoiceDesign` s'il est absent.
+- Une installation ComfyUI avec son `.venv`, repérée via `COMFYUI_PATH` ou le workspace de comfy-cli.
+- Python et un GPU NVIDIA.
+- Premier lancement : le script installe la surcouche dans `~/.cache/syllabic-hunters-voice/overlay` et télécharge les modèles VoiceDesign et Base (environ 4 Go chacun) s'ils manquent.
 
-## Utilisation
+## Commandes
 
-Toutes les commandes se lancent depuis la racine du dépôt :
+Depuis la racine du dépôt :
 
 ```powershell
-# Voir les répliques du manifeste et celles qui manquent
-python .github/skills/generate-voice/scripts/generate_voice.py --list
+# Voir les répliques présentes et manquantes
+python .agents/skills/generate-voice/scripts/generate_voice.py --list
 
-# Générer les répliques manquantes de voices.json (n'écrase rien sans --force)
-python .github/skills/generate-voice/scripts/generate_voice.py
+# Générer les répliques manquantes puis supprimer les WAV absents du catalogue
+python .agents/skills/generate-voice/scripts/generate_voice.py --prune
 
-# Une nouvelle réplique
-python .github/skills/generate-voice/scripts/generate_voice.py --text "Bravo, bien joué !" --name cheer-bien-joue --tone cheer
+# Créer les références de personnages manquantes
+python .agents/skills/generate-voice/scripts/generate_voice.py --prepare-references
 
-# 5 candidats (graines 1..5) à écouter, écrits hors du dépôt ; ne touche pas à src/
-python .github/skills/generate-voice/scripts/generate_voice.py --text "Bravo !" --name cheer-bravo --tone cheer --variants 5
+# Générer toutes les répliques manquantes par clonage
+python .agents/skills/generate-voice/scripts/generate_voice.py
+
+# Régénérer toute la bibliothèque
+python .agents/skills/generate-voice/scripts/generate_voice.py --force
+
+# Ajouter une réplique en réutilisant un profil existant
+python .agents/skills/generate-voice/scripts/generate_voice.py --text "Bravo, bien joué !" --name cheer-bien-joue --speaker default
+
+# Comparer trois prononciations avec la même identité vocale, hors du dépôt
+python .agents/skills/generate-voice/scripts/generate_voice.py --text "Bravo !" --name cheer-bravo --speaker default --variants 3
+
+# Créer directement une voix expérimentale sans clonage
+python .agents/skills/generate-voice/scripts/generate_voice.py --engine design --text "Bonjour !" --name essai --voice-text "Voix féminine native du français de France."
 ```
 
-Options utiles : `--tone` (`cheer`, `praise`, `encourage`, `playful`, `calm`), `--tone-text "…"` (ton libre), `--voice-text "…"` (autre voix), `--seed N`, `--temperature` (0.7 par défaut, plus bas = prononciation plus stable), `--only a,b`, `--force`, `--out-dir`, `--model <dossier>`.
+Le moteur par défaut est `clone`. `--speaker` choisit un profil pour `--text`; les répliques du manifeste choisissent leur profil selon leur champ `speaker` ou leur description vocale. Les variantes gardent donc la même référence : elles permettent de comparer la prononciation et l'intonation sans créer une nouvelle identité.
 
-## Procédure pour ajouter une réplique au jeu
+Options : `--speaker`, `--only a,b`, `--force`, `--variants N`, `--seed N`, `--temperature` (0.35 par défaut en clonage), `--out-dir`, `--model`. `--engine design` sélectionne VoiceDesign, et `--voice-text` / `--tone-text` s'appliquent à ce moteur. Le clonage Base reprend l'identité et la couleur vocale de sa référence; il ne prend pas en charge ici une consigne d'intonation différente pour chaque phrase.
 
-1. Ajouter l'entrée dans [voices.json](voices.json) : `{ "name": "cheer-xxx", "text": "…", "tone": "cheer" }` (`seed` optionnel).
-2. Générer des candidats avec `--variants 5` et les écouter (chemins affichés, dans `~/.cache/syllabic-hunters-voice/candidates`). L'interprétation et l'accent varient fortement d'une graine à l'autre : toujours écouter.
-3. Générer le fichier final : `--only cheer-xxx --seed <graine retenue>` (ou copier le candidat choisi dans `src/assets/voice/`). Noter la graine dans `voices.json`.
-4. Enregistrer la réplique dans `RECORDED_LINES` de `src/lib/speech.ts` (clé = texte normalisé en minuscules avec apostrophe `'`, valeur = nom du fichier `.wav`). Sans cela, le jeu n'utilise pas le fichier et retombe sur la synthèse du navigateur.
+## Profils et voix genrées
 
-## Conseils qualité
+`voice_profiles.json` relie un identifiant de profil à une référence audio et à sa transcription exacte. Ne remplace pas une référence validée sans écouter les nouveaux candidats. Les profils `default`, `hana`, `yuki`, `mia`, `mochi`, `king`, `hero-masculine` et `hero-feminine` ont chacun une identité stable.
 
-- La voix de base demande explicitement un **français natif de Paris, sans accent étranger ni anglais** : c'est ce qui réduit l'accent anglais constaté avec une consigne plus vague. Rédiger les consignes en français.
-- Textes très courts (< 2 mots) : plus de variations, générer plusieurs candidats.
-- Un fichier anormalement long (> 2× la durée attendue) contient souvent une pause ou un artefact : le rejeter.
-- Les WAV sont débarrassés des silences de début/fin et normalisés à −1 dBFS (24 kHz, 16 bits, mono).
+Les textes peuvent contenir `[masculin|féminin]`. Le manifeste crée alors les deux fichiers suffixés `-masculine.wav` et `-feminine.wav` et assigne chaque variante à son profil vocal dédié. À la lecture, l'application choisit le fichier selon le genre explicite du personnage.
 
-## Pièges connus
+Pour une nouvelle réplique de scène, l’ajouter aux structures de dialogue dans `src/data/` ; le catalogue crée les fichiers attendus pour Voice Review et le générateur. Pour un son de jeu hors dialogue, ajouter son texte et son fichier à `RECORDED_LINES` dans `src/data/recordedVoiceLines.ts`, puis reconstruire le catalogue. Les répliques genrées du héros déclarent `who: "hero"` et produisent les deux profils.
 
-- Le node ComfyUI `qwen3-tts-comfyui` et `qwen-tts` ne fonctionnent pas avec transformers 5 (celui du venv ComfyUI actuel) : c'est pourquoi la surcouche isolée est nécessaire. Ne pas la remplacer par un `pip install` dans le venv ComfyUI.
-- Dans la surcouche, tout est installé avec `--no-deps` : laisser pip résoudre les dépendances tire un numpy trop récent qui casse numba/librosa.
-- Réinitialiser la surcouche : supprimer `~/.cache/syllabic-hunters-voice/overlay`.
+## Qualité audio
+
+- Écouter les références et un échantillon de chaque profil avant une régénération complète. L'accent demandé ne garantit pas une prononciation parfaite.
+- Les textes courts, noms inventés et séries de syllabes sont à vérifier attentivement. Simplifier leur graphie ou la ponctuation si nécessaire.
+- Le post-traitement coupe les silences de début et de fin en gardant 40 ms de marge, puis normalise le pic à −1 dBFS.
+- Les sorties sont des WAV mono 24 kHz, 16 bits. Les variantes sont écrites dans `~/.cache/syllabic-hunters-voice/candidates`.
+
+## Limites connues
+
+- Le clonage stabilise le timbre, mais ne corrige pas les erreurs de prononciation de la référence ni celles produites sur un texte ambigu. Il faut vérifier les phrases pédagogiques à l'écoute.
+- Qwen Base ne reçoit pas de consigne `instruct` par réplique dans cette API. L'émotion vient surtout de la référence, du texte et de sa ponctuation.
+- Le node ComfyUI et `qwen-tts` ne fonctionnent pas avec transformers 5 dans l'environnement local. Garder la surcouche isolée et installer ses paquets avec `--no-deps` pour ne pas remplacer numpy/torch du venv.

@@ -8,43 +8,47 @@ import {
   useRef,
   useState,
 } from "react";
-import demon from "../assets/demon.png";
-import battleIcon from "../assets/missions/battle.png";
-import buildIcon from "../assets/missions/build.png";
-import findImagesIcon from "../assets/missions/find-images.png";
-import fusionIcon from "../assets/missions/fusion.png";
-import listenSylIcon from "../assets/missions/listen-syl.png";
-import listenWordIcon from "../assets/missions/listen-word.png";
-import memoryIcon from "../assets/missions/memory.png";
-import missingIcon from "../assets/missions/missing.png";
-import readWordIcon from "../assets/missions/read-word.png";
-import seeSoundIcon from "../assets/missions/see-sound.png";
-import vowelsIcon from "../assets/missions/vowels.png";
-import backIcon from "../assets/ui/back-world-map.png";
-import bookIcon from "../assets/ui/book.png";
-import closeIcon from "../assets/ui/close.png";
-import crownIcon from "../assets/ui/crown.png";
-import lockIcon from "../assets/ui/lock.png";
-import mathIcon from "../assets/ui/math.png";
-import mapIcon from "../assets/ui/map.png";
-import replayIcon from "../assets/ui/replay.png";
-import settingsIcon from "../assets/ui/settings-world-map.png";
-import starIcon from "../assets/ui/star-world-map.png";
-import hana from "../assets/hana.png";
-import king from "../assets/king.png";
-import mochi from "../assets/mochi.png";
-import momo from "../assets/momo.png";
-import milo from "../assets/milo.png";
-import yuki from "../assets/yuki.png";
-import zelane from "../assets/zelane.png";
-import type { MissionType, Speaker } from "../data/story";
+import { assetUrl } from "../lib/assets";
+const demon = assetUrl("final/demon.png");
+const battleIcon = assetUrl("final/missions/battle.png");
+const buildIcon = assetUrl("final/missions/build.png");
+const findImagesIcon = assetUrl("final/missions/find-images.png");
+const fusionIcon = assetUrl("final/missions/fusion.png");
+const listenSylIcon = assetUrl("final/missions/listen-syl.png");
+const listenWordIcon = assetUrl("final/missions/listen-word.png");
+const memoryIcon = assetUrl("final/missions/memory.png");
+const missingIcon = assetUrl("final/missions/missing.png");
+const readWordIcon = assetUrl("final/missions/read-word.png");
+const seeSoundIcon = assetUrl("final/missions/see-sound.png");
+const vowelsIcon = assetUrl("final/missions/vowels.png");
+const backIcon = assetUrl("final/ui/back-world-map.png");
+const bookIcon = assetUrl("final/ui/book.png");
+const closeIcon = assetUrl("final/ui/close.png");
+const crownIcon = assetUrl("final/ui/crown.png");
+const lockIcon = assetUrl("final/ui/lock.png");
+const mathIcon = assetUrl("final/ui/math.png");
+const mapIcon = assetUrl("final/ui/map.png");
+const replayIcon = assetUrl("final/ui/replay.png");
+const settingsIcon = assetUrl("final/ui/settings-world-map.png");
+const starIcon = assetUrl("final/ui/star-world-map.png");
+const hana = assetUrl("final/hana.png");
+const king = assetUrl("final/king.png");
+const mochi = assetUrl("final/mochi.png");
+const mia = assetUrl("final/mia.png");
+const milo = assetUrl("final/milo.png");
+const luna = assetUrl("final/luna.png");
+const zelane = assetUrl("final/zelane.png");
+const yuki = assetUrl("final/yuki.png");
+import { heroSceneSpeaker, type DialogueLine } from "../data/dialogue";
+import type { MissionType } from "../data/reading";
+import type { Speaker } from "../data/chapter";
 import type { HeroId } from "../lib/storage";
 import { cleanPart, type Word } from "../data/words";
 import { sfx } from "../lib/sfx";
-import { speak, speakSeq } from "../lib/speech";
+import { speak, speakSeq, type SpeechOptions } from "../lib/speech";
 import { pick } from "../lib/utils";
 
-export const IMAGES = { hana, yuki, momo, milo, zelane, mochi, king, demon };
+export const IMAGES = { hana, luna, mia, milo, zelane, yuki, mochi, king, demon };
 
 export const MISSION_ICONS: Record<MissionType, string> = {
 	vowels: vowelsIcon,
@@ -81,18 +85,20 @@ export function BackIcon({ className = "h-7 w-7" }: { className?: string }) {
   return <img src={UI_ICONS.back} alt="" aria-hidden="true" className={`inline-block shrink-0 object-contain ${className}`} />;
 }
 
-export const SPEAKER_INFO: Record<
-  Speaker,
-  { name: string; img: string; color: string }
-> = {
-  hana: { name: "Hana", img: hana, color: "#ff4fa3" },
-  yuki: { name: "Luna", img: yuki, color: "#34c3ff" },
-  momo: { name: "Mia", img: momo, color: "#b36bff" },
-  milo: { name: "Milo", img: milo, color: "#35d5e7" },
-  zelane: { name: "Zélane", img: zelane, color: "#f6c445" },
+export const SPEAKER_INFO: Record<Speaker, { name: string; img: string; color: string }> = {
+  hero_male: { name: "Héros", img: milo, color: "#35d5e7" },
+  hero_female: { name: "Héroïne", img: hana, color: "#ff4fa3" },
+  yuki: { name: "Yuki", img: yuki, color: "#34c3ff" },
   mochi: { name: "Mochi", img: mochi, color: "#ffffff" },
   king: { name: "Roi Chuuut", img: king, color: "#6b3cff" },
-  boss: { name: "Démon", img: demon, color: "#6b3cff" },
+};
+
+export const HERO_INFO: Record<HeroId, { name: string; img: string; color: string }> = {
+  hana: { name: "Hana", img: hana, color: "#ff4fa3" },
+  luna: { name: "Luna", img: luna, color: "#34c3ff" },
+  mia: { name: "Mia", img: mia, color: "#b36bff" },
+  milo: { name: "Milo", img: milo, color: "#35d5e7" },
+  zelane: { name: "Zélane", img: zelane, color: "#f6c445" },
 };
 
 // ---------- Contexte de jeu ----------
@@ -107,19 +113,23 @@ export const GameContext = createContext<GameCtx>({
   name: "",
 });
 export const useGame = () => useContext(GameContext);
-export const playerText = (text: string, hero: GameCtx["hero"]) => hero === "milo"
-  ? text.replace(/championne/gi, "champion").replace(/fières/gi, "fiers").replace(/prête/gi, "prêt").replace(/toute seule/gi, "tout seul")
-  : text;
+/** Resolves [masculine|feminine] variants in dialogue and instructions. */
+export const playerText = (text: string, hero: GameCtx["hero"]) =>
+	text.replace(/\[([^\]|]+)\|([^\]]+)\]/g, (_match, masculine: string, feminine: string) =>
+		hero === "milo" ? masculine : feminine,
+	);
 
 // ---------- Boutons ----------
 export function SpeakButton({
   text,
+  speechOptions,
   size = "md",
   className = "",
   label,
   onSpoken,
 }: {
   text: string;
+  speechOptions?: SpeechOptions;
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
   label?: string;
@@ -139,7 +149,7 @@ export function SpeakButton({
       onClick={async (e) => {
         e.stopPropagation();
         setActive(true);
-        await speak(text);
+        await speak(text, speechOptions);
         setActive(false);
         onSpoken?.();
       }}
@@ -391,29 +401,33 @@ export function FeedbackLayer({ fb }: { fb: ReturnType<typeof useFeedback> }) {
 // ---------- Cadre de mission ----------
 export function MissionFrame({
   instruction,
-  speakText,
+  dialogue,
   round,
   total,
   children,
-  hero,
   speakPause,
 }: {
   instruction: ReactNode;
-  speakText: string | string[];
+  dialogue: DialogueLine[];
   round: number;
   total: number;
   children: ReactNode;
-  hero?: Speaker;
   speakPause?: number;
   readKey?: string | number;
 }) {
   const { autoRead, hero: h } = useGame();
-  const who = hero ?? h;
-  // Keep the sequence stable when callers recreate an equivalent text array.
+  const firstSpeaker = dialogue[0]?.who;
+  const who: Speaker = firstSpeaker === "hero" || !firstSpeaker
+    ? heroSceneSpeaker(h === "milo")
+    : firstSpeaker;
+  const dialogueKey = dialogue
+    .map(({ who: lineSpeaker, text }) => `${lineSpeaker}\u0000${text}`)
+    .join("\u0001");
+  // Keep the spoken sequence stable when callers recreate equivalent dialogue lines.
   // biome-ignore lint/correctness/useExhaustiveDependencies: The content key intentionally prevents duplicate speech on rerenders.
   const seq = useMemo(
-    () => (Array.isArray(speakText) ? speakText : [speakText]).map((text) => playerText(text, h)),
-    [Array.isArray(speakText) ? speakText.join("\u0000") : speakText, h],
+    () => dialogue.map(({ text }) => playerText(text, h)),
+    [dialogueKey, h],
   );
   const hasReadInitial = useRef(false);
   useEffect(() => {

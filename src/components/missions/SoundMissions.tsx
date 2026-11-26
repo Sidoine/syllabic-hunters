@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { dialogue } from "../../data/dialogue";
 import {
   sayOf,
   syllablesOf,
@@ -53,7 +54,7 @@ export function VowelsMission({ onDone }: MissionProps) {
           lettres, un seul son !
         </>
       }
-      speakText="Touche chaque voyelle pour découvrir son son. Attention, o et u ensemble font le son ou : deux lettres, un seul son !"
+      dialogue={dialogue("mochi", "Touche chaque voyelle pour découvrir son son. Attention, o et u ensemble font le son ou : deux lettres, un seul son !")}
       round={seen.length}
       total={VOWELS.length}
       readKey="vowels"
@@ -144,7 +145,7 @@ export function FusionMission({ mission, onDone }: MissionProps) {
             <b className="font-read text-2xl">{cons}</b> !
           </>
         }
-        speakText={`Touche une voyelle pour la coller à la lettre ${consonantSpoken(cons)}, et écoute la syllabe magique !`}
+        dialogue={dialogue("mochi", `Touche une voyelle pour la coller à la lettre ${consonantSpoken(cons)}, et écoute la syllabe magique !`)}
         round={found.length}
         total={allSyl.length}
         readKey={`learn${cons}`}
@@ -226,7 +227,7 @@ export function FusionMission({ mission, onDone }: MissionProps) {
             className="mt-4 anim-glow"
             onClick={() => setPhase("quiz")}
           >
-            {playerText("Je suis prête pour le test !", hero)} ⚡
+            {playerText("Je suis [prêt|prête] pour le test !", hero)} ⚡
           </BigButton>
         )}
       </MissionFrame>
@@ -263,10 +264,10 @@ export function FusionMission({ mission, onDone }: MissionProps) {
           <b className="font-read text-2xl">{tc}</b> ?
         </>
       }
-      speakText={[
+      dialogue={dialogue("mochi", [
         "Écoute bien. Quelle voyelle faut-il coller ?",
         sayOf(target),
-      ]}
+      ])}
       round={qi}
       total={quiz.length}
     >
@@ -350,10 +351,10 @@ export function ListenSylMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Écoute bien, puis touche la syllabe que tu entends."
-      speakText={[
+      dialogue={dialogue("mochi", [
         "Écoute bien, et touche la syllabe que tu entends.",
         sayOf(r.t),
-      ]}
+      ])}
       round={ri}
       total={rounds.length}
     >
@@ -428,7 +429,7 @@ export function SeeSoundMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Lis la syllabe. Écoute les bulles et choisis celle qui fait le bon son !"
-      speakText="Regarde la syllabe. Touche les bulles pour les écouter, puis choisis celle qui fait le bon son."
+      dialogue={dialogue("mochi", "Regarde la syllabe. Touche les bulles pour les écouter, puis choisis celle qui fait le bon son.")}
       round={ri}
       total={rounds.length}
     >

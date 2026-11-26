@@ -18,7 +18,7 @@ import {
   ReadWordMission,
 } from "../components/missions/WordMissions";
 import { BigButton, IMAGES, MISSION_ICONS, Stars, UI_ICONS, useGame } from "../components/ui";
-import type { Mission } from "../data/story";
+import type { Mission } from "../data/reading";
 import { sfx } from "../lib/sfx";
 import {
   getFrenchVoices,

@@ -1,4 +1,4 @@
-import type { Mission } from "../../data/story";
+import type { Mission } from "../../data/reading";
 import { consonantOf, sayOf, VOWELS, vowelOf } from "../../data/syllables";
 import {
 	cleanPart,

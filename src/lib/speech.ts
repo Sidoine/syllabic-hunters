@@ -1,124 +1,6 @@
 // Synthèse vocale française avec choix de voix et fallback.
-const audioFiles = import.meta.glob("../assets/voice/*.wav", {
-  eager: true,
-  query: "?url",
-  import: "default",
-}) as Record<string, string>;
 import generatedVoices from "../../.agents/skills/generate-voice/voices.json";
-
-const RECORDED_LINES: Record<string, string> = {
-  "bravo !": "cheer-bravo.wav",
-  "super !": "cheer-super.wav",
-  "génial !": "cheer-genial.wav",
-  "oui, c'est ça !": "cheer-oui-cest-ca.wav",
-  "trop forte !": "cheer-trop-forte.wav",
-  "écoute et touche le démon qui porte la bonne syllabe !": "battle-instruction-touch-demon.wav",
-  "magnifique !": "cheer-magnifique.wav",
-  "bravo, tu lis très bien !": "read-praise.wav",
-  "bravo, bien joué !": "cheer-bien-joue.wav",
-  "essaie encore !": "try-essaie-encore.wav",
-  "presque ! réessaie.": "try-presque-reessaie.wav",
-  "oups ! encore une fois.": "try-oups-encore.wav",
-  "hihihi ! raté !": "playful-rate.wav",
-  "au secours! le roi chuuut a volé tous les sons du monde!": "story-mochi-au-secours-le-roi-chuuut-a-vole-tous-les-sons-du.wav",
-  "pour les battre, il faut apprendre les sons. on commence par les voyelles : a, i, oh, u, é et où!": "story-yuki-pour-les-battre-il-faut-apprendre-les-sons-on-co.wav",
-  "maintenant, on va coller des lettres aux voyelles pour faire des syllabes. c'est ça, le b-a bas!": "story-hana-maintenant-on-va-coller-des-lettres-aux-voyelles.wav",
-  "alix, tu es une vraie star de la lecture! les lumi stars sont fières de toi!": "story-hana-alix-tu-es-une-vraie-star-de-la-lecture-les-lumi.wav",
-  "tu peux rejouer toutes les missions pour gagner encore plus d'étoiles!": "story-mochi-tu-peux-rejouer-toutes-les-missions.wav",
-  "écoute bien. quelle voyelle faut-il coller ?": "mission-fusion-quiz.wav",
-  "écoute bien, et touche la syllabe que tu entends.": "mission-listen-syllable.wav",
-  "regarde la syllabe. touche les bulles pour les écouter, puis choisis celle qui chante la bonne syllabe.": "mission-see-sound.wav",
-  "retourne deux cartes. trouve une syllabe et l'image qui commence par ce son !": "mission-memory.wav",
-  "un démon a cassé le mot ! écoute le mot, et trouve la syllabe qui manque.": "mission-missing.wav",
-  "écris le mot ! touche les syllabes dans le bon ordre.": "mission-build.wav",
-  "lis le mot secret toute seule, syllabe par syllabe. puis touche la bonne image.": "mission-read-word.wav",
-  "écoute le mot mystère, et trouve comment il s'écrit.": "mission-listen-word.wav",
-  "un démon lézard a caché la lettre l dans le parc!": "story-mochi-un-demon-lezard-a-cache-la-lettre-l-dans-le-parc-a78351.wav",
-  "la lettre l chante avec sa langue. avec a, elle fait la. avec i, elle fait lit!": "story-yuki-la-lettre-l-chante-avec-sa-langue-avec-a-elle-fait-la-a-2e72f2.wav",
-  "lézardo est battu! la, lit, lot, lu, les, loup : tu connais la lettre l!": "story-hana-lezardo-est-battu-la-lit-lot-lu-les-loup-tu-connais-la-af9bd7.wav",
-  "mmmm... ça sent bon au marché! mais maître moustache a volé la lettre m!": "story-momo-mmmm-ca-sent-bon-au-marche-mais-maitre-moustache-a-vole-0c128a.wav",
-  "m fait comme quand c'est délicieux. avec a : ma!": "story-hana-m-fait-comme-quand-c-est-delicieux-avec-a-ma-47e620.wav",
-  "miam! ma, mie, mot, mue, mes, mou : la lettre m est libérée!": "story-momo-miam-ma-mie-mot-mue-mes-mou-la-lettre-m-est-liberee-cec98f.wav",
-  "rrrr! tu entends? c'est rakoro qui grogne près de la rivière!": "story-yuki-rrrr-tu-entends-c-est-rakoro-qui-grogne-pres-de-la-rivi-1475fc.wav",
-  "r roule dans la gorge. avec a, ça fait rat!": "story-mochi-r-roule-dans-la-gorge-avec-a-ca-fait-rat-df8e1c.wav",
-  "rakoro s'est enfui! rat, riz, rot, rue, ré, roue : super!": "story-yuki-rakoro-s-est-enfui-rat-riz-rot-rue-re-roue-super-31cfa3.wav",
-  "ssss... serpentine le serpent siffle dans notre studio!": "story-hana-ssss-serpentine-le-serpent-siffle-dans-notre-studio-a962b1.wav",
-  "s siffle comme un serpent. avec a : sa!": "story-momo-s-siffle-comme-un-serpent-avec-a-sa-306c4a.wav",
-  "serpentine ne siffle plus! sa, si, seau, su, ses, sou : bravo!": "story-hana-serpentine-ne-siffle-plus-sa-si-seau-su-ses-sou-bravo-8c010f.wav",
-  "un pirate-poulpe a volé la lettre p dans son bateau!": "story-mochi-un-pirate-poulpe-a-vole-la-lettre-p-dans-son-bateau-56d1ac.wav",
-  "p fait un petit bruit qui éclate comme une bulle. avec a : pas!": "story-yuki-p-fait-un-petit-bruit-qui-eclate-comme-une-bulle-avec-a-9773dc.wav",
-  "plouf! pirata poulpe tombe à l'eau! pas, pie, pot, pu, pé, pou!": "story-momo-plouf-pirata-poulpe-tombe-a-l-eau-pas-pie-pot-pu-pe-pou-35b257.wav",
-  "tornado toto fait tourner la tour de la télé!": "story-hana-tornado-toto-fait-tourner-la-tour-de-la-tele-265a08.wav",
-  "la tornade s'arrête! ta, ti, tôt, tu, thé, tout : génial!": "story-yuki-la-tornade-s-arrete-ta-ti-tot-tu-the-tout-genial-2a47f4.wav",
-  "un ninja se cache dans les nuages! il a volé la lettre n!": "story-momo-un-ninja-se-cache-dans-les-nuages-il-a-vole-la-lettre-n-392ba6.wav",
-  "n chante dans le nez. avec a : na!": "story-yuki-n-chante-dans-le-nez-avec-a-na-f033c4.wav",
-  "le ninja est démasqué! na, nid, nos, nu, né, nous!": "story-hana-le-ninja-est-demasque-na-nid-nos-nu-ne-nous-fccfa0.wav",
-  "dragonito crache du feu sur les diamants!": "story-mochi-dragonito-crache-du-feu-sur-les-diamants-5fd957.wav",
-  "d tape avec la langue derrière les dents. avec a : da!": "story-hana-d-tape-avec-la-langue-derriere-les-dents-avec-a-da-bf5110.wav",
-  "dragonito fait dodo! da, dit, dos, du, dé, doux : bien joué!": "story-momo-dragonito-fait-dodo-da-dit-dos-du-de-doux-bien-joue-2a9dc3.wav",
-  "b fait avec les lèvres qui se collent. avec a : bas! comme b-a bas!": "story-mochi-b-fait-avec-les-levres-qui-se-collent-avec-a-bas-comme-11b201.wav",
-  "les bulles éclatent! bas, bi, beau, bu, bé, bout : tu es une championne!": "story-hana-les-bulles-eclatent-bas-bi-beau-bu-be-bout-tu-es-une-ch-cbc790.wav",
-  "fifi fantôme fait peur aux fées de la forêt!": "story-momo-fifi-fantome-fait-peur-aux-fees-de-la-foret-648abc.wav",
-  "f souffle comme le vent. avec a : fa!": "story-yuki-f-souffle-comme-le-vent-avec-a-fa-abbfbb.wav",
-  "pfiou! fifi s'envole! fa, fi, faux, fut, fée, fou!": "story-yuki-pfiou-fifi-s-envole-fa-fi-faux-fut-fee-fou-2564ec.wav",
-  "vampirou s'est installé dans le volcan violet!": "story-hana-vampirou-s-est-installe-dans-le-volcan-violet-b9ae43.wav",
-  "v vibre comme une abeille. avec a : va!": "story-mochi-v-vibre-comme-une-abeille-avec-a-va-df8ed7.wav",
-  "vampirou va se coucher! va, vie, veau, vu, vé, vous : bravo!": "story-momo-vampirou-va-se-coucher-va-vie-veau-vu-ve-vous-bravo-d22161.wav",
-  "attention : c et h ensemble chantent, comme pour dire chut!": "story-yuki-attention-c-et-h-ensemble-chantent-comme-pour-dire-chut-67551a.wav",
-  "deux lettres, un seul son! avec a : chat, comme chat!": "story-momo-deux-lettres-un-seul-son-avec-a-chat-comme-chat-161ba4.wav",
-  "chachat noir ronronne maintenant! chat, chi, chaud, chu, chez, chou!": "story-hana-chachat-noir-ronronne-maintenant-chat-chi-chaud-chu-che-6dca04.wav",
-  "jojo le jongleur a volé tous les jouets de la jungle!": "story-mochi-jojo-le-jongleur-a-vole-tous-les-jouets-de-la-jungle-54058f.wav",
-  "j fait comme un moteur doux. avec a : ja!": "story-hana-j-fait-comme-un-moteur-doux-avec-a-ja-2595e1.wav",
-  "les jouets sont sauvés! ja, j'y, jo, jus, j'ai, joue!": "story-yuki-les-jouets-sont-sauves-ja-j-y-jo-jus-j-ai-joue-8ab385.wav",
-  "attention, c'est la grotte aux pièges! c et g sont des lettres farceuses!": "story-yuki-attention-c-est-la-grotte-aux-pieges-c-et-g-sont-des-le-2681b9.wav",
-  "devant a, oh, u et où, c chante comme dans cadeau, et g chante comme dans gâteau. cas, co, cu, cou... gars, go, goût!": "story-hana-devant-a-oh-u-et-ou-c-chante-comme-dans-cadeau-et-g-cha-1591c2.wav",
-  "mais devant i et e, ils changent de voix! alors ici, on reste avec a, oh, u et où.": "story-momo-mais-devant-i-et-e-ils-changent-de-voix-alors-ici-on-re-2c0da6.wav",
-  "capitaine gorgo est vaincu! tu as déjoué les pièges!": "story-mochi-capitaine-gorgo-est-vaincu-tu-as-dejoue-les-pieges-8ba05e.wav",
-  "zéro": "math-number-00-zero.wav",
-  "un": "math-number-01-un.wav",
-  "deux": "math-number-02-deux.wav",
-  "trois": "math-number-03-trois.wav",
-  "quatre": "math-number-04-quatre.wav",
-  "cinq": "math-number-05-cinq.wav",
-  "six": "math-number-06-six.wav",
-  "sept": "math-number-07-sept.wav",
-  "huit": "math-number-08-huit.wav",
-  "neuf": "math-number-09-neuf.wav",
-  "dix": "math-number-10-dix.wav",
-  "onze": "math-number-11-onze.wav",
-  "douze": "math-number-12-douze.wav",
-  "treize": "math-number-13-treize.wav",
-  "quatorze": "math-number-14-quatorze.wav",
-  "quinze": "math-number-15-quinze.wav",
-  "seize": "math-number-16-seize.wav",
-  "dix-sept": "math-number-17-dix-sept.wav",
-  "dix-huit": "math-number-18-dix-huit.wav",
-  "dix-neuf": "math-number-19-dix-neuf.wav",
-  "vingt": "math-number-20-vingt.wav",
-  "plus": "math-op-plus.wav",
-  "moins": "math-op-moins.wav",
-  "font combien ?": "math-prompt-result.wav",
-  "quel nombre manque ?": "math-prompt-missing.wav",
-  "plus combien font": "math-prompt-plus-missing.wav",
-  "moins combien font": "math-prompt-minus-missing.wav",
-  "calculs-éclairs": "math-title-calculs-eclairs.wav",
-  "le nombre mystère": "math-title-nombre-mystere.wav",
-  "petites histoires de calcul": "math-title-histoires.wav",
-  "luna gagne": "math-story-luna-gagne.wav",
-  "étoiles, puis": "math-story-etoiles-puis.wav",
-  "étoiles. combien en gagne-t-elle en tout ?": "math-story-addition-end.wav",
-  "mia a": "math-story-mia-a.wav",
-  "étoiles. elle en offre": "math-story-mia-offre.wav",
-  "étoiles. combien lui en reste-t-il ?": "math-story-subtraction-end.wav",
-  "hana a": "math-story-hana-a.wav",
-  "étoiles. combien lui en manque-t-il pour en avoir dix ?": "math-story-complement-end.wav",
-  "parfait !": "math-praise-perfect.wav",
-  "trois étoiles !": "math-praise-three-stars.wav",
-  "deux étoiles !": "math-praise-two-stars.wav",
-  "mission réussie !": "math-praise-complete.wav",
-  "tu peux rejouer pour gagner plus d'étoiles.": "math-praise-replay.wav",
-
-};
+import { assetUrl } from "./assets";
 
 export type RecordedVoice = {
   file: string;
@@ -126,35 +8,78 @@ export type RecordedVoice = {
   text: string;
   context: string;
   linked: boolean;
+  speaker?: string;
+  available: boolean;
 };
 
-const generatedText = new Map(generatedVoices.map((voice) => [`${voice.name}.wav`, voice.text]));
-const textByFile = new Map(Object.entries(RECORDED_LINES).map(([text, file]) => [file, text]));
+const GENDER_VARIANT_RE = /\[([^\]|]+)\|([^\]]+)\]/g;
+const resolveGenderVariant = (text: string, masculine: boolean) =>
+	text.replace(GENDER_VARIANT_RE, (_match, male: string, female: string) => masculine ? male : female);
+const generatedText = new Map<string, string>();
+const generatedSpeaker = new Map<string, string>();
+const textByFile = new Map<string, string>();
+for (const voice of generatedVoices) {
+	const speaker = "speaker" in voice && typeof voice.speaker === "string" ? voice.speaker : undefined;
+	if (GENDER_VARIANT_RE.test(voice.text)) {
+		GENDER_VARIANT_RE.lastIndex = 0;
+		const maleFile = `${voice.name}-masculine.wav`;
+		const femaleFile = `${voice.name}-feminine.wav`;
+		generatedText.set(maleFile, resolveGenderVariant(voice.text, true));
+		generatedText.set(femaleFile, resolveGenderVariant(voice.text, false));
+		if (speaker) {
+			generatedSpeaker.set(maleFile, speaker === "hero" ? "hero-masculine" : speaker);
+			generatedSpeaker.set(femaleFile, speaker === "hero" ? "hero-feminine" : speaker);
+		}
+		if ("lookup_text" in voice && typeof voice.lookup_text === "string") {
+			textByFile.set(maleFile, resolveGenderVariant(voice.text, true));
+			textByFile.set(femaleFile, resolveGenderVariant(voice.text, false));
+		}
+	} else {
+		generatedText.set(`${voice.name}.wav`, voice.text);
+		if (speaker) generatedSpeaker.set(`${voice.name}.wav`, speaker);
+		if ("lookup_text" in voice && typeof voice.lookup_text === "string") textByFile.set(`${voice.name}.wav`, voice.lookup_text);
+	}
+}
+const recordedLines = new Map<string, string>();
+for (const voice of generatedVoices) {
+	if ("lookup_text" in voice && typeof voice.lookup_text === "string" && !GENDER_VARIANT_RE.test(voice.text)) {
+		recordedLines.set(voice.lookup_text.trim().normalize("NFC").replace(/[’]/g, "'").replace(/\s+/g, " ").toLowerCase(), `${voice.name}.wav`);
+	}
+	GENDER_VARIANT_RE.lastIndex = 0;
+}
 
 function voiceContext(file: string) {
+  const speaker = generatedSpeaker.get(file);
+  if (speaker?.startsWith("hero-")) return "Dialogue du héros sélectionné";
+  if (speaker && ["king", "mochi", "yuki"].includes(speaker)) return `Dialogue · ${speaker}`;
+  if (file.startsWith("hero-")) return "Réplique du héros choisi";
   if (file.startsWith("story-")) {
     const character = file.split("-")[1];
-    return `Scène d’introduction ou de victoire · ${character}`;
+    return `Scène d’introduction ou de victoire · ${speaker ?? character}`;
   }
-  if (file.startsWith("mission-")) return "Instruction d’un exercice de lecture";
-  if (file.startsWith("battle-")) return "Instruction de Combat de démons";
-  if (file.startsWith("math-")) return "Carte des batailles · exercice de mathématiques";
+  if (file.startsWith("mission-")) return `Instruction d’un exercice de lecture${speaker ? ` · ${speaker}` : ""}`;
+  if (file.startsWith("battle-")) return `Instruction de Combat de démons${speaker ? ` · ${speaker}` : ""}`;
+  if (file.startsWith("math-")) return `Carte des batailles · exercice de mathématiques${speaker ? ` · ${speaker}` : ""}`;
   if (file.startsWith("cheer-") || file.startsWith("try-") || file === "playful-rate.wav")
     return "Retour pendant un exercice";
   if (file === "read-praise.wav") return "Félicitations après une lecture";
   return "Autre son préenregistré";
 }
 
-export const recordedVoiceCatalog: RecordedVoice[] = Object.entries(audioFiles)
-  .map(([path, url]) => {
-    const file = path.slice(path.lastIndexOf("/") + 1);
-    const text = textByFile.get(file) ?? generatedText.get(file) ?? file
-      .replace(/\.wav$/i, "")
-      .replace(/^(story|math|mission|cheer|try|battle)-/, "")
-      .replace(/-/g, " ");
-    return { file, url, text, context: voiceContext(file), linked: textByFile.has(file) };
-  })
-  .sort((a, b) => a.context.localeCompare(b.context, "fr") || a.file.localeCompare(b.file, "fr"));
+export const recordedVoiceCatalog: RecordedVoice[] = generatedVoices.flatMap((voice) => {
+  const variants = GENDER_VARIANT_RE.test(voice.text);
+  GENDER_VARIANT_RE.lastIndex = 0;
+  const files = variants
+    ? [
+        { file: `${voice.name}-masculine.wav`, text: resolveGenderVariant(voice.text, true), speaker: voice.speaker === "hero" ? "hero-masculine" : voice.speaker },
+        { file: `${voice.name}-feminine.wav`, text: resolveGenderVariant(voice.text, false), speaker: voice.speaker === "hero" ? "hero-feminine" : voice.speaker },
+      ]
+    : [{ file: `${voice.name}.wav`, text: voice.text, speaker: voice.speaker }];
+  return files.map(({ file, text, speaker }) => {
+    const url = assetUrl(`final/voice/${file}`);
+    return { file, url, text: text ?? textByFile.get(file) ?? file, context: voiceContext(file), linked: true, speaker, available: true };
+  });
+}).sort((a, b) => a.context.localeCompare(b.context, "fr") || a.file.localeCompare(b.file, "fr"));
 
 function normalizeLine(text: string) {
   return text
@@ -165,9 +90,27 @@ function normalizeLine(text: string) {
     .toLowerCase();
 }
 
-function prerecordedLine(text: string) {
-  const file = RECORDED_LINES[normalizeLine(text)];
-  return file ? audioFiles[`../assets/voice/${file}`] : undefined;
+const generatedGenderFiles = new Map<string, { masculine: string; feminine: string }>();
+for (const voice of generatedVoices) {
+	if (!GENDER_VARIANT_RE.test(voice.text)) continue;
+	GENDER_VARIANT_RE.lastIndex = 0;
+	generatedGenderFiles.set(normalizeLine(resolveGenderVariant(voice.text, true)), {
+		masculine: `${voice.name}-masculine.wav`,
+		feminine: `${voice.name}-feminine.wav`,
+	});
+	generatedGenderFiles.set(normalizeLine(resolveGenderVariant(voice.text, false)), {
+		masculine: `${voice.name}-masculine.wav`,
+		feminine: `${voice.name}-feminine.wav`,
+	});
+}
+
+function prerecordedLine(text: string, masculine: boolean) {
+	const key = normalizeLine(text);
+	const genderFiles = generatedGenderFiles.get(key);
+	const variantFile = genderFiles?.[masculine ? "masculine" : "feminine"];
+	if (genderFiles) return variantFile ? assetUrl(`final/voice/${variantFile}`) : undefined;
+	const file = recordedLines.get(key);
+	return file ? assetUrl(`final/voice/${file}`) : undefined;
 }
 
 let voices: SpeechSynthesisVoice[] = [];
@@ -195,7 +138,7 @@ if (synth) {
   synth.onvoiceschanged = loadVoices;
 }
 
-export const speechSupported = () => !!synth || Object.keys(audioFiles).length > 0;
+export const speechSupported = () => !!synth || generatedVoices.length > 0;
 export const getFrenchVoices = () => voices;
 export const onVoicesChanged = (fn: () => void) => {
   listeners.push(fn);
@@ -214,9 +157,9 @@ export function configureSpeech(opts: {
   if (opts.masculine !== undefined) masculineVoice = opts.masculine;
 }
 
-function pickVoice(): SpeechSynthesisVoice | undefined {
+function pickVoice(masculine = masculineVoice): SpeechSynthesisVoice | undefined {
   if (!voices.length) return undefined;
-  if (preferredURI && !masculineVoice) {
+  if (preferredURI && !masculine) {
     const v = voices.find((x) => x.voiceURI === preferredURI);
     if (v) return v;
   }
@@ -224,7 +167,7 @@ function pickVoice(): SpeechSynthesisVoice | undefined {
     let s = 0;
     if (v.lang === "fr-FR") s += 10;
     if (/google/i.test(v.name)) s += 5;
-    if (masculineVoice) {
+    if (masculine) {
       if (/(thomas|paul|male|homme|antoine|hervé|herve|nicolas|henri)/i.test(v.name)) s += 10;
       if (/(amélie|amelie|audrey|marie|denise|hortense|julie|céline|celine)/i.test(v.name)) s -= 8;
     } else {
@@ -242,10 +185,12 @@ let seqToken = 0;
 let activeAudio: HTMLAudioElement | null = null;
 let stopActiveAudio: (() => void) | null = null;
 
+export type SpeechOptions = { rate?: number; pitch?: number; masculine?: boolean; recordedText?: string };
+
 /** Parle (interrompt toute séquence en cours). */
 export function speak(
   text: string,
-  opts: { rate?: number; pitch?: number } = {},
+  opts: SpeechOptions = {},
 ) {
   seqToken++;
   return rawSpeak(text, opts);
@@ -254,11 +199,12 @@ export function speak(
 /** Parle et résout quand c'est fini (ou après un délai de sécurité). */
 function rawSpeak(
   text: string,
-  opts: { rate?: number; pitch?: number } = {},
+  opts: SpeechOptions = {},
 ): Promise<void> {
   return new Promise((resolve) => {
     if (!text) return resolve();
     const token = ++speakToken;
+    const speakMasculine = opts.masculine ?? masculineVoice;
     stopActiveAudio?.();
     synth?.cancel();
     let done = false;
@@ -288,7 +234,7 @@ function rawSpeak(
 
       const u = new SpeechSynthesisUtterance(text);
       u.lang = "fr-FR";
-      const v = pickVoice();
+      const v = pickVoice(speakMasculine);
       if (v) u.voice = v;
       u.rate = opts.rate ?? rate;
       u.pitch = opts.pitch ?? 1.1;
@@ -302,7 +248,7 @@ function rawSpeak(
       }, 60);
     };
 
-    const src = masculineVoice ? undefined : prerecordedLine(text);
+    const src = prerecordedLine(opts.recordedText ?? text, speakMasculine);
     if (src && typeof Audio !== "undefined") {
       audio = new Audio(src);
       activeAudio = audio;
@@ -324,11 +270,11 @@ function rawSpeak(
 }
 
 /** Dit plusieurs textes à la suite, avec une petite pause (annulable). */
-export async function speakSeq(texts: string[], pause = 250) {
+export async function speakSeq(texts: string[], pause = 250, opts: SpeechOptions = {}) {
   const my = ++seqToken;
   for (const t of texts) {
     if (my !== seqToken) return;
-    await rawSpeak(t);
+    await rawSpeak(t, opts);
     await new Promise((r) => setTimeout(r, pause));
   }
 }

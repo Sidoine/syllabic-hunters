@@ -2,11 +2,13 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
-import type { Speaker } from "../data/story";
+import type { Speaker } from "../data/chapter";
+import { heroSceneSpeaker } from "../data/dialogue";
 import type { HeroId } from "../lib/storage";
-import readingMarkerBadge from "../assets/ui/map-marker-reading.webp";
-import mathMarkerBadge from "../assets/ui/map-marker-math.webp";
-import lockedMarkerBadge from "../assets/ui/map-marker-locked.webp";
+import { assetUrl } from "../lib/assets";
+const readingMarkerBadge = assetUrl("final/ui/map-marker-reading.webp");
+const mathMarkerBadge = assetUrl("final/ui/map-marker-math.webp");
+const lockedMarkerBadge = assetUrl("final/ui/map-marker-locked.webp");
 import { MAP_BRIDGE_POSITIONS, MAP_BRIDGE_ROTATION, MAP_DIRECTION_SIGN_POSITION, MAP_LANDMARKS, MAP_RIVER_POINTS, MAP_SHARED_START, MAP_WORLD_DEPTH, MAP_WORLD_WIDTH, MATH_STOPS, mountainBlendAt, READING_STOPS, type MapLandmarkKey, type MapLandmarkLayout } from "./map-layout";
 
 
@@ -1169,7 +1171,7 @@ export function IsoWorldScene({
 			anchor.userData.dialogueMaterials = [];
 			const isKing = key === "king";
 			const targetHeight = 2.25;
-			const glow = isKing ? null : new THREE.PointLight(key === "zelane" ? "#ffd44d" : key === "yuki" ? "#67d8ff" : key === "momo" ? "#c879ff" : "#ff79c5", 0, 4.5, 2);
+			const glow = isKing ? null : new THREE.PointLight(key === "hero_male" ? "#35d5e7" : key === "yuki" ? "#67d8ff" : "#ff79c5", 0, 4.5, 2);
 			if (glow) {
 				glow.position.set(0, targetHeight * 0.65, 0);
 				anchor.add(glow);
@@ -1199,7 +1201,7 @@ export function IsoWorldScene({
 			const auraTexture = new THREE.CanvasTexture(auraCanvas);
 			const auraSpriteMaterial = new THREE.SpriteMaterial({
 				map: auraTexture,
-				color: isKing ? "#391447" : key === "zelane" ? "#ffe17d" : key === "yuki" ? "#8ce9ff" : key === "momo" ? "#d89aff" : "#ff9bce",
+				color: isKing ? "#391447" : key === "hero_male" ? "#8ce9ff" : key === "yuki" ? "#8ce9ff" : "#ff9bce",
 				transparent: true,
 				opacity: 0,
 				depthWrite: false,
@@ -1261,7 +1263,8 @@ export function IsoWorldScene({
 			if (sprite) (sprite.material as THREE.SpriteMaterial).opacity = 0;
 		};
 		const loadDialogueCast = (characters: Speaker[], playerHero: HeroId, focus: THREE.Vector3 | null) => {
-			const cast = [...new Set(characters)].filter((speaker) => speaker !== playerHero);
+			const playerSpeaker = heroSceneSpeaker(playerHero === "milo");
+			const cast = [...new Set(characters)].filter((speaker) => speaker !== playerSpeaker);
 			for (const [speaker, anchor] of dialogueAnchors) {
 				anchor.visible = Boolean(focus && cinematicRef.current && cast.includes(speaker));
 			}
@@ -1292,9 +1295,13 @@ export function IsoWorldScene({
 					? "/models/dialogue/mochi.glb?v=map-assets-optimized-1"
 					: key === "king"
 						? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1"
-						: key === "zelane"
-							? "/models/heroes/hero-zelane-compressed.glb?v=map-assets-optimized-1"
-						: `/models/heroes/hero-${key}.glb?v=map-assets-optimized-1`;
+						: key === "hero_male"
+							? "/models/heroes/hero-milo.glb?v=map-assets-optimized-1"
+							: key === "hero_female"
+								? "/models/heroes/hero-hana.glb?v=map-assets-optimized-1"
+								: key === "yuki"
+									? "/models/dialogue/yuki.glb?v=dialogue-yuki-1"
+								: `/models/heroes/hero-${key}.glb?v=map-assets-optimized-1`;
 				const dialogueLoadStartedAt = performance.now();
 				gltfLoader.load(modelUrl, (gltf) => {
 					reportGLTFLoad(modelUrl, dialogueLoadStartedAt);
@@ -1894,7 +1901,7 @@ export function IsoWorldScene({
 			}
 			loadDialogueCast(dialogueCharactersRef.current, heroRef.current, isCinematic ? focus : null);
 			const castReady = dialogueCharactersRef.current
-				.filter((speaker) => speaker !== heroRef.current)
+				.filter((speaker) => speaker !== heroSceneSpeaker(heroRef.current === "milo"))
 				.every((speaker) => readyDialogueCharacters.has(speaker));
 			const centerX = isCinematic && focus ? focus.x : (scroll.scrollLeft + width / 2) / WORLD_SCALE;
 			const centerZ = isCinematic && focus ? focus.z : (scroll.scrollTop + height / 2) / (WORLD_SCALE * WORLD_PITCH);
@@ -1928,7 +1935,7 @@ export function IsoWorldScene({
 				previousCinematic = isCinematic;
 				if (isCinematic) {
 					for (const speaker of dialogueCharactersRef.current) {
-						if (speaker === heroRef.current) continue;
+						if (speaker === heroSceneSpeaker(heroRef.current === "milo")) continue;
 						const anchor = dialogueAnchors.get(speaker);
 						if (anchor) {
 							resetDialogueActor(anchor);

@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
-import { CHAPTERS } from "../../data/story";
+import { dialogue } from "../../data/dialogue";
+import { CHAPTERS } from "../../data/reading";
 import { sayOf } from "../../data/syllables";
 import { cleanPart, type Word } from "../../data/words";
 import { sfx } from "../../lib/sfx";
@@ -98,7 +99,7 @@ export function MemoryMission({ mission, onDone }: MissionProps) {
   return (
     <MissionFrame
       instruction="Retourne deux cartes : une syllabe et l'image qui commence par ce son !"
-      speakText="Retourne deux cartes. Trouve une syllabe et l'image qui commence par ce son !"
+      dialogue={dialogue("mochi", "Retourne deux cartes. Trouve une syllabe et l'image qui commence par ce son !")}
       round={matched.length}
       total={pairsCount}
       readKey="memory"
@@ -211,7 +212,7 @@ export function BattleMission({ mission, onDone }: MissionProps) {
       instruction={
         <>Écoute et touche le démon qui porte la bonne syllabe ! 🔊</>
       }
-      speakText={["Écoute et touche le démon qui porte la bonne syllabe !", sayOf(w.t)]}
+      dialogue={dialogue("mochi", ["Écoute et touche le démon qui porte la bonne syllabe !", sayOf(w.t)])}
       round={HP - hp}
       total={HP}
       readKey={wi}
@@ -231,9 +232,6 @@ export function BattleMission({ mission, onDone }: MissionProps) {
               isFinal ? {} : { filter: `hue-rotate(${hue}deg) saturate(1.3)` }
             }
           />
-          <span className="absolute -top-2 -right-2 text-4xl">
-            {chapter.bossEmoji}
-          </span>
         </div>
         <div className="flex-1">
           <div className="font-bold text-lg neon-text">{chapter.boss}</div>

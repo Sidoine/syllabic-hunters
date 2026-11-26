@@ -12,6 +12,7 @@ import type { Save } from "../lib/storage";
 import { speakSeq } from "../lib/speech";
 import { MissionPathScreen } from "./MissionPathScreen";
 import { coloringPageForReward } from "../data/coloring";
+import { dialogue } from "../data/dialogue";
 
 export function isMathMissionUnlocked(save: Save, mission: MathMission) {
 	if (save.settings.unlockAll) return true;
@@ -110,7 +111,7 @@ function MathChapterNode({
 			</div>
 			<div className="flex-1">
 				<div className="font-bold text-lg leading-tight">{chapter.title}</div>
-				<div className="text-xs text-white/80">{chapter.place}</div>
+				<div className="text-xs text-white/80">{chapter.title}</div>
 				<div className="flex items-center gap-1 text-sm"><StarIcon className="h-4 w-4" /> {progress.stars}/{progress.max}</div>
 			</div>
 			{unlocked && <img src={UI_ICONS.math} alt="" className="w-10 h-10 object-contain" />}
@@ -124,6 +125,7 @@ export function MathChapterScreen({
 	award,
 	onMission,
 	onBack,
+	onStory,
 	onSettings,
 	onReward,
 }: {
@@ -132,6 +134,7 @@ export function MathChapterScreen({
 	award?: { id: string; stars: number };
 	onMission: (mission: MathMission) => void;
 	onBack: () => void;
+	onStory: () => void;
 	onSettings: () => void;
 	onReward: () => void;
 }) {
@@ -150,11 +153,12 @@ export function MathChapterScreen({
 	return (
 		<MissionPathScreen
 			title={chapter.title}
-			place={chapter.place}
+			place={chapter.title}
 			hero={save.hero}
 			name={save.name}
 			region="math"
 			award={award}
+			onStory={onStory}
 			onSettings={onSettings}
 			rewardComplete={Boolean(save.rewards?.[`math-coloring-${chapter.id}`])}
 			rewardUnlocked={rewardUnlocked}
@@ -211,7 +215,7 @@ export function MathMissionExercise({
 			</header>
 			<MissionFrame
 				instruction={question.display}
-				speakText={[mission.title, ...question.spokenParts]}
+				dialogue={[...dialogue("yuki", mission.title), ...question.dialogue]}
 				round={round}
 				total={questionsPerMission}
 				speakPause={120}
@@ -276,9 +280,13 @@ export function MathResultScreen({
 		const phrases = stars === 3
 			? ["Parfait !", "Trois étoiles !"]
 			: stars === 2
-				? ["Bravo !", "Deux étoiles !"]
+				? ["Parfait !", "Deux étoiles !"]
 				: ["Mission réussie !", "Tu peux rejouer pour gagner plus d'étoiles."];
-		const timer = window.setTimeout(() => void speakSeq(phrases), 400);
+		const resultDialogue = dialogue("yuki", phrases);
+		const timer = window.setTimeout(
+			() => void speakSeq(resultDialogue.map((line) => line.text)),
+			400,
+		);
 		return () => window.clearTimeout(timer);
 	}, [stars]);
 	return (
@@ -291,7 +299,7 @@ export function MathResultScreen({
 			<Stars n={stars} size="text-7xl" />
 			<div className="flex items-end gap-2">
 				<img src={IMAGES[hero]} alt="" className="w-36 anim-float" />
-				<img src={IMAGES.mochi} alt="" className="w-20 anim-float" style={{ animationDelay: "0.5s" }} />
+				<img src={IMAGES.yuki} alt="" className="w-20 anim-float" style={{ animationDelay: "0.5s" }} />
 			</div>
 			<div className="flex flex-wrap justify-center gap-3">
 				<BigButton color="yellow" className="anim-glow text-2xl" onClick={onNext}>

@@ -1,9 +1,10 @@
-import forestFox from "../assets/rewards/forest-coloring-page.png";
-import libraryDragon from "../assets/rewards/library-dragon-coloring-page.png";
-import spaceRaccoon from "../assets/rewards/space-raccoon-coloring-page.png";
-import oceanMermaid from "../assets/rewards/ocean-mermaid-coloring-page.png";
-import gardenRobot from "../assets/rewards/garden-robot-coloring-page.png";
-import castlePony from "../assets/rewards/castle-pony-coloring-page.png";
+import { assetUrl } from "../lib/assets";
+const forestFox = assetUrl("final/rewards/forest-coloring-page.png");
+const libraryDragon = assetUrl("final/rewards/library-dragon-coloring-page.png");
+const spaceRaccoon = assetUrl("final/rewards/space-raccoon-coloring-page.png");
+const oceanMermaid = assetUrl("final/rewards/ocean-mermaid-coloring-page.png");
+const gardenRobot = assetUrl("final/rewards/garden-robot-coloring-page.png");
+const castlePony = assetUrl("final/rewards/castle-pony-coloring-page.png");
 import type { Save } from "../lib/storage";
 
 export const COLORING_PAGES = {
