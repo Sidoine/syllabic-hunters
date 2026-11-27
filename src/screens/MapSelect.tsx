@@ -126,7 +126,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 		const playerSpeaker = heroSceneSpeaker(save.hero === "milo");
 		const speakers = new Set(lines.map(({ who }) => who === "hero" ? playerSpeaker : who));
 		const models = new Set([...speakers].filter((who) => who !== playerSpeaker).map((who) =>
-			who === "demon" ? "/models/dialogue/demon.glb?v=demon-trellis-1" : who === "mochi" ? "/models/dialogue/mochi.glb?v=map-assets-optimized-1" : who === "king" ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1" : who === "hero_male" ? "/models/heroes/hero-milo.glb?v=map-assets-optimized-1" : who === "hero_female" ? "/models/heroes/hero-hana.glb?v=map-assets-optimized-1" : who === "yuki" ? "/models/dialogue/yuki.glb?v=dialogue-yuki-1" : `/models/heroes/hero-${who}.glb?v=map-assets-optimized-1`,
+			who === "demon" ? "/models/dialogue/demon.glb?v=demon-trellis-1" : who === "mochi" ? "/models/dialogue/mochi.glb?v=map-assets-optimized-1" : who === "king" ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1" : who === "hero_male" ? "/models/heroes/hero-milo.glb?v=characters-regenerated-2026-11-27" : who === "hero_female" ? "/models/heroes/hero-hana.glb?v=characters-regenerated-2026-11-27" : who === "yuki" ? "/models/dialogue/yuki.glb?v=characters-regenerated-2026-11-27" : `/models/heroes/hero-${who}.glb?v=characters-regenerated-2026-11-27`,
 		));
 		for (const url of models) {
 			if (preloadedDialogueModels.current.has(url)) continue;

@@ -16,7 +16,6 @@ const staticAssetRoots = [
   { urlPrefix: "/assets/final/", directory: path.resolve(__dirname, "assets/final") },
   { urlPrefix: "/assets/input/references/", directory: path.resolve(__dirname, "assets/input/references") },
   { urlPrefix: "/assets/work/cartoon-studio/", directory: path.resolve(__dirname, "assets/work/cartoon-studio") },
-  { urlPrefix: "/favicon.png", directory: path.resolve(__dirname, "assets/final"), singleFile: true },
 ];
 
 const contentTypes: Record<string, string> = {
@@ -27,6 +26,7 @@ const contentTypes: Record<string, string> = {
   ".webp": "image/webp",
   ".mp4": "video/mp4",
   ".webm": "video/webm",
+  ".svg": "image/svg+xml",
   ".wav": "audio/wav",
   ".mp3": "audio/mpeg",
 };
@@ -37,12 +37,10 @@ function repositoryStaticAssets(): Plugin {
     configureServer(server: ViteDevServer) {
       server.middlewares.use((request, response, next) => {
         const pathname = new URL(request.url ?? "/", "http://localhost").pathname;
-        const root = staticAssetRoots.find(({ urlPrefix, singleFile }) =>
-          singleFile ? pathname === urlPrefix : pathname.startsWith(urlPrefix),
-        );
+        const root = staticAssetRoots.find(({ urlPrefix }) => pathname.startsWith(urlPrefix));
         if (!root) return next();
 
-        const relativePath = root.singleFile ? "favicon.png" : decodeURIComponent(pathname.slice(root.urlPrefix.length));
+        const relativePath = decodeURIComponent(pathname.slice(root.urlPrefix.length));
         const filePath = path.resolve(root.directory, relativePath);
         if (!filePath.startsWith(`${root.directory}${path.sep}`) || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
           response.statusCode = 404;
@@ -72,18 +70,13 @@ function repositoryStaticAssets(): Plugin {
     },
     generateBundle() {
       const emittedFiles = new Set<string>();
-      for (const { urlPrefix, directory, singleFile } of staticAssetRoots) {
+      for (const { urlPrefix, directory } of staticAssetRoots) {
         const addFile = (filePath: string, outputPath: string) => {
           const normalizedPath = path.resolve(filePath).toLocaleLowerCase("en-US");
           if (emittedFiles.has(normalizedPath)) return;
           emittedFiles.add(normalizedPath);
           this.emitFile({ type: "asset", fileName: outputPath, source: fs.readFileSync(filePath) });
         };
-        if (singleFile) {
-          const faviconPath = path.join(directory, "favicon.png");
-          if (fs.existsSync(faviconPath)) addFile(faviconPath, "favicon.png");
-          continue;
-        }
         if (!fs.existsSync(directory)) continue;
         const walk = (currentDirectory: string, relativeDirectory = "") => {
           for (const entry of fs.readdirSync(currentDirectory, { withFileTypes: true })) {

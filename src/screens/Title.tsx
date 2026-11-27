@@ -2,7 +2,7 @@ import { useState } from "react";
 import { login, register, type AuthUser } from "../lib/api";
 import type { Save } from "../lib/storage";
 import { assetUrl } from "../lib/assets";
-const titleAdventure = assetUrl("final/title-adventure.png");
+const titleAdventure = assetUrl("final/backgrounds/title-adventure.png");
 
 export function TitleScreen({
   save,

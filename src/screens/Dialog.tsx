@@ -3,6 +3,7 @@ import type { Line } from "../data/chapter";
 import { dialogueAudioFile } from "../data/dialogue";
 import { SAY } from "../data/syllables";
 import { speak, stopSpeech } from "../lib/speech";
+import { DialogueCharacter3D } from "../components/DialogueCharacter3D";
 
 /** Texte pour la voix : retire les sons écrits « ssss » et remplace les syllabes isolées par un homophone fiable. */
 export function speakable(text: string) {
@@ -66,10 +67,10 @@ export function DialogScreen({
 				key={i}
 				className={`flex items-end gap-3 w-full max-w-3xl ${left ? "flex-row" : "flex-row-reverse"}`}
 			>
-				<img
-					src={info.img}
-					alt={info.name}
-					className={`w-32 h-40 sm:w-48 sm:h-60 object-contain anim-float drop-shadow-[0_0_20px_rgba(255,120,230,0.6)] ${left ? "anim-slideL" : "anim-slideR"}`}
+				<DialogueCharacter3D
+					character={line.who === "hero" ? hero : line.who}
+					label={info.name}
+					className={`h-40 w-32 sm:h-60 sm:w-48 anim-float drop-shadow-[0_0_20px_rgba(255,120,230,0.6)] ${left ? "anim-slideL" : "anim-slideR"}`}
 				/>
 				<div className="flex-1 anim-pop">
 					<div

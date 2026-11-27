@@ -2503,8 +2503,8 @@ export function IsoWorldScene({
       heroAnchor.clear();
       const heroUrl =
         heroKey === "zelane"
-          ? "/models/heroes/hero-zelane-compressed.glb?v=map-assets-optimized-1"
-          : `/models/heroes/hero-${heroKey}.glb?v=map-assets-optimized-1`;
+          ? "/models/heroes/hero-zelane-compressed.glb?v=characters-regenerated-2026-11-27"
+          : `/models/heroes/hero-${heroKey}.glb?v=characters-regenerated-2026-11-27`;
       const heroLoadStartedAt = performance.now();
       gltfLoader.load(
         heroUrl,
@@ -2758,12 +2758,12 @@ export function IsoWorldScene({
             : key === "king"
               ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1"
               : key === "hero_male"
-                ? "/models/heroes/hero-milo.glb?v=map-assets-optimized-1"
+                ? "/models/heroes/hero-milo.glb?v=characters-regenerated-2026-11-27"
                 : key === "hero_female"
-                  ? "/models/heroes/hero-hana.glb?v=map-assets-optimized-1"
+                  ? "/models/heroes/hero-hana.glb?v=characters-regenerated-2026-11-27"
                   : key === "yuki"
-                    ? "/models/dialogue/yuki.glb?v=dialogue-yuki-1"
-                    : `/models/heroes/hero-${key}.glb?v=map-assets-optimized-1`;
+                    ? "/models/dialogue/yuki.glb?v=characters-regenerated-2026-11-27"
+                    : `/models/heroes/hero-${key}.glb?v=characters-regenerated-2026-11-27`;
         const dialogueLoadStartedAt = performance.now();
         gltfLoader.load(
           modelUrl,

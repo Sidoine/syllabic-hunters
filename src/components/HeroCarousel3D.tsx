@@ -80,7 +80,7 @@ export function HeroCarousel3D({
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
     for (const hero of heroes) {
       loader.load(
-        hero.id === "zelane" ? "/models/heroes/hero-zelane-compressed.glb?v=map-assets-optimized-1" : `/models/heroes/hero-${hero.id}.glb?v=map-assets-optimized-1`,
+        hero.id === "zelane" ? "/models/heroes/hero-zelane-compressed.glb?v=characters-regenerated-2026-11-27" : `/models/heroes/hero-${hero.id}.glb?v=characters-regenerated-2026-11-27`,
         (gltf) => {
           const group = modelGroups.get(hero.id);
           if (!group) return;

@@ -47,7 +47,9 @@ export function MapScreen({
 				>
 					<BackIcon className="h-7 w-7" />
 				</button>
-				<div className="text-center">
+				<div className="flex min-w-0 items-center justify-center gap-2 text-center">
+					<img src={IMAGES[save.hero]} alt="" className="h-10 w-10 shrink-0 rounded-full border-2 border-white/80 bg-white/10 object-cover object-top sm:h-12 sm:w-12" />
+					<div>
 					<div className="text-xl sm:text-2xl font-bold neon-text">
 						Carte des aventures
 					</div>
@@ -55,6 +57,7 @@ export function MapScreen({
 						{save.name ? `${save.name} · ` : ""}
 							<StarIcon className="h-5 w-5 align-[-3px]" /> {total} ·
 						<img src={MISSION_ICONS["see-sound"]} alt="" className="inline-block align-[-3px] w-5 h-5" /> {doneCount}/{MISSIONS.length} missions
+					</div>
 					</div>
 				</div>
 				<button

@@ -65,7 +65,7 @@ export function MissionScreen({
             onQuit();
           }}
           aria-label="Quitter la mission"
-          className="btn-pop glass rounded-full w-12 h-12 text-2xl shrink-0"
+          className="btn-pop glass flex h-12 w-12 shrink-0 items-center justify-center rounded-full p-0"
         >
           <img src={UI_ICONS.close} alt="" className="w-9 h-9 object-contain" />
         </button>
