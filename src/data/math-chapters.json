@@ -10,13 +10,19 @@
     "intro": [
       {
         "who": "yuki",
-        "text": "Oh là là, les étoiles se sont éparpillées ! Comptons-les ensemble, une à une."
+        "text": "Oh là là, les étoiles se sont éparpillées ! Comptons-les ensemble, une à une.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-oh-la-la-les-etoiles-se-sont-eparpillees-comptons-les-ensemble-une-a-une-d36470526bea.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "yuki",
-        "text": "Cinq étoiles brillent de nouveau ! Le premier rang du boulier est rallumé."
+        "text": "Cinq étoiles brillent de nouveau ! Le premier rang du boulier est rallumé.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-cinq-etoiles-brillent-de-nouveau-le-premier-rang-du-boulier-est-rallume-217f3b0919c5.wav"
+        }
       }
     ],
     "skill": "addition",
@@ -40,13 +46,19 @@
     "intro": [
       {
         "who": "yuki",
-        "text": "L’Additionneur a mélangé les étoiles. Ajoutons-les pour découvrir combien il y en a en tout !"
+        "text": "L’Additionneur a mélangé les étoiles. Ajoutons-les pour découvrir combien il y en a en tout !",
+        "audio_files": {
+          "yuki": "dialogue-yuki-l-additionneur-a-melange-les-etoiles-ajoutons-les-pour-decouvrir-combien-il-y-en-a-en-tout-dfeff0ca1e76.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "yuki",
-        "text": "Bien joué ! En avançant dans les nombres, nous avons retrouvé le total."
+        "text": "Bien joué ! En avançant dans les nombres, nous avons retrouvé le total.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-bien-joue-en-avancant-dans-les-nombres-nous-avons-retrouve-le-total-238721c60d54.wav"
+        }
       }
     ],
     "skill": "addition",
@@ -70,13 +82,19 @@
     "intro": [
       {
         "who": "yuki",
-        "text": "Le Golem emporte des étoiles. Comptons celles qui restent quand il en prend quelques-unes."
+        "text": "Le Golem emporte des étoiles. Comptons celles qui restent quand il en prend quelques-unes.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-le-golem-emporte-des-etoiles-comptons-celles-qui-restent-quand-il-en-prend-quelques-unes-e73386d96a5b.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "yuki",
-        "text": "Le Golem nous rend les étoiles restantes. Le boulier recommence à bouger !"
+        "text": "Le Golem nous rend les étoiles restantes. Le boulier recommence à bouger !",
+        "audio_files": {
+          "yuki": "dialogue-yuki-le-golem-nous-rend-les-etoiles-restantes-le-boulier-recommence-a-bouger-5df18a833b97.wav"
+        }
       }
     ],
     "skill": "subtraction",
@@ -100,13 +118,19 @@
     "intro": [
       {
         "who": "yuki",
-        "text": "La Gardienne veut dix étoiles dans son panier. Combien en manque-t-il ?"
+        "text": "La Gardienne veut dix étoiles dans son panier. Combien en manque-t-il ?",
+        "audio_files": {
+          "yuki": "dialogue-yuki-la-gardienne-veut-dix-etoiles-dans-son-panier-combien-en-manque-t-il-9ec94910e9bd.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "yuki",
-        "text": "Dix étoiles réunies : nous avons complété le panier et rallumé une nouvelle rangée."
+        "text": "Dix étoiles réunies : nous avons complété le panier et rallumé une nouvelle rangée.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-dix-etoiles-reunies-nous-avons-complete-le-panier-et-rallume-une-nouvelle-rangee-5b402e4bca56.wav"
+        }
       }
     ],
     "skill": "complement",
@@ -130,13 +154,19 @@
     "intro": [
       {
         "who": "yuki",
-        "text": "Le pont s’allume avec des additions. Avançons sans dépasser vingt pour traverser !"
+        "text": "Le pont s’allume avec des additions. Avançons sans dépasser vingt pour traverser !",
+        "audio_files": {
+          "yuki": "dialogue-yuki-le-pont-s-allume-avec-des-additions-avancons-sans-depasser-vingt-pour-traverser-e38a60f86187.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "yuki",
-        "text": "Nous avons traversé ! Les étoiles jusqu’à vingt brillent maintenant sur la montagne."
+        "text": "Nous avons traversé ! Les étoiles jusqu’à vingt brillent maintenant sur la montagne.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-nous-avons-traverse-les-etoiles-jusqu-a-vingt-brillent-maintenant-sur-la-montagne-6860ab13b886.wav"
+        }
       }
     ],
     "skill": "addition",
@@ -160,13 +190,19 @@
     "intro": [
       {
         "who": "yuki",
-        "text": "Le Roi du calcul a caché les signes. Observons chaque opération pour savoir s’il faut ajouter ou retirer."
+        "text": "Le Roi du calcul a caché les signes. Observons chaque opération pour savoir s’il faut ajouter ou retirer.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-le-roi-du-calcul-a-cache-les-signes-observons-chaque-operation-pour-savoir-s-il-faut-ajouter-ou-retirer-b01e27b33a46.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "yuki",
-        "text": "Le boulier des étoiles tourne à nouveau ! Grâce à toi, les nombres ont retrouvé leur place."
+        "text": "Le boulier des étoiles tourne à nouveau ! Grâce à toi, les nombres ont retrouvé leur place.",
+        "audio_files": {
+          "yuki": "dialogue-yuki-le-boulier-des-etoiles-tourne-a-nouveau-grace-a-toi-les-nombres-ont-retrouve-leur-place-3273d11bbfed.wav"
+        }
       }
     ],
     "skill": "mixed",

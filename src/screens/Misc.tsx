@@ -21,8 +21,7 @@ import { BigButton, IMAGES, MISSION_ICONS, Stars, UI_ICONS, useGame } from "../c
 import type { Mission } from "../data/reading";
 import { sfx } from "../lib/sfx";
 import {
-  getFrenchVoices,
-  onVoicesChanged,
+	recordedVoiceCatalog,
   speak,
   speechSupported,
   stopSpeech,
@@ -159,9 +158,8 @@ export function SettingsModal({
   onClose: () => void;
   onReset: () => void;
 }) {
-  const [voices, setVoices] = useState(getFrenchVoices());
-  useEffect(() => onVoicesChanged(() => setVoices(getFrenchVoices())), []);
   const s = save.settings;
+  const missingVoiceCount = recordedVoiceCatalog.filter((voice) => !voice.available).length;
   const set = (patch: Partial<Settings>) => onChange({ ...s, ...patch });
   const [confirm, setConfirm] = useState(false);
   return (
@@ -184,50 +182,11 @@ export function SettingsModal({
           </button>
         </div>
 
-        {!speechSupported() && (
-          <p className="bg-rose-100 rounded-xl p-2 mb-3">
-            ⚠️ Ce navigateur ne propose pas de synthèse vocale. Le jeu reste
-            jouable, mais les sons ne seront pas lus.
-          </p>
-        )}
-        {speechSupported() && voices.length === 0 && (
-          <p className="bg-amber-100 rounded-xl p-2 mb-3">
-            ⚠️ Aucune voix française de synthèse détectée. Les phrases
-            enregistrées seront lues, mais les mots et contenus variables
-            nécessitent une voix française installée sur l'appareil.
-          </p>
-        )}
-
-        <label htmlFor="voice-select" className="block font-bold mt-2">
-          Voix française
-        </label>
-        <select
-          id="voice-select"
-          value={s.voiceURI ?? ""}
-          onChange={(e) => set({ voiceURI: e.target.value || null })}
-          className="w-full rounded-xl border-2 border-pink-300 p-2 bg-white"
-        >
-          <option value="">Automatique (meilleure voix)</option>
-          {voices.map((v) => (
-            <option key={v.voiceURI} value={v.voiceURI}>
-              {v.name} ({v.lang})
-            </option>
-          ))}
-        </select>
-
-        <label htmlFor="voice-rate" className="block font-bold mt-3">
-          Vitesse de la voix : {s.rate.toFixed(2)}
-        </label>
-        <input
-          id="voice-rate"
-          type="range"
-          min={0.5}
-          max={1.2}
-          step={0.05}
-          value={s.rate}
-          onChange={(e) => set({ rate: Number(e.target.value) })}
-          className="w-full accent-pink-500"
-        />
+        <p className={`rounded-xl p-2 mb-3 ${speechSupported() ? "bg-emerald-100" : "bg-rose-100"}`}>
+          {speechSupported()
+            ? `Les répliques et consignes utilisent uniquement le catalogue du jeu.${missingVoiceCount ? ` ${missingVoiceCount} enregistrements restent à générer.` : ""}`
+            : "Aucun enregistrement n’est déclaré dans le catalogue vocal du jeu."}
+        </p>
 
         <div className="flex flex-wrap gap-2 mt-2">
           {["bas", "beau", "loup", "Bravo, tu lis très bien !"].map((t) => (

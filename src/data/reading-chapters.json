@@ -11,33 +11,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Le Roi Chuuut a envoyé Grignoton voler les voyelles. Sans elles, les mots perdent leur voix !"
+        "text": "Le Roi Chuuut a envoyé Grignoton voler les voyelles. Sans elles, les mots perdent leur voix !",
+        "audio_files": {
+          "mochi": "dialogue-mochi-le-roi-chuuut-a-envoye-grignoton-voler-les-voyelles-sans-elles-les-mots-perdent-leur-voix-eef5f2198cf7.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Avec toi, Mochi, je vais retrouver les voyelles et libérer les mots !"
+        "text": "Avec toi, Mochi, je vais retrouver les voyelles et libérer les mots !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-avec-toi-mochi-je-vais-retrouver-les-voyelles-et-liberer-les-mots-masculine-135b5f75daac.wav",
+          "hero_female": "dialogue-hero-avec-toi-mochi-je-vais-retrouver-les-voyelles-et-liberer-les-mots-feminine-de428b845eb5.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ha, ha ! J'ai caché les voyelles : a, i, o, u, é et ou. Vous ne les retrouverez jamais !"
+        "text": "Ha, ha ! J'ai caché les voyelles : a, i, o, u, é et ou. Vous ne les retrouverez jamais !",
+        "audio_files": {
+          "demon": "dialogue-demon-ha-ha-j-ai-cache-les-voyelles-a-i-o-u-e-et-ou-vous-ne-les-retrouverez-jamais-97a16bd1c6cc.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Grignoton les garde dans son repaire. Écoutons bien chaque son pour les récupérer !"
+        "text": "Grignoton les garde dans son repaire. Écoutons bien chaque son pour les récupérer !",
+        "audio_files": {
+          "mochi": "dialogue-mochi-grignoton-les-garde-dans-son-repaire-ecoutons-bien-chaque-son-pour-les-recuperer-236b000cd478.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Oh non, je suis vaincu ! Je rends les voyelles : a, i, o, u, é et ou. Elles sont à vous !"
+        "text": "Oh non, je suis vaincu ! Je rends les voyelles : a, i, o, u, é et ou. Elles sont à vous !",
+        "audio_files": {
+          "demon": "dialogue-demon-oh-non-je-suis-vaincu-je-rends-les-voyelles-a-i-o-u-e-et-ou-elles-sont-a-vous-1d870e397e1f.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Bravo ! Les voyelles sont libres. Mais les démons du Roi Chuuut ont aussi volé les syllabes."
+        "text": "Bravo ! Les voyelles sont libres. Mais les démons du Roi Chuuut ont aussi volé les syllabes.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-bravo-les-voyelles-sont-libres-mais-les-demons-du-roi-chuuut-ont-aussi-vole-les-syllabes-4006fc5be744.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Alors partons les reprendre, une syllabe après l'autre !"
+        "text": "Alors partons les reprendre, une syllabe après l'autre !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-alors-partons-les-reprendre-une-syllabe-apres-l-autre-masculine-75af2c7a01ad.wav",
+          "hero_female": "dialogue-hero-alors-partons-les-reprendre-une-syllabe-apres-l-autre-feminine-8f341bf1ca39.wav"
+        }
       }
     ],
     "stage": {
@@ -61,33 +84,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Lézardo le Lugubre a volé toutes les syllabes en L pour le Roi Chuuut."
+        "text": "Lézardo le Lugubre a volé toutes les syllabes en L pour le Roi Chuuut.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-lezardo-le-lugubre-a-vole-toutes-les-syllabes-en-l-pour-le-roi-chuuut-58e4d2092a73.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Lézardo, rends les syllabes ! Nous allons les libérer."
+        "text": "Lézardo, rends les syllabes ! Nous allons les libérer.",
+        "audio_files": {
+          "hero_male": "dialogue-hero-lezardo-rends-les-syllabes-nous-allons-les-liberer-masculine-7269b176b430.wav",
+          "hero_female": "dialogue-hero-lezardo-rends-les-syllabes-nous-allons-les-liberer-feminine-d7ae4cc4eebc.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "La, li, lo, lu, lé, lou ! Je les garde toutes. Les mots ne les retrouveront jamais !"
+        "text": "La, li, lo, lu, lé, lou ! Je les garde toutes. Les mots ne les retrouveront jamais !",
+        "audio_files": {
+          "demon": "dialogue-demon-la-li-lo-lu-le-lou-je-les-garde-toutes-les-mots-ne-les-retrouveront-jamais-bd792fd8842a.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Retrouvons le son L et déjouons les pièges de Lézardo."
+        "text": "Retrouvons le son L et déjouons les pièges de Lézardo.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-retrouvons-le-son-l-et-dejouons-les-pieges-de-lezardo-50b191849c9e.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Tu m'as battu ! Je rends les syllabes en L : la, li, lo, lu, lé, lou."
+        "text": "Tu m'as battu ! Je rends les syllabes en L : la, li, lo, lu, lé, lou.",
+        "audio_files": {
+          "demon": "dialogue-demon-tu-m-as-battu-je-rends-les-syllabes-en-l-la-li-lo-lu-le-lou-85f3daa61e67.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en L sont libres ! Elles vont retrouver leur place dans les mots."
+        "text": "Les syllabes en L sont libres ! Elles vont retrouver leur place dans les mots.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-l-sont-libres-elles-vont-retrouver-leur-place-dans-les-mots-000f6578042b.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Le Roi Chuuut a d'autres démons. Continuons notre aventure !"
+        "text": "Le Roi Chuuut a d'autres démons. Continuons notre aventure !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-le-roi-chuuut-a-d-autres-demons-continuons-notre-aventure-masculine-31253f49fe4f.wav",
+          "hero_female": "dialogue-hero-le-roi-chuuut-a-d-autres-demons-continuons-notre-aventure-feminine-206dfccbfbd7.wav"
+        }
       }
     ],
     "stage": {
@@ -111,38 +157,61 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Maître Moustache a volé les syllabes en M et les cache dans le marché."
+        "text": "Maître Moustache a volé les syllabes en M et les cache dans le marché.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-maitre-moustache-a-vole-les-syllabes-en-m-et-les-cache-dans-le-marche-ac69407fe89f.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "On va les retrouver et les rendre aux mots !"
+        "text": "On va les retrouver et les rendre aux mots !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-on-va-les-retrouver-et-les-rendre-aux-mots-masculine-595b1c35da52.wav",
+          "hero_female": "dialogue-hero-on-va-les-retrouver-et-les-rendre-aux-mots-feminine-d6a53dc60de7.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ma, mi, mo, mu, mé, mou ! Ces syllabes sont à moi. Le Roi Chuuut sera fier !"
+        "text": "Ma, mi, mo, mu, mé, mou ! Ces syllabes sont à moi. Le Roi Chuuut sera fier !",
+        "audio_files": {
+          "demon": "dialogue-demon-ma-mi-mo-mu-me-mou-ces-syllabes-sont-a-moi-le-roi-chuuut-sera-fier-fe8833de02ad.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Écoutons les sons et suivons les indices de Maître Moustache."
+        "text": "Écoutons les sons et suivons les indices de Maître Moustache.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-ecoutons-les-sons-et-suivons-les-indices-de-maitre-moustache-413b032a9bc1.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Mince, je suis vaincu ! Je rends ma, mi, mo, mu, mé et mou. Prenez-les !"
+        "text": "Mince, je suis vaincu ! Je rends ma, mi, mo, mu, mé et mou. Prenez-les !",
+        "audio_files": {
+          "demon": "dialogue-demon-mince-je-suis-vaincu-je-rends-ma-mi-mo-mu-me-et-mou-prenez-les-98c93b3dd425.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en M sont libres. Les mots vont pouvoir les retrouver."
+        "text": "Les syllabes en M sont libres. Les mots vont pouvoir les retrouver.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-m-sont-libres-les-mots-vont-pouvoir-les-retrouver-9fce52e1a100.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Encore un démon du Roi Chuuut à déjouer. En route !"
+        "text": "Encore un démon du Roi Chuuut à déjouer. En route !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-encore-un-demon-du-roi-chuuut-a-dejouer-en-route-masculine-96f0f8d8c0ef.wav",
+          "hero_female": "dialogue-hero-encore-un-demon-du-roi-chuuut-a-dejouer-en-route-feminine-e26f223a44f2.wav"
+        }
       }
     ],
     "stage": {
       "camera": {
-        "orbit": -48,
+        "orbit": -31,
         "distance": 11.8
       },
       "actors": {
@@ -172,33 +241,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Rakoro le Rat-Démon a volé les syllabes en R et les garde près de la rivière."
+        "text": "Rakoro le Rat-Démon a volé les syllabes en R et les garde près de la rivière.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-rakoro-le-rat-demon-a-vole-les-syllabes-en-r-et-les-garde-pres-de-la-riviere-f75c907d0cec.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Rakoro, nous venons reprendre ce que tu as volé !"
+        "text": "Rakoro, nous venons reprendre ce que tu as volé !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-rakoro-nous-venons-reprendre-ce-que-tu-as-vole-masculine-e902e14851ec.wav",
+          "hero_female": "dialogue-hero-rakoro-nous-venons-reprendre-ce-que-tu-as-vole-feminine-daee15349c68.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ra, ri, ro, ru, ré, rou ! Je les ai cachées. Vous ne lirez plus ces syllabes !"
+        "text": "Ra, ri, ro, ru, ré, rou ! Je les ai cachées. Vous ne lirez plus ces syllabes !",
+        "audio_files": {
+          "demon": "dialogue-demon-ra-ri-ro-ru-re-rou-je-les-ai-cachees-vous-ne-lirez-plus-ces-syllabes-11c23f8c2182.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Suivons les traces de Rakoro et retrouvons les syllabes en R."
+        "text": "Suivons les traces de Rakoro et retrouvons les syllabes en R.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-suivons-les-traces-de-rakoro-et-retrouvons-les-syllabes-en-r-8b11db4d603d.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Je rends les syllabes en R : ra, ri, ro, ru, ré et rou. Ne le dites pas au Roi Chuuut !"
+        "text": "Je rends les syllabes en R : ra, ri, ro, ru, ré et rou. Ne le dites pas au Roi Chuuut !",
+        "audio_files": {
+          "demon": "dialogue-demon-je-rends-les-syllabes-en-r-ra-ri-ro-ru-re-et-rou-ne-le-dites-pas-au-roi-chuuut-e617715211be.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Bien joué ! Les syllabes en R sont de retour dans les mots."
+        "text": "Bien joué ! Les syllabes en R sont de retour dans les mots.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-bien-joue-les-syllabes-en-r-sont-de-retour-dans-les-mots-4e054e71d1b4.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous continuerons jusqu'à ce que tous les sons soient libres !"
+        "text": "Nous continuerons jusqu'à ce que tous les sons soient libres !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-continuerons-jusqu-a-ce-que-tous-les-sons-soient-libres-masculine-f7d578925df6.wav",
+          "hero_female": "dialogue-hero-nous-continuerons-jusqu-a-ce-que-tous-les-sons-soient-libres-feminine-0e3c0c4f3425.wav"
+        }
       }
     ],
     "stage": {
@@ -222,33 +314,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Serpentine a sifflé les syllabes en S hors des mots et les a enfermées dans son studio."
+        "text": "Serpentine a sifflé les syllabes en S hors des mots et les a enfermées dans son studio.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-serpentine-a-siffle-les-syllabes-en-s-hors-des-mots-et-les-a-enfermees-dans-son-studio-d90fb1593096.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons ouvrir la cage et rendre les syllabes au monde !"
+        "text": "Nous allons ouvrir la cage et rendre les syllabes au monde !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-ouvrir-la-cage-et-rendre-les-syllabes-au-monde-masculine-385e28feb930.wav",
+          "hero_female": "dialogue-hero-nous-allons-ouvrir-la-cage-et-rendre-les-syllabes-au-monde-feminine-0e422af9e8f2.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ssssa, sssi, sssso, ssssu, sssé, ssssou ! Elles sont à moi !"
+        "text": "Ssssa, sssi, sssso, ssssu, sssé, ssssou ! Elles sont à moi !",
+        "audio_files": {
+          "demon": "dialogue-demon-ssssa-sssi-sssso-ssssu-ssse-ssssou-elles-sont-a-moi-4999b07da7a5.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Écoutons bien les sifflements pour retrouver les syllabes volées."
+        "text": "Écoutons bien les sifflements pour retrouver les syllabes volées.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-ecoutons-bien-les-sifflements-pour-retrouver-les-syllabes-volees-7bcf838fb042.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Sssstop ! Je rends les syllabes en S : sa, si, so, su, sé et sou."
+        "text": "Sssstop ! Je rends les syllabes en S : sa, si, so, su, sé et sou.",
+        "audio_files": {
+          "demon": "dialogue-demon-sssstop-je-rends-les-syllabes-en-s-sa-si-so-su-se-et-sou-e3da287c6e40.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "La cage est ouverte ! Les syllabes en S sont libres."
+        "text": "La cage est ouverte ! Les syllabes en S sont libres.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-la-cage-est-ouverte-les-syllabes-en-s-sont-libres-0dfbe6410957.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Un autre coffre du Roi Chuuut nous attend. Allons-y !"
+        "text": "Un autre coffre du Roi Chuuut nous attend. Allons-y !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-un-autre-coffre-du-roi-chuuut-nous-attend-allons-y-masculine-ad8c74a56966.wav",
+          "hero_female": "dialogue-hero-un-autre-coffre-du-roi-chuuut-nous-attend-allons-y-feminine-67010dfa74b9.wav"
+        }
       }
     ],
     "stage": {
@@ -272,33 +387,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Pirata Poulpe a volé les syllabes en P et les a cachées dans son bateau."
+        "text": "Pirata Poulpe a volé les syllabes en P et les a cachées dans son bateau.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-pirata-poulpe-a-vole-les-syllabes-en-p-et-les-a-cachees-dans-son-bateau-a4867964764b.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Pirata Poulpe, rends-les ! Mochi et moi allons les récupérer."
+        "text": "Pirata Poulpe, rends-les ! Mochi et moi allons les récupérer.",
+        "audio_files": {
+          "hero_male": "dialogue-hero-pirata-poulpe-rends-les-mochi-et-moi-allons-les-recuperer-masculine-d7b33cfd4fc9.wav",
+          "hero_female": "dialogue-hero-pirata-poulpe-rends-les-mochi-et-moi-allons-les-recuperer-feminine-069d6cf59802.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Pa, pi, po, pu, pé, pou ! Ces syllabes sont mon trésor !"
+        "text": "Pa, pi, po, pu, pé, pou ! Ces syllabes sont mon trésor !",
+        "audio_files": {
+          "demon": "dialogue-demon-pa-pi-po-pu-pe-pou-ces-syllabes-sont-mon-tresor-f4efa91de56d.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Alors, à l'abordage ! Repérons les sons en P pour retrouver son trésor."
+        "text": "Alors, à l'abordage ! Repérons les sons en P pour retrouver son trésor.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-alors-a-l-abordage-reperons-les-sons-en-p-pour-retrouver-son-tresor-dcf9e5af8363.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Plouf ! Je rends les syllabes en P : pa, pi, po, pu, pé et pou."
+        "text": "Plouf ! Je rends les syllabes en P : pa, pi, po, pu, pé et pou.",
+        "audio_files": {
+          "demon": "dialogue-demon-plouf-je-rends-les-syllabes-en-p-pa-pi-po-pu-pe-et-pou-255b84390eae.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Le trésor est libéré : les syllabes en P retournent dans les mots."
+        "text": "Le trésor est libéré : les syllabes en P retournent dans les mots.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-le-tresor-est-libere-les-syllabes-en-p-retournent-dans-les-mots-f71ce2f1d5cb.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Cap sur le prochain démon du Roi Chuuut !"
+        "text": "Cap sur le prochain démon du Roi Chuuut !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-cap-sur-le-prochain-demon-du-roi-chuuut-masculine-cf49a1b826dd.wav",
+          "hero_female": "dialogue-hero-cap-sur-le-prochain-demon-du-roi-chuuut-feminine-5d4c1132e8ea.wav"
+        }
       }
     ],
     "stage": {
@@ -322,33 +460,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Tornado Toto fait tournoyer les syllabes en T au sommet de sa tour."
+        "text": "Tornado Toto fait tournoyer les syllabes en T au sommet de sa tour.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-tornado-toto-fait-tournoyer-les-syllabes-en-t-au-sommet-de-sa-tour-9e7dbf1b5871.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons arrêter la tornade et libérer ces syllabes !"
+        "text": "Nous allons arrêter la tornade et libérer ces syllabes !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-arreter-la-tornade-et-liberer-ces-syllabes-masculine-553d89b62502.wav",
+          "hero_female": "dialogue-hero-nous-allons-arreter-la-tornade-et-liberer-ces-syllabes-feminine-23ab5070f449.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ta, ti, to, tu, té, tou ! La tornade les emporte loin de vous !"
+        "text": "Ta, ti, to, tu, té, tou ! La tornade les emporte loin de vous !",
+        "audio_files": {
+          "demon": "dialogue-demon-ta-ti-to-tu-te-tou-la-tornade-les-emporte-loin-de-vous-86b2939d9a83.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Écoutons les sons en T et suivons le tourbillon jusqu'à Tornado Toto."
+        "text": "Écoutons les sons en T et suivons le tourbillon jusqu'à Tornado Toto.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-ecoutons-les-sons-en-t-et-suivons-le-tourbillon-jusqu-a-tornado-toto-5127db5accd2.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "La tornade s'arrête ! Je rends ta, ti, to, tu, té et tou."
+        "text": "La tornade s'arrête ! Je rends ta, ti, to, tu, té et tou.",
+        "audio_files": {
+          "demon": "dialogue-demon-la-tornade-s-arrete-je-rends-ta-ti-to-tu-te-et-tou-55df45e3ddbb.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en T sont libres. La tour peut enfin retrouver son calme."
+        "text": "Les syllabes en T sont libres. La tour peut enfin retrouver son calme.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-t-sont-libres-la-tour-peut-enfin-retrouver-son-calme-86929c21a9d9.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Le Roi Chuuut n'a pas fini d'envoyer ses démons. Continuons !"
+        "text": "Le Roi Chuuut n'a pas fini d'envoyer ses démons. Continuons !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-le-roi-chuuut-n-a-pas-fini-d-envoyer-ses-demons-continuons-masculine-fb3ee145c9eb.wav",
+          "hero_female": "dialogue-hero-le-roi-chuuut-n-a-pas-fini-d-envoyer-ses-demons-continuons-feminine-c9b6d1cd1d95.wav"
+        }
       }
     ],
     "stage": {
@@ -372,33 +533,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Le Ninja Nuit-Noire a dérobé les syllabes en N et se cache dans les nuages."
+        "text": "Le Ninja Nuit-Noire a dérobé les syllabes en N et se cache dans les nuages.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-le-ninja-nuit-noire-a-derobe-les-syllabes-en-n-et-se-cache-dans-les-nuages-5345d6fd2fe7.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons le démasquer et reprendre les syllabes !"
+        "text": "Nous allons le démasquer et reprendre les syllabes !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-le-demasquer-et-reprendre-les-syllabes-masculine-24b6074d9afc.wav",
+          "hero_female": "dialogue-hero-nous-allons-le-demasquer-et-reprendre-les-syllabes-feminine-58ec760163c6.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Na, ni, no, nu, né, nou ! Vous ne me trouverez jamais dans la nuit !"
+        "text": "Na, ni, no, nu, né, nou ! Vous ne me trouverez jamais dans la nuit !",
+        "audio_files": {
+          "demon": "dialogue-demon-na-ni-no-nu-ne-nou-vous-ne-me-trouverez-jamais-dans-la-nuit-93f3fb956ded.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Tendons l'oreille et suivons sa voix pour retrouver les syllabes en N."
+        "text": "Tendons l'oreille et suivons sa voix pour retrouver les syllabes en N.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-tendons-l-oreille-et-suivons-sa-voix-pour-retrouver-les-syllabes-en-n-d212cfae64c8.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Vous m'avez trouvé ! Je rends les syllabes en N : na, ni, no, nu, né et nou."
+        "text": "Vous m'avez trouvé ! Je rends les syllabes en N : na, ni, no, nu, né et nou.",
+        "audio_files": {
+          "demon": "dialogue-demon-vous-m-avez-trouve-je-rends-les-syllabes-en-n-na-ni-no-nu-ne-et-nou-15074d9e4bd3.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Le brouillard se lève. Les syllabes en N peuvent revenir dans les mots."
+        "text": "Le brouillard se lève. Les syllabes en N peuvent revenir dans les mots.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-le-brouillard-se-leve-les-syllabes-en-n-peuvent-revenir-dans-les-mots-6b8700344f24.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Un démon de moins ! En route pour la suite."
+        "text": "Un démon de moins ! En route pour la suite.",
+        "audio_files": {
+          "hero_male": "dialogue-hero-un-demon-de-moins-en-route-pour-la-suite-masculine-4d527f054d93.wav",
+          "hero_female": "dialogue-hero-un-demon-de-moins-en-route-pour-la-suite-feminine-7c836cca85a9.wav"
+        }
       }
     ],
     "stage": {
@@ -422,33 +606,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Dragonito a enfermé les syllabes en D dans sa grotte de diamants."
+        "text": "Dragonito a enfermé les syllabes en D dans sa grotte de diamants.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-dragonito-a-enferme-les-syllabes-en-d-dans-sa-grotte-de-diamants-bcd2cfa8d146.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons traverser les flammes et les libérer !"
+        "text": "Nous allons traverser les flammes et les libérer !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-traverser-les-flammes-et-les-liberer-masculine-9ef4ab5165fa.wav",
+          "hero_female": "dialogue-hero-nous-allons-traverser-les-flammes-et-les-liberer-feminine-f9743e4409c1.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Da, di, do, du, dé, dou ! Mes diamants brillent, et ces syllabes sont à moi !"
+        "text": "Da, di, do, du, dé, dou ! Mes diamants brillent, et ces syllabes sont à moi !",
+        "audio_files": {
+          "demon": "dialogue-demon-da-di-do-du-de-dou-mes-diamants-brillent-et-ces-syllabes-sont-a-moi-664bd6fc19ab.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Repérons les sons en D pour trouver le coffre de Dragonito."
+        "text": "Repérons les sons en D pour trouver le coffre de Dragonito.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-reperons-les-sons-en-d-pour-trouver-le-coffre-de-dragonito-1ee7eeae0eb6.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Je n'ai plus de feu ! Je rends da, di, do, du, dé et dou."
+        "text": "Je n'ai plus de feu ! Je rends da, di, do, du, dé et dou.",
+        "audio_files": {
+          "demon": "dialogue-demon-je-n-ai-plus-de-feu-je-rends-da-di-do-du-de-et-dou-5498b1ba3b6d.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en D sont libérées. Le coffre ne gardera plus les mots prisonniers."
+        "text": "Les syllabes en D sont libérées. Le coffre ne gardera plus les mots prisonniers.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-d-sont-liberees-le-coffre-ne-gardera-plus-les-mots-prisonniers-642c42b80efc.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous nous rapprochons du Roi Chuuut. Continuons !"
+        "text": "Nous nous rapprochons du Roi Chuuut. Continuons !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-nous-rapprochons-du-roi-chuuut-continuons-masculine-e06209821a77.wav",
+          "hero_female": "dialogue-hero-nous-nous-rapprochons-du-roi-chuuut-continuons-feminine-f409b15573d5.wav"
+        }
       }
     ],
     "stage": {
@@ -472,33 +679,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Baba Boubou a enfermé les syllabes en B dans des bulles géantes."
+        "text": "Baba Boubou a enfermé les syllabes en B dans des bulles géantes.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-baba-boubou-a-enferme-les-syllabes-en-b-dans-des-bulles-geantes-4e9a742570f2.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons faire éclater les bulles et libérer les syllabes !"
+        "text": "Nous allons faire éclater les bulles et libérer les syllabes !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-faire-eclater-les-bulles-et-liberer-les-syllabes-masculine-a3159740faa7.wav",
+          "hero_female": "dialogue-hero-nous-allons-faire-eclater-les-bulles-et-liberer-les-syllabes-feminine-02d4a21f56c9.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ba, bi, bo, bu, bé, bou ! Mes bulles les emporteront jusqu'au Roi Chuuut !"
+        "text": "Ba, bi, bo, bu, bé, bou ! Mes bulles les emporteront jusqu'au Roi Chuuut !",
+        "audio_files": {
+          "demon": "dialogue-demon-ba-bi-bo-bu-be-bou-mes-bulles-les-emporteront-jusqu-au-roi-chuuut-ea97cf273abe.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Cherchons les sons en B et éclatons les bulles une par une."
+        "text": "Cherchons les sons en B et éclatons les bulles une par une.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-cherchons-les-sons-en-b-et-eclatons-les-bulles-une-par-une-6e7316b52931.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Mes bulles ont éclaté ! Je rends ba, bi, bo, bu, bé et bou."
+        "text": "Mes bulles ont éclaté ! Je rends ba, bi, bo, bu, bé et bou.",
+        "audio_files": {
+          "demon": "dialogue-demon-mes-bulles-ont-eclate-je-rends-ba-bi-bo-bu-be-et-bou-b2694e0cb05e.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en B sont libres. Elles vont retrouver leur place dans les mots."
+        "text": "Les syllabes en B sont libres. Elles vont retrouver leur place dans les mots.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-b-sont-libres-elles-vont-retrouver-leur-place-dans-les-mots-9fa6334cab69.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Bravo, Mochi ! Un autre démon nous attend."
+        "text": "Bravo, Mochi ! Un autre démon nous attend.",
+        "audio_files": {
+          "hero_male": "dialogue-hero-bravo-mochi-un-autre-demon-nous-attend-masculine-b53b6827d30b.wav",
+          "hero_female": "dialogue-hero-bravo-mochi-un-autre-demon-nous-attend-feminine-525240de6696.wav"
+        }
       }
     ],
     "stage": {
@@ -522,33 +752,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Fifi Fantôme a soufflé les syllabes en F au fond de la forêt."
+        "text": "Fifi Fantôme a soufflé les syllabes en F au fond de la forêt.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-fifi-fantome-a-souffle-les-syllabes-en-f-au-fond-de-la-foret-1c827f50b14a.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons retrouver leur piste et les ramener aux mots."
+        "text": "Nous allons retrouver leur piste et les ramener aux mots.",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-retrouver-leur-piste-et-les-ramener-aux-mots-masculine-9f880ee80101.wav",
+          "hero_female": "dialogue-hero-nous-allons-retrouver-leur-piste-et-les-ramener-aux-mots-feminine-7075014163db.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Fa, fi, fo, fu, fé, fou ! Vous ne les rattraperez pas, je m'envole !"
+        "text": "Fa, fi, fo, fu, fé, fou ! Vous ne les rattraperez pas, je m'envole !",
+        "audio_files": {
+          "demon": "dialogue-demon-fa-fi-fo-fu-fe-fou-vous-ne-les-rattraperez-pas-je-m-envole-3ddf4ce12ce0.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Écoutons le vent et suivons Fifi Fantôme."
+        "text": "Écoutons le vent et suivons Fifi Fantôme.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-ecoutons-le-vent-et-suivons-fifi-fantome-f9505341bab8.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Pfiou, je suis rattrapé ! Je rends fa, fi, fo, fu, fé et fou."
+        "text": "Pfiou, je suis rattrapé ! Je rends fa, fi, fo, fu, fé et fou.",
+        "audio_files": {
+          "demon": "dialogue-demon-pfiou-je-suis-rattrape-je-rends-fa-fi-fo-fu-fe-et-fou-efefc58a7b34.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en F sont de retour. La forêt retrouve sa voix."
+        "text": "Les syllabes en F sont de retour. La forêt retrouve sa voix.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-f-sont-de-retour-la-foret-retrouve-sa-voix-85d92018f5b8.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Ensemble, nous rendrons toutes les syllabes au monde !"
+        "text": "Ensemble, nous rendrons toutes les syllabes au monde !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-ensemble-nous-rendrons-toutes-les-syllabes-au-monde-masculine-58dabae3be86.wav",
+          "hero_female": "dialogue-hero-ensemble-nous-rendrons-toutes-les-syllabes-au-monde-feminine-de0e140975b2.wav"
+        }
       }
     ],
     "stage": {
@@ -572,33 +825,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Vampirou a pris les syllabes en V et les cache dans le volcan violet."
+        "text": "Vampirou a pris les syllabes en V et les cache dans le volcan violet.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-vampirou-a-pris-les-syllabes-en-v-et-les-cache-dans-le-volcan-violet-f5535c3a2bdf.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons entrer dans le volcan et les récupérer !"
+        "text": "Nous allons entrer dans le volcan et les récupérer !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-entrer-dans-le-volcan-et-les-recuperer-masculine-f6d0c877e21e.wav",
+          "hero_female": "dialogue-hero-nous-allons-entrer-dans-le-volcan-et-les-recuperer-feminine-3f87a9978d89.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Va, vi, vo, vu, vé, vou ! Ces syllabes vibrent dans mon volcan !"
+        "text": "Va, vi, vo, vu, vé, vou ! Ces syllabes vibrent dans mon volcan !",
+        "audio_files": {
+          "demon": "dialogue-demon-va-vi-vo-vu-ve-vou-ces-syllabes-vibrent-dans-mon-volcan-dc87828fc043.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Suivons les sons en V jusqu'à la cachette de Vampirou."
+        "text": "Suivons les sons en V jusqu'à la cachette de Vampirou.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-suivons-les-sons-en-v-jusqu-a-la-cachette-de-vampirou-170a21123c36.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Mon volcan s'éteint ! Je rends va, vi, vo, vu, vé et vou."
+        "text": "Mon volcan s'éteint ! Je rends va, vi, vo, vu, vé et vou.",
+        "audio_files": {
+          "demon": "dialogue-demon-mon-volcan-s-eteint-je-rends-va-vi-vo-vu-ve-et-vou-fe560d3e2302.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en V sont libres. Le volcan peut se rendormir."
+        "text": "Les syllabes en V sont libres. Le volcan peut se rendormir.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-v-sont-libres-le-volcan-peut-se-rendormir-a2d976f29997.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous avons encore des syllabes à retrouver. En route !"
+        "text": "Nous avons encore des syllabes à retrouver. En route !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-avons-encore-des-syllabes-a-retrouver-en-route-masculine-26192fb72814.wav",
+          "hero_female": "dialogue-hero-nous-avons-encore-des-syllabes-a-retrouver-en-route-feminine-3492b4776319.wav"
+        }
       }
     ],
     "stage": {
@@ -622,33 +898,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Chachat Noir a volé les syllabes en CH et s'est caché dans la nuit."
+        "text": "Chachat Noir a volé les syllabes en CH et s'est caché dans la nuit.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-chachat-noir-a-vole-les-syllabes-en-ch-et-s-est-cache-dans-la-nuit-cf21ae44cc4b.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Deux lettres peuvent faire un seul son. Nous allons retrouver les syllabes en CH !"
+        "text": "Deux lettres peuvent faire un seul son. Nous allons retrouver les syllabes en CH !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-deux-lettres-peuvent-faire-un-seul-son-nous-allons-retrouver-les-syllabes-en-ch-masculine-91c1e3299967.wav",
+          "hero_female": "dialogue-hero-deux-lettres-peuvent-faire-un-seul-son-nous-allons-retrouver-les-syllabes-en-ch-feminine-6f98419edbda.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Cha, chi, cho, chu, ché, chou ! Vous n'entendrez plus jamais ce son !"
+        "text": "Cha, chi, cho, chu, ché, chou ! Vous n'entendrez plus jamais ce son !",
+        "audio_files": {
+          "demon": "dialogue-demon-cha-chi-cho-chu-che-chou-vous-n-entendrez-plus-jamais-ce-son-823aabad7127.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Écoutons ce son discret pour retrouver Chachat et libérer les syllabes."
+        "text": "Écoutons ce son discret pour retrouver Chachat et libérer les syllabes.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-ecoutons-ce-son-discret-pour-retrouver-chachat-et-liberer-les-syllabes-b6f17df4878c.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Vous m'avez démasqué ! Je rends cha, chi, cho, chu, ché et chou."
+        "text": "Vous m'avez démasqué ! Je rends cha, chi, cho, chu, ché et chou.",
+        "audio_files": {
+          "demon": "dialogue-demon-vous-m-avez-demasque-je-rends-cha-chi-cho-chu-che-et-chou-3216dcec1091.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en CH sont libres. Deux lettres, un seul son retrouvé !"
+        "text": "Les syllabes en CH sont libres. Deux lettres, un seul son retrouvé !",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-ch-sont-libres-deux-lettres-un-seul-son-retrouve-e321687c4574.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous approchons du repaire du Roi Chuuut. Continuons !"
+        "text": "Nous approchons du repaire du Roi Chuuut. Continuons !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-approchons-du-repaire-du-roi-chuuut-continuons-masculine-dac3b6515863.wav",
+          "hero_female": "dialogue-hero-nous-approchons-du-repaire-du-roi-chuuut-continuons-feminine-4e9053e758eb.wav"
+        }
       }
     ],
     "tip": "C + H = un seul son : « ch ».",
@@ -673,33 +972,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Jojo le Jongleur a volé les syllabes en J et les a cachées parmi ses jouets."
+        "text": "Jojo le Jongleur a volé les syllabes en J et les a cachées parmi ses jouets.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-jojo-le-jongleur-a-vole-les-syllabes-en-j-et-les-a-cachees-parmi-ses-jouets-415e380c1fca.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Jojo, rends-les ! Nous allons retrouver les syllabes cachées."
+        "text": "Jojo, rends-les ! Nous allons retrouver les syllabes cachées.",
+        "audio_files": {
+          "hero_male": "dialogue-hero-jojo-rends-les-nous-allons-retrouver-les-syllabes-cachees-masculine-8db6cab8ebaf.wav",
+          "hero_female": "dialogue-hero-jojo-rends-les-nous-allons-retrouver-les-syllabes-cachees-feminine-14107f120c20.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ja, ji, jo, ju, jé, jou ! Je jongle avec vos syllabes, vous ne les aurez pas !"
+        "text": "Ja, ji, jo, ju, jé, jou ! Je jongle avec vos syllabes, vous ne les aurez pas !",
+        "audio_files": {
+          "demon": "dialogue-demon-ja-ji-jo-ju-je-jou-je-jongle-avec-vos-syllabes-vous-ne-les-aurez-pas-f1692fd9b61f.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Écoutons le son J et observons bien les tours de Jojo."
+        "text": "Écoutons le son J et observons bien les tours de Jojo.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-ecoutons-le-son-j-et-observons-bien-les-tours-de-jojo-e209f5f9700a.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Mes tours sont terminés ! Je rends ja, ji, jo, ju, jé et jou."
+        "text": "Mes tours sont terminés ! Je rends ja, ji, jo, ju, jé et jou.",
+        "audio_files": {
+          "demon": "dialogue-demon-mes-tours-sont-termines-je-rends-ja-ji-jo-ju-je-et-jou-53c8606b8189.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en J sont libres et les jouets sont sauvés."
+        "text": "Les syllabes en J sont libres et les jouets sont sauvés.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-j-sont-libres-et-les-jouets-sont-sauves-f03c6aa01ecf.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Encore un coffre récupéré. Allons libérer les autres syllabes !"
+        "text": "Encore un coffre récupéré. Allons libérer les autres syllabes !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-encore-un-coffre-recupere-allons-liberer-les-autres-syllabes-masculine-f5f897e9ea48.wav",
+          "hero_female": "dialogue-hero-encore-un-coffre-recupere-allons-liberer-les-autres-syllabes-feminine-bae99914b310.wav"
+        }
       }
     ],
     "stage": {
@@ -724,33 +1046,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Capitaine Gorgo a piégé les syllabes en C et en G dans sa grotte."
+        "text": "Capitaine Gorgo a piégé les syllabes en C et en G dans sa grotte.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-capitaine-gorgo-a-piege-les-syllabes-en-c-et-en-g-dans-sa-grotte-1c816570dd18.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Nous allons déjouer ses pièges et récupérer les syllabes volées."
+        "text": "Nous allons déjouer ses pièges et récupérer les syllabes volées.",
+        "audio_files": {
+          "hero_male": "dialogue-hero-nous-allons-dejouer-ses-pieges-et-recuperer-les-syllabes-volees-masculine-9bf4008026a9.wav",
+          "hero_female": "dialogue-hero-nous-allons-dejouer-ses-pieges-et-recuperer-les-syllabes-volees-feminine-ca1dbbb1cedc.wav"
+        }
       },
       {
         "who": "demon",
-        "text": "Ca, co, cu, cou ! Ga, go, gou ! Ces sons durs sont à moi, capitaine Gorgo !"
+        "text": "Ca, co, cu, cou ! Ga, go, gou ! Ces sons durs sont à moi, capitaine Gorgo !",
+        "audio_files": {
+          "demon": "dialogue-demon-ca-co-cu-cou-ga-go-gou-ces-sons-durs-sont-a-moi-capitaine-gorgo-cfe50985b9bc.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Écoutons bien : C et G gardent ici leur son dur devant a, o, u et ou."
+        "text": "Écoutons bien : C et G gardent ici leur son dur devant a, o, u et ou.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-ecoutons-bien-c-et-g-gardent-ici-leur-son-dur-devant-a-o-u-et-ou-882b26c06c49.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "demon",
-        "text": "Capitaine Gorgo capitule ! Je rends ca, co, cu, cou, ga, go et gou."
+        "text": "Capitaine Gorgo capitule ! Je rends ca, co, cu, cou, ga, go et gou.",
+        "audio_files": {
+          "demon": "dialogue-demon-capitaine-gorgo-capitule-je-rends-ca-co-cu-cou-ga-go-et-gou-b0cbfe34dd66.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Les syllabes en C et en G sont libérées. Tu as déjoué les pièges !"
+        "text": "Les syllabes en C et en G sont libérées. Tu as déjoué les pièges !",
+        "audio_files": {
+          "mochi": "dialogue-mochi-les-syllabes-en-c-et-en-g-sont-liberees-tu-as-dejoue-les-pieges-cc4fcd0fa268.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Tous les démons sont vaincus. Il ne reste que le Roi Chuuut !"
+        "text": "Tous les démons sont vaincus. Il ne reste que le Roi Chuuut !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-tous-les-demons-sont-vaincus-il-ne-reste-que-le-roi-chuuut-masculine-91f6e51c0c44.wav",
+          "hero_female": "dialogue-hero-tous-les-demons-sont-vaincus-il-ne-reste-que-le-roi-chuuut-feminine-6764bd593292.wav"
+        }
       }
     ],
     "tip": "C et G sont durs devant a, o, u, ou (ca, go). Devant e et i, C se lit « s » et G se lit « j » : on les verra plus tard.",
@@ -773,33 +1118,56 @@
     "intro": [
       {
         "who": "mochi",
-        "text": "Nous avons libéré les syllabes de tous les démons. Le Roi Chuuut garde encore le dernier coffre !"
+        "text": "Nous avons libéré les syllabes de tous les démons. Le Roi Chuuut garde encore le dernier coffre !",
+        "audio_files": {
+          "mochi": "dialogue-mochi-nous-avons-libere-les-syllabes-de-tous-les-demons-le-roi-chuuut-garde-encore-le-dernier-coffre-6364b0a900fb.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Roi Chuuut, rends les dernières syllabes. Nous ne te laisserons plus voler les mots !"
+        "text": "Roi Chuuut, rends les dernières syllabes. Nous ne te laisserons plus voler les mots !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-roi-chuuut-rends-les-dernieres-syllabes-nous-ne-te-laisserons-plus-voler-les-mots-masculine-d440acb84554.wav",
+          "hero_female": "dialogue-hero-roi-chuuut-rends-les-dernieres-syllabes-nous-ne-te-laisserons-plus-voler-les-mots-feminine-4d517ce28b99.wav"
+        }
       },
       {
         "who": "king",
-        "text": "Jamais ! Je garde le dernier coffre. Si tu veux sauver les mots, il faudra me vaincre !"
+        "text": "Jamais ! Je garde le dernier coffre. Si tu veux sauver les mots, il faudra me vaincre !",
+        "audio_files": {
+          "king": "dialogue-king-jamais-je-garde-le-dernier-coffre-si-tu-veux-sauver-les-mots-il-faudra-me-vaincre-6d0a75222242.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Alors affrontons-le ensemble et rendons leur voix à tous les mots."
+        "text": "Alors affrontons-le ensemble et rendons leur voix à tous les mots.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-alors-affrontons-le-ensemble-et-rendons-leur-voix-a-tous-les-mots-b456af1b39ef.wav"
+        }
       }
     ],
     "outro": [
       {
         "who": "king",
-        "text": "Je suis vaincu ! Je rends le dernier coffre et toutes les syllabes volées. Les mots sont libres !"
+        "text": "Je suis vaincu ! Je rends le dernier coffre et toutes les syllabes volées. Les mots sont libres !",
+        "audio_files": {
+          "king": "dialogue-king-je-suis-vaincu-je-rends-le-dernier-coffre-et-toutes-les-syllabes-volees-les-mots-sont-libres-769e0439e2f4.wav"
+        }
       },
       {
         "who": "hero",
-        "text": "Les sons et les syllabes sont de retour. Les mots peuvent enfin résonner !"
+        "text": "Les sons et les syllabes sont de retour. Les mots peuvent enfin résonner !",
+        "audio_files": {
+          "hero_male": "dialogue-hero-les-sons-et-les-syllabes-sont-de-retour-les-mots-peuvent-enfin-resonner-masculine-df56a5cec108.wav",
+          "hero_female": "dialogue-hero-les-sons-et-les-syllabes-sont-de-retour-les-mots-peuvent-enfin-resonner-feminine-423317f94292.wav"
+        }
       },
       {
         "who": "mochi",
-        "text": "Nous avons réussi ensemble ! Le Roi Chuuut ne pourra plus faire taire les mots."
+        "text": "Nous avons réussi ensemble ! Le Roi Chuuut ne pourra plus faire taire les mots.",
+        "audio_files": {
+          "mochi": "dialogue-mochi-nous-avons-reussi-ensemble-le-roi-chuuut-ne-pourra-plus-faire-taire-les-mots-1ec33a3c5514.wav"
+        }
       }
     ],
     "stage": {

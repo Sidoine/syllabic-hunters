@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import configparser
+import hashlib
 import json
 import os
 import re
@@ -133,6 +134,23 @@ def expand_gender_variants(job: dict) -> list[dict]:
     return variants
 
 
+def output_filename(job: dict) -> str:
+    """Use the catalogued prompt-hash filename, or derive one for ad-hoc jobs."""
+    if job.get("file"):
+        return job["file"]
+    payload = {
+        "text": job.get("tts_text", job["text"]),
+        "speaker": clone_profile_for(job),
+        "seed": job.get("seed") or DEFAULT_SEED,
+        "temperature": 0.35,
+        "top_p": 0.8,
+        "top_k": 20,
+        "model": CLONE_MODEL_ID,
+    }
+    digest = hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:12]
+    return f"{job['name']}-{digest}.wav"
+
+
 def clone_profile_for(job: dict) -> str:
     """Choose one stable clone identity for a manifest entry."""
     if job.get("clone_profile"):
@@ -245,8 +263,9 @@ def main() -> None:
         print("Tons :", ", ".join(TONES))
         for e in manifest:
             for job in expand_gender_variants(e):
-                state = "ok     " if (out_dir / f"{job['name']}.wav").exists() else "MANQUE "
-                print(f"  {state}{job['name']:<40}[{job.get('tone', 'cheer'):<9}] {job['text']}")
+                filename = output_filename(job)
+                state = "ok     " if (out_dir / filename).exists() else "MANQUE "
+                print(f"  {state}{filename:<58}[{job.get('tone', 'cheer'):<9}] {job['text']}")
         return
 
     if args.prepare_references:
@@ -264,14 +283,15 @@ def main() -> None:
 
     todo = []
     for j in jobs:
-        if not args.variants and (out_dir / f"{j['name']}.wav").exists() and not args.force and not args.text:
-            print(f"= {j['name']}.wav existe déjà (--force pour régénérer)")
+        filename = output_filename(j)
+        if not args.variants and (out_dir / filename).exists() and not args.force and not args.text:
+            print(f"= {filename} existe déjà (--force pour régénérer)")
         else:
             todo.append(j)
     if not todo and not args.prepare_references:
         print("Rien à générer.", flush=True)
         if args.prune:
-            expected = {f"{job['name']}.wav" for job in jobs}
+            expected = {output_filename(job) for job in jobs}
             removed = [path for path in out_dir.glob("*.wav") if path.name not in expected]
             for path in removed:
                 path.unlink()
@@ -318,7 +338,7 @@ def main() -> None:
                     temperature=args.temperature, top_p=0.8, top_k=20,
                 )
                 wav = postprocess(wavs[0], sr)
-                dest = (HOME / "candidates" / f"{j['name']}-s{seed}.wav") if args.variants else out_dir / f"{j['name']}.wav"
+                dest = (HOME / "candidates" / f"{j['name']}-s{seed}.wav") if args.variants else out_dir / output_filename(j)
                 dest.parent.mkdir(parents=True, exist_ok=True)
                 sf.write(dest, wav, sr, subtype="PCM_16")
                 print(f"OK {dest}  ({len(wav) / sr:.2f}s, seed {seed})", flush=True)
@@ -346,13 +366,13 @@ def main() -> None:
                 temperature=args.temperature, top_p=0.8, top_k=20,
             )
             wav = postprocess(wavs[0], sr)
-            dest = (HOME / "candidates" / f"{j['name']}-s{seed}.wav") if args.variants else out_dir / f"{j['name']}.wav"
+            dest = (HOME / "candidates" / f"{j['name']}-s{seed}.wav") if args.variants else out_dir / output_filename(j)
             dest.parent.mkdir(parents=True, exist_ok=True)
             sf.write(dest, wav, sr, subtype="PCM_16")
             print(f"OK {dest}  ({len(wav) / sr:.2f}s, {profile_key}, seed {seed})", flush=True)
 
     if args.prune:
-        expected = {f"{job['name']}.wav" for job in jobs}
+        expected = {output_filename(job) for job in jobs}
         removed = [path for path in out_dir.glob("*.wav") if path.name not in expected]
         for path in removed:
             path.unlink()

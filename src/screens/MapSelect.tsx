@@ -3,7 +3,7 @@ import { BigButton, HERO_INFO, IMAGES, SPEAKER_INFO, SpeakButton, UI_ICONS, play
 import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathChapter } from "../data/math";
 import { CHAPTERS, MISSIONS, type LetterChapter } from "../data/reading";
 import { WORLD_INTRO_LINES } from "../data/story";
-import { heroSceneSpeaker } from "../data/dialogue";
+import { dialogueAudioFile, heroSceneSpeaker } from "../data/dialogue";
 import type { ChapterStage, Line } from "../data/chapter";
 import { configureSpeech, speak, stopSpeech } from "../lib/speech";
 import { speakable } from "./Dialog";
@@ -371,7 +371,9 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	}, [dialogueBubblePosition, dialogueView, introLine]);
 	useEffect(() => {
 		if (introText && save.settings.autoRead) {
-			speak(speakable(introText), { recordedText: introText, ...(introLine?.who === "hero" ? { masculine: save.hero === "milo" } : {}) });
+			const masculine = save.hero === "milo";
+			const character = introLine?.who === "hero" ? (masculine ? "hero_male" : "hero_female") : introLine?.who;
+			speak(speakable(introText), { recordedText: introText, character, file: introLine ? dialogueAudioFile(introLine, masculine) : undefined, masculine });
 		}
 		return () => stopSpeech();
 	}, [introText, introLine?.who, save.hero, save.settings.autoRead]);
@@ -706,7 +708,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 						<span className="mb-1 block text-xs font-black uppercase tracking-widest opacity-80">{speakerName}</span>
 						{text}
 						<span className={`absolute h-4 w-4 -translate-x-1/2 rotate-45 border-white/90 ${dialogueBubbleLayout?.direction === "up" ? "-top-2 border-l-2 border-t-2" : "-bottom-2 border-b-2 border-r-2"}`} style={{ left: dialogueBubbleLayout?.arrowX ?? "50%", backgroundColor: background }} />
-						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(text)} speechOptions={{ masculine: introLine.who === "hero" ? save.hero === "milo" : undefined, recordedText: text }} size="sm" /></span>
+						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(text)} speechOptions={{ masculine: save.hero === "milo", character: introLine.who === "hero" ? (save.hero === "milo" ? "hero_male" : "hero_female") : introLine.who, file: dialogueAudioFile(introLine, save.hero === "milo"), recordedText: text }} size="sm" /></span>
 					</div>;
 				})()}
 				</>; })()}

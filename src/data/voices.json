@@ -1,0 +1,2578 @@
+[
+  {
+    "phrase": "a",
+    "character": "mochi",
+    "file": "syllable-a-6e7e3c447a50.wav",
+    "prompt_hash": "6e7e3c447a50",
+    "available": true
+  },
+  {
+    "phrase": "À l’ouest, la forêt de la lecture. À l’est, la montagne des nombres !",
+    "character": "mochi",
+    "file": "dialogue-mochi-a-l-ouest-la-foret-de-la-lecture-a-l-est-la-montagne-des-nombres-dfa680144dd2.wav",
+    "prompt_hash": "dfa680144dd2",
+    "available": true
+  },
+  {
+    "phrase": "abeille",
+    "character": "mochi",
+    "file": "image-abeille-3f1f89c47968.wav",
+    "prompt_hash": "3f1f89c47968",
+    "available": true
+  },
+  {
+    "phrase": "Allons explorer ! On pourra toujours revenir pour découvrir l’autre région.",
+    "character": "hero_female",
+    "file": "dialogue-hero-allons-explorer-on-pourra-toujours-revenir-pour-decouvrir-l-autre-region-feminine-b3bd3985bf13.wav",
+    "prompt_hash": "b3bd3985bf13",
+    "available": true
+  },
+  {
+    "phrase": "Allons explorer ! On pourra toujours revenir pour découvrir l’autre région.",
+    "character": "hero_male",
+    "file": "dialogue-hero-allons-explorer-on-pourra-toujours-revenir-pour-decouvrir-l-autre-region-masculine-62da3fa80a50.wav",
+    "prompt_hash": "62da3fa80a50",
+    "available": true
+  },
+  {
+    "phrase": "ananas",
+    "character": "mochi",
+    "file": "image-ananas-285ebb6c692a.wav",
+    "prompt_hash": "285ebb6c692a",
+    "available": true
+  },
+  {
+    "phrase": "attention : c et h ensemble chantent, comme pour dire chut!",
+    "character": "yuki",
+    "file": "story-yuki-attention-c-et-h-ensemble-chantent-comme-pour-dire-chut-67551a-7532c9b06220.wav",
+    "prompt_hash": "7532c9b06220",
+    "available": true
+  },
+  {
+    "phrase": "attention, c'est la grotte aux pièges! c et g sont des lettres farceuses!",
+    "character": "yuki",
+    "file": "story-yuki-attention-c-est-la-grotte-aux-pieges-c-et-g-sont-des-le-2681b9-83b09bb58138.wav",
+    "prompt_hash": "83b09bb58138",
+    "available": true
+  },
+  {
+    "phrase": "au secours! le roi chuuut a volé tous les sons du monde!",
+    "character": "mochi",
+    "file": "story-mochi-au-secours-le-roi-chuuut-a-vole-tous-les-sons-du-21b84f21f22c.wav",
+    "prompt_hash": "21b84f21f22c",
+    "available": true
+  },
+  {
+    "phrase": "avion",
+    "character": "mochi",
+    "file": "image-avion-2008da5ba26e.wav",
+    "prompt_hash": "2008da5ba26e",
+    "available": true
+  },
+  {
+    "phrase": "avocat",
+    "character": "mochi",
+    "file": "image-avocat-fdc233ecaa73.wav",
+    "prompt_hash": "fdc233ecaa73",
+    "available": true
+  },
+  {
+    "phrase": "b",
+    "character": "mochi",
+    "file": "letter-b-756e552f7e49.wav",
+    "prompt_hash": "756e552f7e49",
+    "available": true
+  },
+  {
+    "phrase": "b fait avec les lèvres qui se collent. avec a : bas! comme b-a bas!",
+    "character": "mochi",
+    "file": "story-mochi-b-fait-avec-les-levres-qui-se-collent-avec-a-bas-comme-11b201-7cfbffea787a.wav",
+    "prompt_hash": "7cfbffea787a",
+    "available": true
+  },
+  {
+    "phrase": "balai",
+    "character": "mochi",
+    "file": "image-balai-1eb5beb3fa6a.wav",
+    "prompt_hash": "1eb5beb3fa6a",
+    "available": true
+  },
+  {
+    "phrase": "baleine",
+    "character": "mochi",
+    "file": "image-baleine-86906e9ed4ed.wav",
+    "prompt_hash": "86906e9ed4ed",
+    "available": true
+  },
+  {
+    "phrase": "ballon",
+    "character": "mochi",
+    "file": "image-ballon-dcf7e2c4bd2a.wav",
+    "prompt_hash": "dcf7e2c4bd2a",
+    "available": true
+  },
+  {
+    "phrase": "banane",
+    "character": "mochi",
+    "file": "image-banane-e5f4b1e6e6fc.wav",
+    "prompt_hash": "e5f4b1e6e6fc",
+    "available": true
+  },
+  {
+    "phrase": "bas",
+    "character": "mochi",
+    "file": "syllable-ba-4450bea5811f.wav",
+    "prompt_hash": "4450bea5811f",
+    "available": true
+  },
+  {
+    "phrase": "bateau",
+    "character": "mochi",
+    "file": "image-bateau-1f73b5e805a9.wav",
+    "prompt_hash": "1f73b5e805a9",
+    "available": true
+  },
+  {
+    "phrase": "bé",
+    "character": "mochi",
+    "file": "syllable-be-e64543a63d3d.wav",
+    "prompt_hash": "e64543a63d3d",
+    "available": true
+  },
+  {
+    "phrase": "beau",
+    "character": "mochi",
+    "file": "syllable-bo-394a035e63c7.wav",
+    "prompt_hash": "394a035e63c7",
+    "available": true
+  },
+  {
+    "phrase": "bébé",
+    "character": "mochi",
+    "file": "image-bebe-2682477f058b.wav",
+    "prompt_hash": "2682477f058b",
+    "available": true
+  },
+  {
+    "phrase": "bi",
+    "character": "mochi",
+    "file": "syllable-bi-489c37c5c1aa.wav",
+    "prompt_hash": "489c37c5c1aa",
+    "available": true
+  },
+  {
+    "phrase": "biberon",
+    "character": "mochi",
+    "file": "image-biberon-89ca84106192.wav",
+    "prompt_hash": "89ca84106192",
+    "available": true
+  },
+  {
+    "phrase": "bijou",
+    "character": "mochi",
+    "file": "image-bijou-b230272b30f7.wav",
+    "prompt_hash": "b230272b30f7",
+    "available": true
+  },
+  {
+    "phrase": "bisou",
+    "character": "mochi",
+    "file": "image-bisou-533d8a842aab.wav",
+    "prompt_hash": "533d8a842aab",
+    "available": true
+  },
+  {
+    "phrase": "bouche",
+    "character": "mochi",
+    "file": "image-bouche-9ad868a1d729.wav",
+    "prompt_hash": "9ad868a1d729",
+    "available": true
+  },
+  {
+    "phrase": "bouée",
+    "character": "mochi",
+    "file": "image-bouee-a552ec3114a6.wav",
+    "prompt_hash": "a552ec3114a6",
+    "available": true
+  },
+  {
+    "phrase": "bougie",
+    "character": "mochi",
+    "file": "image-bougie-ed629b49c82f.wav",
+    "prompt_hash": "ed629b49c82f",
+    "available": true
+  },
+  {
+    "phrase": "bout",
+    "character": "mochi",
+    "file": "syllable-bou-288986f3bba0.wav",
+    "prompt_hash": "288986f3bba0",
+    "available": true
+  },
+  {
+    "phrase": "bravo",
+    "character": "mochi",
+    "file": "image-bravo-3f7ece675150.wav",
+    "prompt_hash": "3f7ece675150",
+    "available": true
+  },
+  {
+    "phrase": "bravo !",
+    "character": "mochi",
+    "file": "cheer-bravo-21128688489e.wav",
+    "prompt_hash": "21128688489e",
+    "available": true
+  },
+  {
+    "phrase": "bravo, bien joué !",
+    "character": "mochi",
+    "file": "cheer-bien-joue-6fe6f91abce9.wav",
+    "prompt_hash": "6fe6f91abce9",
+    "available": true
+  },
+  {
+    "phrase": "bravo, tu lis très bien !",
+    "character": "mochi",
+    "file": "read-praise-c470c8eb59bb.wav",
+    "prompt_hash": "c470c8eb59bb",
+    "available": true
+  },
+  {
+    "phrase": "bu",
+    "character": "mochi",
+    "file": "syllable-bu-e08b8a15f57f.wav",
+    "prompt_hash": "e08b8a15f57f",
+    "available": true
+  },
+  {
+    "phrase": "c",
+    "character": "mochi",
+    "file": "letter-c-baad6769d628.wav",
+    "prompt_hash": "baad6769d628",
+    "available": true
+  },
+  {
+    "phrase": "c, h",
+    "character": "mochi",
+    "file": "letter-ch-60d1b63c0d0d.wav",
+    "prompt_hash": "60d1b63c0d0d",
+    "available": true
+  },
+  {
+    "phrase": "cabane",
+    "character": "mochi",
+    "file": "image-cabane-4d83f58b7234.wav",
+    "prompt_hash": "4d83f58b7234",
+    "available": true
+  },
+  {
+    "phrase": "cadeau",
+    "character": "mochi",
+    "file": "image-cadeau-a71abe2bdca4.wav",
+    "prompt_hash": "a71abe2bdca4",
+    "available": true
+  },
+  {
+    "phrase": "café",
+    "character": "mochi",
+    "file": "image-cafe-cc9290d95821.wav",
+    "prompt_hash": "cc9290d95821",
+    "available": true
+  },
+  {
+    "phrase": "calculs-éclairs",
+    "character": "yuki",
+    "file": "math-title-calculs-eclairs-2c4cd2996d58.wav",
+    "prompt_hash": "2c4cd2996d58",
+    "available": true
+  },
+  {
+    "phrase": "caméra",
+    "character": "mochi",
+    "file": "image-camera-4528c38c931e.wav",
+    "prompt_hash": "4528c38c931e",
+    "available": true
+  },
+  {
+    "phrase": "canard",
+    "character": "mochi",
+    "file": "image-canard-e02f66c5e0ec.wav",
+    "prompt_hash": "e02f66c5e0ec",
+    "available": true
+  },
+  {
+    "phrase": "capitaine gorgo est vaincu! tu as déjoué les pièges!",
+    "character": "mochi",
+    "file": "story-mochi-capitaine-gorgo-est-vaincu-tu-as-dejoue-les-pieges-8ba05e-c7436ef745b0.wav",
+    "prompt_hash": "c7436ef745b0",
+    "available": true
+  },
+  {
+    "phrase": "carotte",
+    "character": "mochi",
+    "file": "image-carotte-2ad8db30b2e8.wav",
+    "prompt_hash": "2ad8db30b2e8",
+    "available": true
+  },
+  {
+    "phrase": "cas",
+    "character": "mochi",
+    "file": "syllable-ca-df0cd18e74a2.wav",
+    "prompt_hash": "df0cd18e74a2",
+    "available": true
+  },
+  {
+    "phrase": "chameau",
+    "character": "mochi",
+    "file": "image-chameau-f7520dc4f975.wav",
+    "prompt_hash": "f7520dc4f975",
+    "available": true
+  },
+  {
+    "phrase": "chapeau",
+    "character": "mochi",
+    "file": "image-chapeau-1170f13ab887.wav",
+    "prompt_hash": "1170f13ab887",
+    "available": true
+  },
+  {
+    "phrase": "chat",
+    "character": "mochi",
+    "file": "syllable-cha-3187224586c2.wav",
+    "prompt_hash": "3187224586c2",
+    "available": true
+  },
+  {
+    "phrase": "château",
+    "character": "mochi",
+    "file": "image-chateau-df9d7d0699a5.wav",
+    "prompt_hash": "df9d7d0699a5",
+    "available": true
+  },
+  {
+    "phrase": "chaud",
+    "character": "mochi",
+    "file": "syllable-cho-e6f2a8b42c11.wav",
+    "prompt_hash": "e6f2a8b42c11",
+    "available": true
+  },
+  {
+    "phrase": "chaussette",
+    "character": "mochi",
+    "file": "image-chaussette-4dc84d2479b2.wav",
+    "prompt_hash": "4dc84d2479b2",
+    "available": true
+  },
+  {
+    "phrase": "chaussure",
+    "character": "mochi",
+    "file": "image-chaussure-268bb3b4fc9e.wav",
+    "prompt_hash": "268bb3b4fc9e",
+    "available": true
+  },
+  {
+    "phrase": "chez",
+    "character": "mochi",
+    "file": "syllable-che-54693015e7e7.wav",
+    "prompt_hash": "54693015e7e7",
+    "available": true
+  },
+  {
+    "phrase": "chi",
+    "character": "mochi",
+    "file": "syllable-chi-72b7b2712eb4.wav",
+    "prompt_hash": "72b7b2712eb4",
+    "available": true
+  },
+  {
+    "phrase": "chocolat",
+    "character": "mochi",
+    "file": "image-chocolat-98e150b7db22.wav",
+    "prompt_hash": "98e150b7db22",
+    "available": true
+  },
+  {
+    "phrase": "chou",
+    "character": "mochi",
+    "file": "syllable-chou-70bba2e66118.wav",
+    "prompt_hash": "70bba2e66118",
+    "available": true
+  },
+  {
+    "phrase": "chu",
+    "character": "mochi",
+    "file": "syllable-chu-810571861058.wav",
+    "prompt_hash": "810571861058",
+    "available": true
+  },
+  {
+    "phrase": "cinéma",
+    "character": "mochi",
+    "file": "image-cinema-aba2e7626401.wav",
+    "prompt_hash": "aba2e7626401",
+    "available": true
+  },
+  {
+    "phrase": "cinq",
+    "character": "yuki",
+    "file": "math-number-05-cinq-f84365d201cd.wav",
+    "prompt_hash": "f84365d201cd",
+    "available": true
+  },
+  {
+    "phrase": "co",
+    "character": "mochi",
+    "file": "syllable-co-a6a4770b3970.wav",
+    "prompt_hash": "a6a4770b3970",
+    "available": true
+  },
+  {
+    "phrase": "cochon",
+    "character": "mochi",
+    "file": "image-cochon-e2e2dee64899.wav",
+    "prompt_hash": "e2e2dee64899",
+    "available": true
+  },
+  {
+    "phrase": "coco",
+    "character": "mochi",
+    "file": "image-coco-561f0e598deb.wav",
+    "prompt_hash": "561f0e598deb",
+    "available": true
+  },
+  {
+    "phrase": "cou",
+    "character": "mochi",
+    "file": "syllable-cou-0e910702e2f6.wav",
+    "prompt_hash": "0e910702e2f6",
+    "available": true
+  },
+  {
+    "phrase": "couronne",
+    "character": "mochi",
+    "file": "image-couronne-c3b5f0033d2d.wav",
+    "prompt_hash": "c3b5f0033d2d",
+    "available": true
+  },
+  {
+    "phrase": "couteau",
+    "character": "mochi",
+    "file": "image-couteau-5620c93405a6.wav",
+    "prompt_hash": "5620c93405a6",
+    "available": true
+  },
+  {
+    "phrase": "cravate",
+    "character": "mochi",
+    "file": "image-cravate-278241fd41dc.wav",
+    "prompt_hash": "278241fd41dc",
+    "available": true
+  },
+  {
+    "phrase": "cu",
+    "character": "mochi",
+    "file": "syllable-cu-3107064aa87f.wav",
+    "prompt_hash": "3107064aa87f",
+    "available": true
+  },
+  {
+    "phrase": "d",
+    "character": "mochi",
+    "file": "letter-d-cba90aaf34ea.wav",
+    "prompt_hash": "cba90aaf34ea",
+    "available": true
+  },
+  {
+    "phrase": "da",
+    "character": "mochi",
+    "file": "syllable-da-25ac046e2db2.wav",
+    "prompt_hash": "25ac046e2db2",
+    "available": true
+  },
+  {
+    "phrase": "dauphin",
+    "character": "mochi",
+    "file": "image-dauphin-024f9fb68042.wav",
+    "prompt_hash": "024f9fb68042",
+    "available": true
+  },
+  {
+    "phrase": "dé",
+    "character": "mochi",
+    "file": "syllable-de-7aa8e7c2fa08.wav",
+    "prompt_hash": "7aa8e7c2fa08",
+    "available": true
+  },
+  {
+    "phrase": "deux",
+    "character": "yuki",
+    "file": "math-number-02-deux-4e75af70fb5a.wav",
+    "prompt_hash": "4e75af70fb5a",
+    "available": true
+  },
+  {
+    "phrase": "Deux chemins s’ouvrent devant nous !",
+    "character": "hero_female",
+    "file": "dialogue-hero-deux-chemins-s-ouvrent-devant-nous-feminine-e2b10c6a6889.wav",
+    "prompt_hash": "e2b10c6a6889",
+    "available": true
+  },
+  {
+    "phrase": "Deux chemins s’ouvrent devant nous !",
+    "character": "hero_male",
+    "file": "dialogue-hero-deux-chemins-s-ouvrent-devant-nous-masculine-18ce45fd92ff.wav",
+    "prompt_hash": "18ce45fd92ff",
+    "available": true
+  },
+  {
+    "phrase": "deux étoiles !",
+    "character": "yuki",
+    "file": "math-praise-two-stars-24b051da1d1d.wav",
+    "prompt_hash": "24b051da1d1d",
+    "available": true
+  },
+  {
+    "phrase": "dinosaure",
+    "character": "mochi",
+    "file": "image-dinosaure-1c50ad8c93ef.wav",
+    "prompt_hash": "1c50ad8c93ef",
+    "available": true
+  },
+  {
+    "phrase": "dit",
+    "character": "mochi",
+    "file": "syllable-di-00cf8f687b8b.wav",
+    "prompt_hash": "00cf8f687b8b",
+    "available": true
+  },
+  {
+    "phrase": "dix",
+    "character": "yuki",
+    "file": "math-number-10-dix-dee33d09acd4.wav",
+    "prompt_hash": "dee33d09acd4",
+    "available": true
+  },
+  {
+    "phrase": "dix-huit",
+    "character": "yuki",
+    "file": "math-number-18-dix-huit-3f63b5c54f0e.wav",
+    "prompt_hash": "3f63b5c54f0e",
+    "available": true
+  },
+  {
+    "phrase": "dix-neuf",
+    "character": "yuki",
+    "file": "math-number-19-dix-neuf-0fe70c4eb03d.wav",
+    "prompt_hash": "0fe70c4eb03d",
+    "available": true
+  },
+  {
+    "phrase": "dix-sept",
+    "character": "yuki",
+    "file": "math-number-17-dix-sept-a34e0a31c44d.wav",
+    "prompt_hash": "a34e0a31c44d",
+    "available": true
+  },
+  {
+    "phrase": "dodo",
+    "character": "mochi",
+    "file": "image-dodo-b5c5fff7853d.wav",
+    "prompt_hash": "b5c5fff7853d",
+    "available": true
+  },
+  {
+    "phrase": "dos",
+    "character": "mochi",
+    "file": "syllable-do-26865a31e5fb.wav",
+    "prompt_hash": "26865a31e5fb",
+    "available": true
+  },
+  {
+    "phrase": "douche",
+    "character": "mochi",
+    "file": "image-douche-a811114780bb.wav",
+    "prompt_hash": "a811114780bb",
+    "available": true
+  },
+  {
+    "phrase": "doux",
+    "character": "mochi",
+    "file": "syllable-dou-6ec6e50adba8.wav",
+    "prompt_hash": "6ec6e50adba8",
+    "available": true
+  },
+  {
+    "phrase": "douze",
+    "character": "yuki",
+    "file": "math-number-12-douze-fd54fd5c0a4a.wav",
+    "prompt_hash": "fd54fd5c0a4a",
+    "available": true
+  },
+  {
+    "phrase": "dragonito crache du feu sur les diamants!",
+    "character": "mochi",
+    "file": "story-mochi-dragonito-crache-du-feu-sur-les-diamants-5fd957-10718ac0550b.wav",
+    "prompt_hash": "10718ac0550b",
+    "available": true
+  },
+  {
+    "phrase": "du",
+    "character": "mochi",
+    "file": "syllable-du-f16b5f56ec88.wav",
+    "prompt_hash": "f16b5f56ec88",
+    "available": true
+  },
+  {
+    "phrase": "é",
+    "character": "mochi",
+    "file": "syllable-e-a799c9b58fd6.wav",
+    "prompt_hash": "a799c9b58fd6",
+    "available": true
+  },
+  {
+    "phrase": "échelle",
+    "character": "mochi",
+    "file": "image-echelle-bf121edac235.wav",
+    "prompt_hash": "bf121edac235",
+    "available": true
+  },
+  {
+    "phrase": "école",
+    "character": "mochi",
+    "file": "image-ecole-7eeade27fc8c.wav",
+    "prompt_hash": "7eeade27fc8c",
+    "available": true
+  },
+  {
+    "phrase": "écoute bien, et touche la syllabe que tu entends.",
+    "character": "mochi",
+    "file": "mission-listen-syllable-0991fe0af3b7.wav",
+    "prompt_hash": "0991fe0af3b7",
+    "available": true
+  },
+  {
+    "phrase": "écoute bien. quelle voyelle faut-il coller ?",
+    "character": "mochi",
+    "file": "mission-fusion-quiz-cd0aecda76ea.wav",
+    "prompt_hash": "cd0aecda76ea",
+    "available": true
+  },
+  {
+    "phrase": "écoute et touche le démon qui porte la bonne syllabe !",
+    "character": "mochi",
+    "file": "battle-instruction-touch-demon-24620c808013.wav",
+    "prompt_hash": "24620c808013",
+    "available": true
+  },
+  {
+    "phrase": "écoute le mot mystère, et trouve comment il s'écrit.",
+    "character": "mochi",
+    "file": "mission-listen-word-a30644a1c53f.wav",
+    "prompt_hash": "a30644a1c53f",
+    "available": true
+  },
+  {
+    "phrase": "écris le mot ! touche les syllabes dans le bon ordre.",
+    "character": "mochi",
+    "file": "mission-build-91813fed4c67.wav",
+    "prompt_hash": "91813fed4c67",
+    "available": true
+  },
+  {
+    "phrase": "écureuil",
+    "character": "mochi",
+    "file": "image-ecureuil-41dbd626332a.wav",
+    "prompt_hash": "41dbd626332a",
+    "available": true
+  },
+  {
+    "phrase": "éléphant",
+    "character": "mochi",
+    "file": "image-elephant-388cefed6ec5.wav",
+    "prompt_hash": "388cefed6ec5",
+    "available": true
+  },
+  {
+    "phrase": "épée",
+    "character": "mochi",
+    "file": "image-epee-b06ca6de14b8.wav",
+    "prompt_hash": "b06ca6de14b8",
+    "available": true
+  },
+  {
+    "phrase": "escargot",
+    "character": "mochi",
+    "file": "image-escargot-f41648262b7c.wav",
+    "prompt_hash": "f41648262b7c",
+    "available": true
+  },
+  {
+    "phrase": "essaie encore !",
+    "character": "mochi",
+    "file": "try-essaie-encore-fbf0a82bb123.wav",
+    "prompt_hash": "fbf0a82bb123",
+    "available": true
+  },
+  {
+    "phrase": "étoile",
+    "character": "mochi",
+    "file": "image-etoile-13e5f778eb75.wav",
+    "prompt_hash": "13e5f778eb75",
+    "available": true
+  },
+  {
+    "phrase": "étoiles, puis",
+    "character": "yuki",
+    "file": "math-story-etoiles-puis-e6c3e4a1c018.wav",
+    "prompt_hash": "e6c3e4a1c018",
+    "available": true
+  },
+  {
+    "phrase": "étoiles. combien en gagne-t-elle en tout ?",
+    "character": "yuki",
+    "file": "math-story-addition-end-86bee11177b6.wav",
+    "prompt_hash": "86bee11177b6",
+    "available": true
+  },
+  {
+    "phrase": "étoiles. combien lui en manque-t-il pour en avoir dix ?",
+    "character": "yuki",
+    "file": "math-story-complement-end-eb6a5bc896de.wav",
+    "prompt_hash": "eb6a5bc896de",
+    "available": true
+  },
+  {
+    "phrase": "étoiles. combien lui en reste-t-il ?",
+    "character": "yuki",
+    "file": "math-story-subtraction-end-a50e16021f6a.wav",
+    "prompt_hash": "a50e16021f6a",
+    "available": true
+  },
+  {
+    "phrase": "étoiles. elle en offre",
+    "character": "yuki",
+    "file": "math-story-mia-offre-7954935d37fc.wav",
+    "prompt_hash": "7954935d37fc",
+    "available": true
+  },
+  {
+    "phrase": "f",
+    "character": "mochi",
+    "file": "letter-f-e9ecd1637c3a.wav",
+    "prompt_hash": "e9ecd1637c3a",
+    "available": true
+  },
+  {
+    "phrase": "f souffle comme le vent. avec a : fa!",
+    "character": "yuki",
+    "file": "story-yuki-f-souffle-comme-le-vent-avec-a-fa-abbfbb-e117cdea7c9a.wav",
+    "prompt_hash": "e117cdea7c9a",
+    "available": true
+  },
+  {
+    "phrase": "fa",
+    "character": "mochi",
+    "file": "syllable-fa-91f4df2d7f0d.wav",
+    "prompt_hash": "91f4df2d7f0d",
+    "available": true
+  },
+  {
+    "phrase": "famille",
+    "character": "mochi",
+    "file": "image-famille-58c2f227ec3e.wav",
+    "prompt_hash": "58c2f227ec3e",
+    "available": true
+  },
+  {
+    "phrase": "fantôme",
+    "character": "mochi",
+    "file": "image-fantome-3f0bf48fd370.wav",
+    "prompt_hash": "3f0bf48fd370",
+    "available": true
+  },
+  {
+    "phrase": "faux",
+    "character": "mochi",
+    "file": "syllable-fo-a4b56a9c485c.wav",
+    "prompt_hash": "a4b56a9c485c",
+    "available": true
+  },
+  {
+    "phrase": "fée",
+    "character": "mochi",
+    "file": "syllable-fe-ae5931d313ff.wav",
+    "prompt_hash": "ae5931d313ff",
+    "available": true
+  },
+  {
+    "phrase": "fi",
+    "character": "mochi",
+    "file": "syllable-fi-09ab6fa9fd42.wav",
+    "prompt_hash": "09ab6fa9fd42",
+    "available": true
+  },
+  {
+    "phrase": "filet",
+    "character": "mochi",
+    "file": "image-filet-a2c16c72d151.wav",
+    "prompt_hash": "a2c16c72d151",
+    "available": true
+  },
+  {
+    "phrase": "font combien ?",
+    "character": "yuki",
+    "file": "math-prompt-result-c8e4ab714e9a.wav",
+    "prompt_hash": "c8e4ab714e9a",
+    "available": true
+  },
+  {
+    "phrase": "fou",
+    "character": "mochi",
+    "file": "syllable-fou-e7b7ede0457b.wav",
+    "prompt_hash": "e7b7ede0457b",
+    "available": true
+  },
+  {
+    "phrase": "foulard",
+    "character": "mochi",
+    "file": "image-foulard-bc86269c8963.wav",
+    "prompt_hash": "bc86269c8963",
+    "available": true
+  },
+  {
+    "phrase": "fourmi",
+    "character": "mochi",
+    "file": "image-fourmi-9e00da9d49c5.wav",
+    "prompt_hash": "9e00da9d49c5",
+    "available": true
+  },
+  {
+    "phrase": "fromage",
+    "character": "mochi",
+    "file": "image-fromage-2b0f5de13e05.wav",
+    "prompt_hash": "2b0f5de13e05",
+    "available": true
+  },
+  {
+    "phrase": "fumée",
+    "character": "mochi",
+    "file": "image-fumee-e3b4ece6ba64.wav",
+    "prompt_hash": "e3b4ece6ba64",
+    "available": true
+  },
+  {
+    "phrase": "fusée",
+    "character": "mochi",
+    "file": "image-fusee-d3362d96fedf.wav",
+    "prompt_hash": "d3362d96fedf",
+    "available": true
+  },
+  {
+    "phrase": "fut",
+    "character": "mochi",
+    "file": "syllable-fu-7cabd0826560.wav",
+    "prompt_hash": "7cabd0826560",
+    "available": true
+  },
+  {
+    "phrase": "g",
+    "character": "mochi",
+    "file": "letter-g-e66a8bb3486f.wav",
+    "prompt_hash": "e66a8bb3486f",
+    "available": true
+  },
+  {
+    "phrase": "gars",
+    "character": "mochi",
+    "file": "syllable-ga-60a604663d1f.wav",
+    "prompt_hash": "60a604663d1f",
+    "available": true
+  },
+  {
+    "phrase": "gâteau",
+    "character": "mochi",
+    "file": "image-gateau-d2bc449b7647.wav",
+    "prompt_hash": "d2bc449b7647",
+    "available": true
+  },
+  {
+    "phrase": "génial !",
+    "character": "mochi",
+    "file": "cheer-genial-eac26655f6dc.wav",
+    "prompt_hash": "eac26655f6dc",
+    "available": true
+  },
+  {
+    "phrase": "girafe",
+    "character": "mochi",
+    "file": "image-girafe-f865078f2faf.wav",
+    "prompt_hash": "f865078f2faf",
+    "available": true
+  },
+  {
+    "phrase": "go",
+    "character": "mochi",
+    "file": "syllable-go-defbca489c2b.wav",
+    "prompt_hash": "defbca489c2b",
+    "available": true
+  },
+  {
+    "phrase": "gorille",
+    "character": "mochi",
+    "file": "image-gorille-7f95b6b354c0.wav",
+    "prompt_hash": "7f95b6b354c0",
+    "available": true
+  },
+  {
+    "phrase": "goût",
+    "character": "mochi",
+    "file": "syllable-gou-f89abdfcaa98.wav",
+    "prompt_hash": "f89abdfcaa98",
+    "available": true
+  },
+  {
+    "phrase": "goutte",
+    "character": "mochi",
+    "file": "image-goutte-4a91c4fd0b9a.wav",
+    "prompt_hash": "4a91c4fd0b9a",
+    "available": true
+  },
+  {
+    "phrase": "Hana",
+    "character": "mochi",
+    "file": "character-name-hana-3755f7a174e7.wav",
+    "prompt_hash": "3755f7a174e7",
+    "available": true
+  },
+  {
+    "phrase": "hana a",
+    "character": "yuki",
+    "file": "math-story-hana-a-1d288ef1a77a.wav",
+    "prompt_hash": "1d288ef1a77a",
+    "available": true
+  },
+  {
+    "phrase": "hibou",
+    "character": "mochi",
+    "file": "image-hibou-104c4208bf58.wav",
+    "prompt_hash": "104c4208bf58",
+    "available": true
+  },
+  {
+    "phrase": "hihihi ! raté !",
+    "character": "mochi",
+    "file": "playful-rate-5d4cf44b0eef.wav",
+    "prompt_hash": "5d4cf44b0eef",
+    "available": true
+  },
+  {
+    "phrase": "huit",
+    "character": "yuki",
+    "file": "math-number-08-huit-dd6716ddd2d0.wav",
+    "prompt_hash": "dd6716ddd2d0",
+    "available": true
+  },
+  {
+    "phrase": "i",
+    "character": "mochi",
+    "file": "syllable-i-960988b38dd8.wav",
+    "prompt_hash": "960988b38dd8",
+    "available": true
+  },
+  {
+    "phrase": "île",
+    "character": "mochi",
+    "file": "image-ile-b212756fabfa.wav",
+    "prompt_hash": "b212756fabfa",
+    "available": true
+  },
+  {
+    "phrase": "image",
+    "character": "mochi",
+    "file": "image-image-a61b89c5f5b6.wav",
+    "prompt_hash": "a61b89c5f5b6",
+    "available": true
+  },
+  {
+    "phrase": "j",
+    "character": "mochi",
+    "file": "letter-j-9732fc5a6a40.wav",
+    "prompt_hash": "9732fc5a6a40",
+    "available": true
+  },
+  {
+    "phrase": "j'ai",
+    "character": "mochi",
+    "file": "syllable-je-e76cfa65d117.wav",
+    "prompt_hash": "e76cfa65d117",
+    "available": true
+  },
+  {
+    "phrase": "j'y",
+    "character": "mochi",
+    "file": "syllable-ji-bcf0400c979b.wav",
+    "prompt_hash": "bcf0400c979b",
+    "available": true
+  },
+  {
+    "phrase": "ja",
+    "character": "mochi",
+    "file": "syllable-ja-e6781bb465d6.wav",
+    "prompt_hash": "e6781bb465d6",
+    "available": true
+  },
+  {
+    "phrase": "jaguar",
+    "character": "mochi",
+    "file": "image-jaguar-1f15ea0a2720.wav",
+    "prompt_hash": "1f15ea0a2720",
+    "available": true
+  },
+  {
+    "phrase": "jo",
+    "character": "mochi",
+    "file": "syllable-jo-1f45ea9d66ec.wav",
+    "prompt_hash": "1f45ea9d66ec",
+    "available": true
+  },
+  {
+    "phrase": "jojo le jongleur a volé tous les jouets de la jungle!",
+    "character": "mochi",
+    "file": "story-mochi-jojo-le-jongleur-a-vole-tous-les-jouets-de-la-jungle-54058f-4893f7ed7b96.wav",
+    "prompt_hash": "4893f7ed7b96",
+    "available": true
+  },
+  {
+    "phrase": "joker",
+    "character": "mochi",
+    "file": "image-joker-d47cc0900728.wav",
+    "prompt_hash": "d47cc0900728",
+    "available": true
+  },
+  {
+    "phrase": "joue",
+    "character": "mochi",
+    "file": "syllable-jou-e67ac3db4b6c.wav",
+    "prompt_hash": "e67ac3db4b6c",
+    "available": true
+  },
+  {
+    "phrase": "judo",
+    "character": "mochi",
+    "file": "image-judo-b3b26fd26026.wav",
+    "prompt_hash": "b3b26fd26026",
+    "available": true
+  },
+  {
+    "phrase": "juge",
+    "character": "mochi",
+    "file": "image-juge-6b3643193596.wav",
+    "prompt_hash": "6b3643193596",
+    "available": true
+  },
+  {
+    "phrase": "jumeaux",
+    "character": "mochi",
+    "file": "image-jumeaux-59e211de2a47.wav",
+    "prompt_hash": "59e211de2a47",
+    "available": true
+  },
+  {
+    "phrase": "jus",
+    "character": "mochi",
+    "file": "syllable-ju-8d850bf57b63.wav",
+    "prompt_hash": "8d850bf57b63",
+    "available": true
+  },
+  {
+    "phrase": "kangourou",
+    "character": "mochi",
+    "file": "image-kangourou-74e866bea383.wav",
+    "prompt_hash": "74e866bea383",
+    "available": true
+  },
+  {
+    "phrase": "kimono",
+    "character": "mochi",
+    "file": "image-kimono-4dde6eda148b.wav",
+    "prompt_hash": "4dde6eda148b",
+    "available": true
+  },
+  {
+    "phrase": "l",
+    "character": "mochi",
+    "file": "letter-l-8dedfc9521e4.wav",
+    "prompt_hash": "8dedfc9521e4",
+    "available": true
+  },
+  {
+    "phrase": "la",
+    "character": "mochi",
+    "file": "syllable-la-234276110ef2.wav",
+    "prompt_hash": "234276110ef2",
+    "available": true
+  },
+  {
+    "phrase": "la lettre l chante avec sa langue. avec a, elle fait la. avec i, elle fait lit!",
+    "character": "yuki",
+    "file": "story-yuki-la-lettre-l-chante-avec-sa-langue-avec-a-elle-fait-la-a-2e72f2-c7029ec5ba49.wav",
+    "prompt_hash": "c7029ec5ba49",
+    "available": true
+  },
+  {
+    "phrase": "la tornade s'arrête! ta, ti, tôt, tu, thé, tout : génial!",
+    "character": "yuki",
+    "file": "story-yuki-la-tornade-s-arrete-ta-ti-tot-tu-the-tout-genial-2a47f4-c36bfe21b359.wav",
+    "prompt_hash": "c36bfe21b359",
+    "available": true
+  },
+  {
+    "phrase": "lama",
+    "character": "mochi",
+    "file": "image-lama-96662824424b.wav",
+    "prompt_hash": "96662824424b",
+    "available": true
+  },
+  {
+    "phrase": "lapin",
+    "character": "mochi",
+    "file": "image-lapin-89dc9e607672.wav",
+    "prompt_hash": "89dc9e607672",
+    "available": true
+  },
+  {
+    "phrase": "le nombre mystère",
+    "character": "yuki",
+    "file": "math-title-nombre-mystere-b3ef23309586.wav",
+    "prompt_hash": "b3ef23309586",
+    "available": true
+  },
+  {
+    "phrase": "les",
+    "character": "mochi",
+    "file": "syllable-le-986c4b413159.wav",
+    "prompt_hash": "986c4b413159",
+    "available": true
+  },
+  {
+    "phrase": "les jouets sont sauvés! ja, j'y, jo, jus, j'ai, joue!",
+    "character": "yuki",
+    "file": "story-yuki-les-jouets-sont-sauves-ja-j-y-jo-jus-j-ai-joue-8ab385-c97781228aad.wav",
+    "prompt_hash": "c97781228aad",
+    "available": true
+  },
+  {
+    "phrase": "lézard",
+    "character": "mochi",
+    "file": "image-lezard-a530c7095043.wav",
+    "prompt_hash": "a530c7095043",
+    "available": true
+  },
+  {
+    "phrase": "licorne",
+    "character": "mochi",
+    "file": "image-licorne-c28c5c91abdd.wav",
+    "prompt_hash": "c28c5c91abdd",
+    "available": true
+  },
+  {
+    "phrase": "lis le mot secret toute seule, syllabe par syllabe. puis touche la bonne image.",
+    "character": "mochi",
+    "file": "mission-read-word-35dc37c0949f.wav",
+    "prompt_hash": "35dc37c0949f",
+    "available": true
+  },
+  {
+    "phrase": "lit",
+    "character": "mochi",
+    "file": "syllable-li-cf90d785d169.wav",
+    "prompt_hash": "cf90d785d169",
+    "available": true
+  },
+  {
+    "phrase": "livre",
+    "character": "mochi",
+    "file": "image-livre-31fde4788280.wav",
+    "prompt_hash": "31fde4788280",
+    "available": true
+  },
+  {
+    "phrase": "locomotive",
+    "character": "mochi",
+    "file": "image-locomotive-d795163e2d7b.wav",
+    "prompt_hash": "d795163e2d7b",
+    "available": true
+  },
+  {
+    "phrase": "lot",
+    "character": "mochi",
+    "file": "syllable-lo-5172685d32d7.wav",
+    "prompt_hash": "5172685d32d7",
+    "available": true
+  },
+  {
+    "phrase": "loup",
+    "character": "mochi",
+    "file": "syllable-lou-cdfe92111689.wav",
+    "prompt_hash": "cdfe92111689",
+    "available": true
+  },
+  {
+    "phrase": "loupe",
+    "character": "mochi",
+    "file": "image-loupe-0e8be14c0a4e.wav",
+    "prompt_hash": "0e8be14c0a4e",
+    "available": true
+  },
+  {
+    "phrase": "lu",
+    "character": "mochi",
+    "file": "syllable-lu-4b3b3a0af92b.wav",
+    "prompt_hash": "4b3b3a0af92b",
+    "available": true
+  },
+  {
+    "phrase": "Luna",
+    "character": "mochi",
+    "file": "character-name-luna-84e122ad4c93.wav",
+    "prompt_hash": "84e122ad4c93",
+    "available": true
+  },
+  {
+    "phrase": "luna gagne",
+    "character": "yuki",
+    "file": "math-story-yuki-gagne-ad15d77e3a24.wav",
+    "prompt_hash": "ad15d77e3a24",
+    "available": true
+  },
+  {
+    "phrase": "lune",
+    "character": "mochi",
+    "file": "image-lune-92ef2fefa2f0.wav",
+    "prompt_hash": "92ef2fefa2f0",
+    "available": true
+  },
+  {
+    "phrase": "lunettes",
+    "character": "mochi",
+    "file": "image-lunettes-91d84e0261c3.wav",
+    "prompt_hash": "91d84e0261c3",
+    "available": true
+  },
+  {
+    "phrase": "lutin",
+    "character": "mochi",
+    "file": "image-lutin-245ea2feb447.wav",
+    "prompt_hash": "245ea2feb447",
+    "available": true
+  },
+  {
+    "phrase": "m",
+    "character": "mochi",
+    "file": "letter-m-2e9dc5211eae.wav",
+    "prompt_hash": "2e9dc5211eae",
+    "available": true
+  },
+  {
+    "phrase": "ma",
+    "character": "mochi",
+    "file": "syllable-ma-f001b305154d.wav",
+    "prompt_hash": "f001b305154d",
+    "available": true
+  },
+  {
+    "phrase": "magnifique !",
+    "character": "mochi",
+    "file": "cheer-magnifique-d32988e5f67b.wav",
+    "prompt_hash": "d32988e5f67b",
+    "available": true
+  },
+  {
+    "phrase": "malade",
+    "character": "mochi",
+    "file": "image-malade-d0b2ed1c9495.wav",
+    "prompt_hash": "d0b2ed1c9495",
+    "available": true
+  },
+  {
+    "phrase": "maman",
+    "character": "mochi",
+    "file": "image-maman-ef164640c6f3.wav",
+    "prompt_hash": "ef164640c6f3",
+    "available": true
+  },
+  {
+    "phrase": "mamie",
+    "character": "mochi",
+    "file": "image-mamie-652bb726ad21.wav",
+    "prompt_hash": "652bb726ad21",
+    "available": true
+  },
+  {
+    "phrase": "marteau",
+    "character": "mochi",
+    "file": "image-marteau-72adeb6758a2.wav",
+    "prompt_hash": "72adeb6758a2",
+    "available": true
+  },
+  {
+    "phrase": "médaille",
+    "character": "mochi",
+    "file": "image-medaille-5bc50e5a1b20.wav",
+    "prompt_hash": "5bc50e5a1b20",
+    "available": true
+  },
+  {
+    "phrase": "mes",
+    "character": "mochi",
+    "file": "syllable-me-549cdce82718.wav",
+    "prompt_hash": "549cdce82718",
+    "available": true
+  },
+  {
+    "phrase": "Mia",
+    "character": "mochi",
+    "file": "character-name-mia-94deef259d8a.wav",
+    "prompt_hash": "94deef259d8a",
+    "available": true
+  },
+  {
+    "phrase": "mia a",
+    "character": "yuki",
+    "file": "math-story-mia-a-249e8ce8952c.wav",
+    "prompt_hash": "249e8ce8952c",
+    "available": true
+  },
+  {
+    "phrase": "midi",
+    "character": "mochi",
+    "file": "image-midi-0dacefcfad4f.wav",
+    "prompt_hash": "0dacefcfad4f",
+    "available": true
+  },
+  {
+    "phrase": "mie",
+    "character": "mochi",
+    "file": "syllable-mi-05e7a7dcbccd.wav",
+    "prompt_hash": "05e7a7dcbccd",
+    "available": true
+  },
+  {
+    "phrase": "Milo",
+    "character": "mochi",
+    "file": "character-name-milo-b46a2b9d4409.wav",
+    "prompt_hash": "b46a2b9d4409",
+    "available": true
+  },
+  {
+    "phrase": "minou",
+    "character": "mochi",
+    "file": "image-minou-113421bbf898.wav",
+    "prompt_hash": "113421bbf898",
+    "available": true
+  },
+  {
+    "phrase": "miroir",
+    "character": "mochi",
+    "file": "image-miroir-d5f6257cf381.wav",
+    "prompt_hash": "d5f6257cf381",
+    "available": true
+  },
+  {
+    "phrase": "mission réussie !",
+    "character": "yuki",
+    "file": "math-praise-complete-6672bc98e9ae.wav",
+    "prompt_hash": "6672bc98e9ae",
+    "available": true
+  },
+  {
+    "phrase": "Mochi",
+    "character": "mochi",
+    "file": "character-name-mochi-056686762759.wav",
+    "prompt_hash": "056686762759",
+    "available": true
+  },
+  {
+    "phrase": "moins",
+    "character": "yuki",
+    "file": "math-op-moins-4be1ef1b35a0.wav",
+    "prompt_hash": "4be1ef1b35a0",
+    "available": true
+  },
+  {
+    "phrase": "moins combien font",
+    "character": "yuki",
+    "file": "math-prompt-minus-missing-b4a73aee3ad7.wav",
+    "prompt_hash": "b4a73aee3ad7",
+    "available": true
+  },
+  {
+    "phrase": "mot",
+    "character": "mochi",
+    "file": "syllable-mo-7acca326abfa.wav",
+    "prompt_hash": "7acca326abfa",
+    "available": true
+  },
+  {
+    "phrase": "moto",
+    "character": "mochi",
+    "file": "image-moto-11fc21e5ea0f.wav",
+    "prompt_hash": "11fc21e5ea0f",
+    "available": true
+  },
+  {
+    "phrase": "mou",
+    "character": "mochi",
+    "file": "syllable-mou-86c2ddd08bda.wav",
+    "prompt_hash": "86c2ddd08bda",
+    "available": true
+  },
+  {
+    "phrase": "mouche",
+    "character": "mochi",
+    "file": "image-mouche-9f27171054b2.wav",
+    "prompt_hash": "9f27171054b2",
+    "available": true
+  },
+  {
+    "phrase": "moustique",
+    "character": "mochi",
+    "file": "image-moustique-f58af3b0e75b.wav",
+    "prompt_hash": "f58af3b0e75b",
+    "available": true
+  },
+  {
+    "phrase": "mouton",
+    "character": "mochi",
+    "file": "image-mouton-499dc7762331.wav",
+    "prompt_hash": "499dc7762331",
+    "available": true
+  },
+  {
+    "phrase": "mue",
+    "character": "mochi",
+    "file": "syllable-mu-ba95083ead5a.wav",
+    "prompt_hash": "ba95083ead5a",
+    "available": true
+  },
+  {
+    "phrase": "muguet",
+    "character": "mochi",
+    "file": "image-muguet-0680dacd092e.wav",
+    "prompt_hash": "0680dacd092e",
+    "available": true
+  },
+  {
+    "phrase": "n",
+    "character": "mochi",
+    "file": "letter-n-2ca0d8c268cf.wav",
+    "prompt_hash": "2ca0d8c268cf",
+    "available": true
+  },
+  {
+    "phrase": "n chante dans le nez. avec a : na!",
+    "character": "yuki",
+    "file": "story-yuki-n-chante-dans-le-nez-avec-a-na-f033c4-510ae643d191.wav",
+    "prompt_hash": "510ae643d191",
+    "available": true
+  },
+  {
+    "phrase": "na",
+    "character": "mochi",
+    "file": "syllable-na-6764c2e9c700.wav",
+    "prompt_hash": "6764c2e9c700",
+    "available": true
+  },
+  {
+    "phrase": "né",
+    "character": "mochi",
+    "file": "syllable-ne-4a6b496a1c62.wav",
+    "prompt_hash": "4a6b496a1c62",
+    "available": true
+  },
+  {
+    "phrase": "neuf",
+    "character": "yuki",
+    "file": "math-number-09-neuf-a504ee1c26d7.wav",
+    "prompt_hash": "a504ee1c26d7",
+    "available": true
+  },
+  {
+    "phrase": "nez",
+    "character": "mochi",
+    "file": "image-nez-5fd1366b2132.wav",
+    "prompt_hash": "5fd1366b2132",
+    "available": true
+  },
+  {
+    "phrase": "nid",
+    "character": "mochi",
+    "file": "syllable-ni-7f3bb8b559d8.wav",
+    "prompt_hash": "7f3bb8b559d8",
+    "available": true
+  },
+  {
+    "phrase": "nos",
+    "character": "mochi",
+    "file": "syllable-no-1920b17eaa64.wav",
+    "prompt_hash": "1920b17eaa64",
+    "available": true
+  },
+  {
+    "phrase": "nouille",
+    "character": "mochi",
+    "file": "image-nouille-59007959d2fb.wav",
+    "prompt_hash": "59007959d2fb",
+    "available": true
+  },
+  {
+    "phrase": "nounours",
+    "character": "mochi",
+    "file": "image-nounours-724a3f76de75.wav",
+    "prompt_hash": "724a3f76de75",
+    "available": true
+  },
+  {
+    "phrase": "nous",
+    "character": "mochi",
+    "file": "syllable-nou-beb464a748c4.wav",
+    "prompt_hash": "beb464a748c4",
+    "available": true
+  },
+  {
+    "phrase": "novembre",
+    "character": "mochi",
+    "file": "image-novembre-43b2e6b8a0cb.wav",
+    "prompt_hash": "43b2e6b8a0cb",
+    "available": true
+  },
+  {
+    "phrase": "nu",
+    "character": "mochi",
+    "file": "syllable-nu-6c80218be6de.wav",
+    "prompt_hash": "6c80218be6de",
+    "available": true
+  },
+  {
+    "phrase": "numéro",
+    "character": "mochi",
+    "file": "image-numero-5c2e060dbbce.wav",
+    "prompt_hash": "5c2e060dbbce",
+    "available": true
+  },
+  {
+    "phrase": "oh",
+    "character": "mochi",
+    "file": "syllable-o-b08dd69a07ab.wav",
+    "prompt_hash": "b08dd69a07ab",
+    "available": true
+  },
+  {
+    "phrase": "olive",
+    "character": "mochi",
+    "file": "image-olive-d422b410d070.wav",
+    "prompt_hash": "d422b410d070",
+    "available": true
+  },
+  {
+    "phrase": "onze",
+    "character": "yuki",
+    "file": "math-number-11-onze-3e09b00fc291.wav",
+    "prompt_hash": "3e09b00fc291",
+    "available": true
+  },
+  {
+    "phrase": "orange",
+    "character": "mochi",
+    "file": "image-orange-f75e293a3196.wav",
+    "prompt_hash": "f75e293a3196",
+    "available": true
+  },
+  {
+    "phrase": "oreille",
+    "character": "mochi",
+    "file": "image-oreille-3d7f827a2659.wav",
+    "prompt_hash": "3d7f827a2659",
+    "available": true
+  },
+  {
+    "phrase": "où",
+    "character": "mochi",
+    "file": "syllable-ou-8fdb0940e9ed.wav",
+    "prompt_hash": "8fdb0940e9ed",
+    "available": true
+  },
+  {
+    "phrase": "oui, c'est ça !",
+    "character": "mochi",
+    "file": "cheer-oui-cest-ca-849b4d16dbd6.wav",
+    "prompt_hash": "849b4d16dbd6",
+    "available": true
+  },
+  {
+    "phrase": "oups ! encore une fois.",
+    "character": "mochi",
+    "file": "try-oups-encore-59274aad6211.wav",
+    "prompt_hash": "59274aad6211",
+    "available": true
+  },
+  {
+    "phrase": "ouragan",
+    "character": "mochi",
+    "file": "image-ouragan-d1e6f890d205.wav",
+    "prompt_hash": "d1e6f890d205",
+    "available": true
+  },
+  {
+    "phrase": "outil",
+    "character": "mochi",
+    "file": "image-outil-0897fb57cc3b.wav",
+    "prompt_hash": "0897fb57cc3b",
+    "available": true
+  },
+  {
+    "phrase": "p",
+    "character": "mochi",
+    "file": "letter-p-f5317f7306a8.wav",
+    "prompt_hash": "f5317f7306a8",
+    "available": true
+  },
+  {
+    "phrase": "p fait un petit bruit qui éclate comme une bulle. avec a : pas!",
+    "character": "yuki",
+    "file": "story-yuki-p-fait-un-petit-bruit-qui-eclate-comme-une-bulle-avec-a-9773dc-9afab3d6745a.wav",
+    "prompt_hash": "9afab3d6745a",
+    "available": true
+  },
+  {
+    "phrase": "panda",
+    "character": "mochi",
+    "file": "image-panda-5035382d551c.wav",
+    "prompt_hash": "5035382d551c",
+    "available": true
+  },
+  {
+    "phrase": "pantalon",
+    "character": "mochi",
+    "file": "image-pantalon-1642f1b4c19f.wav",
+    "prompt_hash": "1642f1b4c19f",
+    "available": true
+  },
+  {
+    "phrase": "papa",
+    "character": "mochi",
+    "file": "image-papa-67cf2b675c81.wav",
+    "prompt_hash": "67cf2b675c81",
+    "available": true
+  },
+  {
+    "phrase": "papillon",
+    "character": "mochi",
+    "file": "image-papillon-def03d6ca562.wav",
+    "prompt_hash": "def03d6ca562",
+    "available": true
+  },
+  {
+    "phrase": "parachute",
+    "character": "mochi",
+    "file": "image-parachute-cf4cae70b081.wav",
+    "prompt_hash": "cf4cae70b081",
+    "available": true
+  },
+  {
+    "phrase": "parapluie",
+    "character": "mochi",
+    "file": "image-parapluie-325231adbbc5.wav",
+    "prompt_hash": "325231adbbc5",
+    "available": true
+  },
+  {
+    "phrase": "parfait !",
+    "character": "yuki",
+    "file": "math-praise-perfect-ede4a6935cfd.wav",
+    "prompt_hash": "ede4a6935cfd",
+    "available": true
+  },
+  {
+    "phrase": "pas",
+    "character": "mochi",
+    "file": "syllable-pa-2cb4ad2a68b7.wav",
+    "prompt_hash": "2cb4ad2a68b7",
+    "available": true
+  },
+  {
+    "phrase": "patate",
+    "character": "mochi",
+    "file": "image-patate-11478bbde5cf.wav",
+    "prompt_hash": "11478bbde5cf",
+    "available": true
+  },
+  {
+    "phrase": "pé",
+    "character": "mochi",
+    "file": "syllable-pe-144b6962d7b3.wav",
+    "prompt_hash": "144b6962d7b3",
+    "available": true
+  },
+  {
+    "phrase": "petites histoires de calcul",
+    "character": "yuki",
+    "file": "math-title-histoires-d124edb3135e.wav",
+    "prompt_hash": "d124edb3135e",
+    "available": true
+  },
+  {
+    "phrase": "pfiou! fifi s'envole! fa, fi, faux, fut, fée, fou!",
+    "character": "yuki",
+    "file": "story-yuki-pfiou-fifi-s-envole-fa-fi-faux-fut-fee-fou-2564ec-5b44e6c3c4ad.wav",
+    "prompt_hash": "5b44e6c3c4ad",
+    "available": true
+  },
+  {
+    "phrase": "photo",
+    "character": "mochi",
+    "file": "image-photo-60c9b5e2e05f.wav",
+    "prompt_hash": "60c9b5e2e05f",
+    "available": true
+  },
+  {
+    "phrase": "pie",
+    "character": "mochi",
+    "file": "syllable-pi-9a17cc496ba2.wav",
+    "prompt_hash": "9a17cc496ba2",
+    "available": true
+  },
+  {
+    "phrase": "pile",
+    "character": "mochi",
+    "file": "image-pile-9ff3d3334464.wav",
+    "prompt_hash": "9ff3d3334464",
+    "available": true
+  },
+  {
+    "phrase": "pilule",
+    "character": "mochi",
+    "file": "image-pilule-a17f084eeae4.wav",
+    "prompt_hash": "a17f084eeae4",
+    "available": true
+  },
+  {
+    "phrase": "pirate",
+    "character": "mochi",
+    "file": "image-pirate-819076fd1da1.wav",
+    "prompt_hash": "819076fd1da1",
+    "available": true
+  },
+  {
+    "phrase": "plus",
+    "character": "yuki",
+    "file": "math-op-plus-d09ab8e162ce.wav",
+    "prompt_hash": "d09ab8e162ce",
+    "available": true
+  },
+  {
+    "phrase": "plus combien font",
+    "character": "yuki",
+    "file": "math-prompt-plus-missing-f712011bd136.wav",
+    "prompt_hash": "f712011bd136",
+    "available": true
+  },
+  {
+    "phrase": "pomme",
+    "character": "mochi",
+    "file": "image-pomme-d4d6286f7cb2.wav",
+    "prompt_hash": "d4d6286f7cb2",
+    "available": true
+  },
+  {
+    "phrase": "poney",
+    "character": "mochi",
+    "file": "image-poney-f870fa52c0e4.wav",
+    "prompt_hash": "f870fa52c0e4",
+    "available": true
+  },
+  {
+    "phrase": "pot",
+    "character": "mochi",
+    "file": "syllable-po-036a519be5d2.wav",
+    "prompt_hash": "036a519be5d2",
+    "available": true
+  },
+  {
+    "phrase": "potiron",
+    "character": "mochi",
+    "file": "image-potiron-b57f76c02d63.wav",
+    "prompt_hash": "b57f76c02d63",
+    "available": true
+  },
+  {
+    "phrase": "pou",
+    "character": "mochi",
+    "file": "syllable-pou-5d0ec77d7fb9.wav",
+    "prompt_hash": "5d0ec77d7fb9",
+    "available": true
+  },
+  {
+    "phrase": "poule",
+    "character": "mochi",
+    "file": "image-poule-b315e0b8affd.wav",
+    "prompt_hash": "b315e0b8affd",
+    "available": true
+  },
+  {
+    "phrase": "poupée",
+    "character": "mochi",
+    "file": "image-poupee-5c4fac00bff5.wav",
+    "prompt_hash": "5c4fac00bff5",
+    "available": true
+  },
+  {
+    "phrase": "pour les battre, il faut apprendre les sons. on commence par les voyelles : a, i, oh, u, é et où!",
+    "character": "yuki",
+    "file": "story-yuki-pour-les-battre-il-faut-apprendre-les-sons-on-co-b09cbc82283a.wav",
+    "prompt_hash": "b09cbc82283a",
+    "available": true
+  },
+  {
+    "phrase": "poussin",
+    "character": "mochi",
+    "file": "image-poussin-cc0ce84fc76e.wav",
+    "prompt_hash": "cc0ce84fc76e",
+    "available": true
+  },
+  {
+    "phrase": "presque ! réessaie.",
+    "character": "mochi",
+    "file": "try-presque-reessaie-4432748cd7b6.wav",
+    "prompt_hash": "4432748cd7b6",
+    "available": true
+  },
+  {
+    "phrase": "pu",
+    "character": "mochi",
+    "file": "syllable-pu-4337c97e4dc8.wav",
+    "prompt_hash": "4337c97e4dc8",
+    "available": true
+  },
+  {
+    "phrase": "punaise",
+    "character": "mochi",
+    "file": "image-punaise-784be8588315.wav",
+    "prompt_hash": "784be8588315",
+    "available": true
+  },
+  {
+    "phrase": "quatorze",
+    "character": "yuki",
+    "file": "math-number-14-quatorze-a3e6f28a93ce.wav",
+    "prompt_hash": "a3e6f28a93ce",
+    "available": true
+  },
+  {
+    "phrase": "quatre",
+    "character": "yuki",
+    "file": "math-number-04-quatre-a2b4a92a4b07.wav",
+    "prompt_hash": "a2b4a92a4b07",
+    "available": true
+  },
+  {
+    "phrase": "quel nombre manque ?",
+    "character": "yuki",
+    "file": "math-prompt-missing-f4e38aca4408.wav",
+    "prompt_hash": "f4e38aca4408",
+    "available": true
+  },
+  {
+    "phrase": "quinze",
+    "character": "yuki",
+    "file": "math-number-15-quinze-85f9fa3c7e4a.wav",
+    "prompt_hash": "85f9fa3c7e4a",
+    "available": true
+  },
+  {
+    "phrase": "r",
+    "character": "mochi",
+    "file": "letter-r-73b55d5a95d0.wav",
+    "prompt_hash": "73b55d5a95d0",
+    "available": true
+  },
+  {
+    "phrase": "r roule dans la gorge. avec a, ça fait rat!",
+    "character": "mochi",
+    "file": "story-mochi-r-roule-dans-la-gorge-avec-a-ca-fait-rat-df8e1c-90ee092c96f2.wav",
+    "prompt_hash": "90ee092c96f2",
+    "available": true
+  },
+  {
+    "phrase": "radio",
+    "character": "mochi",
+    "file": "image-radio-6bd61ea81325.wav",
+    "prompt_hash": "6bd61ea81325",
+    "available": true
+  },
+  {
+    "phrase": "rakoro s'est enfui! rat, riz, rot, rue, ré, roue : super!",
+    "character": "yuki",
+    "file": "story-yuki-rakoro-s-est-enfui-rat-riz-rot-rue-re-roue-super-31cfa3-64064f2f5236.wav",
+    "prompt_hash": "64064f2f5236",
+    "available": true
+  },
+  {
+    "phrase": "rat",
+    "character": "mochi",
+    "file": "syllable-ra-7c0730d84024.wav",
+    "prompt_hash": "7c0730d84024",
+    "available": true
+  },
+  {
+    "phrase": "ré",
+    "character": "mochi",
+    "file": "syllable-re-60351e6e4a32.wav",
+    "prompt_hash": "60351e6e4a32",
+    "available": true
+  },
+  {
+    "phrase": "regarde la syllabe. touche les bulles pour les écouter, puis choisis celle qui chante la bonne syllabe.",
+    "character": "mochi",
+    "file": "mission-see-sound-c6696fe14c85.wav",
+    "prompt_hash": "c6696fe14c85",
+    "available": true
+  },
+  {
+    "phrase": "retourne deux cartes. trouve une syllabe et l'image qui commence par ce son !",
+    "character": "mochi",
+    "file": "mission-memory-f295a72b7d37.wav",
+    "prompt_hash": "f295a72b7d37",
+    "available": true
+  },
+  {
+    "phrase": "réveil",
+    "character": "mochi",
+    "file": "image-reveil-64e8d5f22121.wav",
+    "prompt_hash": "64e8d5f22121",
+    "available": true
+  },
+  {
+    "phrase": "rhinocéros",
+    "character": "mochi",
+    "file": "image-rhinoceros-514c76bfc27f.wav",
+    "prompt_hash": "514c76bfc27f",
+    "available": true
+  },
+  {
+    "phrase": "riz",
+    "character": "mochi",
+    "file": "syllable-ri-63b143ba9e48.wav",
+    "prompt_hash": "63b143ba9e48",
+    "available": true
+  },
+  {
+    "phrase": "robe",
+    "character": "mochi",
+    "file": "image-robe-10fc12b3284b.wav",
+    "prompt_hash": "10fc12b3284b",
+    "available": true
+  },
+  {
+    "phrase": "robot",
+    "character": "mochi",
+    "file": "image-robot-8a0b5db2bb89.wav",
+    "prompt_hash": "8a0b5db2bb89",
+    "available": true
+  },
+  {
+    "phrase": "Roi Chuuut",
+    "character": "mochi",
+    "file": "character-name-roi-chuuut-1a720f6e08c0.wav",
+    "prompt_hash": "1a720f6e08c0",
+    "available": true
+  },
+  {
+    "phrase": "rose",
+    "character": "mochi",
+    "file": "image-rose-c09908e6b811.wav",
+    "prompt_hash": "c09908e6b811",
+    "available": true
+  },
+  {
+    "phrase": "rot",
+    "character": "mochi",
+    "file": "syllable-ro-02d45ed69474.wav",
+    "prompt_hash": "02d45ed69474",
+    "available": true
+  },
+  {
+    "phrase": "roue",
+    "character": "mochi",
+    "file": "syllable-rou-e79bb54ae4ca.wav",
+    "prompt_hash": "e79bb54ae4ca",
+    "available": true
+  },
+  {
+    "phrase": "route",
+    "character": "mochi",
+    "file": "image-route-05518a95d631.wav",
+    "prompt_hash": "05518a95d631",
+    "available": true
+  },
+  {
+    "phrase": "rrrr! tu entends? c'est rakoro qui grogne près de la rivière!",
+    "character": "yuki",
+    "file": "story-yuki-rrrr-tu-entends-c-est-rakoro-qui-grogne-pres-de-la-rivi-1475fc-19a505a006b8.wav",
+    "prompt_hash": "19a505a006b8",
+    "available": true
+  },
+  {
+    "phrase": "ruban",
+    "character": "mochi",
+    "file": "image-ruban-1ec535db7ec7.wav",
+    "prompt_hash": "1ec535db7ec7",
+    "available": true
+  },
+  {
+    "phrase": "rue",
+    "character": "mochi",
+    "file": "syllable-ru-0a4719fb07ad.wav",
+    "prompt_hash": "0a4719fb07ad",
+    "available": true
+  },
+  {
+    "phrase": "s",
+    "character": "mochi",
+    "file": "letter-s-005259dc8257.wav",
+    "prompt_hash": "005259dc8257",
+    "available": true
+  },
+  {
+    "phrase": "sa",
+    "character": "mochi",
+    "file": "syllable-sa-91b828c8ced3.wav",
+    "prompt_hash": "91b828c8ced3",
+    "available": true
+  },
+  {
+    "phrase": "salade",
+    "character": "mochi",
+    "file": "image-salade-4b350f6538b7.wav",
+    "prompt_hash": "4b350f6538b7",
+    "available": true
+  },
+  {
+    "phrase": "sandale",
+    "character": "mochi",
+    "file": "image-sandale-c72d0ce8c4fb.wav",
+    "prompt_hash": "c72d0ce8c4fb",
+    "available": true
+  },
+  {
+    "phrase": "sapin",
+    "character": "mochi",
+    "file": "image-sapin-d03e30a2b4c8.wav",
+    "prompt_hash": "d03e30a2b4c8",
+    "available": true
+  },
+  {
+    "phrase": "scie",
+    "character": "mochi",
+    "file": "image-scie-2904c1d72323.wav",
+    "prompt_hash": "2904c1d72323",
+    "available": true
+  },
+  {
+    "phrase": "seau",
+    "character": "mochi",
+    "file": "syllable-so-363f5b0179e5.wav",
+    "prompt_hash": "363f5b0179e5",
+    "available": true
+  },
+  {
+    "phrase": "seize",
+    "character": "yuki",
+    "file": "math-number-16-seize-263444e9912a.wav",
+    "prompt_hash": "263444e9912a",
+    "available": true
+  },
+  {
+    "phrase": "sept",
+    "character": "yuki",
+    "file": "math-number-07-sept-fa26e10ddd42.wav",
+    "prompt_hash": "fa26e10ddd42",
+    "available": true
+  },
+  {
+    "phrase": "ses",
+    "character": "mochi",
+    "file": "syllable-se-dc42302f5310.wav",
+    "prompt_hash": "dc42302f5310",
+    "available": true
+  },
+  {
+    "phrase": "si",
+    "character": "mochi",
+    "file": "syllable-si-2130c5ba20af.wav",
+    "prompt_hash": "2130c5ba20af",
+    "available": true
+  },
+  {
+    "phrase": "sirène",
+    "character": "mochi",
+    "file": "image-sirene-bd8b617f9611.wav",
+    "prompt_hash": "bd8b617f9611",
+    "available": true
+  },
+  {
+    "phrase": "six",
+    "character": "yuki",
+    "file": "math-number-06-six-24435a0c4628.wav",
+    "prompt_hash": "24435a0c4628",
+    "available": true
+  },
+  {
+    "phrase": "sofa",
+    "character": "mochi",
+    "file": "image-sofa-2bf80b8bafd6.wav",
+    "prompt_hash": "2bf80b8bafd6",
+    "available": true
+  },
+  {
+    "phrase": "soleil",
+    "character": "mochi",
+    "file": "image-soleil-ef45e87be27e.wav",
+    "prompt_hash": "ef45e87be27e",
+    "available": true
+  },
+  {
+    "phrase": "sou",
+    "character": "mochi",
+    "file": "syllable-sou-a2f50a312020.wav",
+    "prompt_hash": "a2f50a312020",
+    "available": true
+  },
+  {
+    "phrase": "soupe",
+    "character": "mochi",
+    "file": "image-soupe-e358ab6ecf00.wav",
+    "prompt_hash": "e358ab6ecf00",
+    "available": true
+  },
+  {
+    "phrase": "sourire",
+    "character": "mochi",
+    "file": "image-sourire-d778de06c71b.wav",
+    "prompt_hash": "d778de06c71b",
+    "available": true
+  },
+  {
+    "phrase": "souris",
+    "character": "mochi",
+    "file": "image-souris-1e5e9f951f70.wav",
+    "prompt_hash": "1e5e9f951f70",
+    "available": true
+  },
+  {
+    "phrase": "stylo",
+    "character": "mochi",
+    "file": "image-stylo-60256af17ee5.wav",
+    "prompt_hash": "60256af17ee5",
+    "available": true
+  },
+  {
+    "phrase": "su",
+    "character": "mochi",
+    "file": "syllable-su-d2ec16540f3b.wav",
+    "prompt_hash": "d2ec16540f3b",
+    "available": true
+  },
+  {
+    "phrase": "sucette",
+    "character": "mochi",
+    "file": "image-sucette-7adfb99bce9b.wav",
+    "prompt_hash": "7adfb99bce9b",
+    "available": true
+  },
+  {
+    "phrase": "super !",
+    "character": "mochi",
+    "file": "cheer-super-287dd0a0e4df.wav",
+    "prompt_hash": "287dd0a0e4df",
+    "available": true
+  },
+  {
+    "phrase": "sushi",
+    "character": "mochi",
+    "file": "image-sushi-326831ecaca5.wav",
+    "prompt_hash": "326831ecaca5",
+    "available": true
+  },
+  {
+    "phrase": "t",
+    "character": "mochi",
+    "file": "letter-t-4979a8472319.wav",
+    "prompt_hash": "4979a8472319",
+    "available": true
+  },
+  {
+    "phrase": "ta",
+    "character": "mochi",
+    "file": "syllable-ta-77843a0c17c0.wav",
+    "prompt_hash": "77843a0c17c0",
+    "available": true
+  },
+  {
+    "phrase": "taxi",
+    "character": "mochi",
+    "file": "image-taxi-489de2db8dfa.wav",
+    "prompt_hash": "489de2db8dfa",
+    "available": true
+  },
+  {
+    "phrase": "télé",
+    "character": "mochi",
+    "file": "image-tele-103955883f84.wav",
+    "prompt_hash": "103955883f84",
+    "available": true
+  },
+  {
+    "phrase": "téléphone",
+    "character": "mochi",
+    "file": "image-telephone-f39188346fbe.wav",
+    "prompt_hash": "f39188346fbe",
+    "available": true
+  },
+  {
+    "phrase": "thé",
+    "character": "mochi",
+    "file": "syllable-te-69740b63c155.wav",
+    "prompt_hash": "69740b63c155",
+    "available": true
+  },
+  {
+    "phrase": "ti",
+    "character": "mochi",
+    "file": "syllable-ti-c971bde79fff.wav",
+    "prompt_hash": "c971bde79fff",
+    "available": true
+  },
+  {
+    "phrase": "tigre",
+    "character": "mochi",
+    "file": "image-tigre-b6f20eef4652.wav",
+    "prompt_hash": "b6f20eef4652",
+    "available": true
+  },
+  {
+    "phrase": "tomate",
+    "character": "mochi",
+    "file": "image-tomate-3197b7d0cd5a.wav",
+    "prompt_hash": "3197b7d0cd5a",
+    "available": true
+  },
+  {
+    "phrase": "tortue",
+    "character": "mochi",
+    "file": "image-tortue-210e31c46a5f.wav",
+    "prompt_hash": "210e31c46a5f",
+    "available": true
+  },
+  {
+    "phrase": "tôt",
+    "character": "mochi",
+    "file": "syllable-to-0d2f2f5eac23.wav",
+    "prompt_hash": "0d2f2f5eac23",
+    "available": true
+  },
+  {
+    "phrase": "tout",
+    "character": "mochi",
+    "file": "syllable-tou-a0b72cc60be9.wav",
+    "prompt_hash": "a0b72cc60be9",
+    "available": true
+  },
+  {
+    "phrase": "treize",
+    "character": "yuki",
+    "file": "math-number-13-treize-34f3f5436800.wav",
+    "prompt_hash": "34f3f5436800",
+    "available": true
+  },
+  {
+    "phrase": "trois",
+    "character": "yuki",
+    "file": "math-number-03-trois-39d0d6ed7f06.wav",
+    "prompt_hash": "39d0d6ed7f06",
+    "available": true
+  },
+  {
+    "phrase": "trois étoiles !",
+    "character": "yuki",
+    "file": "math-praise-three-stars-4bf23b2172c0.wav",
+    "prompt_hash": "4bf23b2172c0",
+    "available": true
+  },
+  {
+    "phrase": "trop forte !",
+    "character": "mochi",
+    "file": "cheer-trop-forte-d15dfd1f8d15.wav",
+    "prompt_hash": "d15dfd1f8d15",
+    "available": true
+  },
+  {
+    "phrase": "trouve deux images où on entend le son :",
+    "character": "mochi",
+    "file": "mission-find-two-heard-sound-50494326a27a.wav",
+    "prompt_hash": "50494326a27a",
+    "available": true
+  },
+  {
+    "phrase": "trouve deux images qui commencent par le son :",
+    "character": "mochi",
+    "file": "mission-find-two-start-sound-62086b906b08.wav",
+    "prompt_hash": "62086b906b08",
+    "available": true
+  },
+  {
+    "phrase": "trouve trois images où on entend le son :",
+    "character": "mochi",
+    "file": "mission-find-three-heard-sound-7c0eac25e6f2.wav",
+    "prompt_hash": "7c0eac25e6f2",
+    "available": true
+  },
+  {
+    "phrase": "trouve trois images qui commencent par le son :",
+    "character": "mochi",
+    "file": "mission-find-three-start-sound-286d4206a42a.wav",
+    "prompt_hash": "286d4206a42a",
+    "available": true
+  },
+  {
+    "phrase": "trouve une image où on entend le son :",
+    "character": "mochi",
+    "file": "mission-find-one-heard-sound-52c435439c51.wav",
+    "prompt_hash": "52c435439c51",
+    "available": true
+  },
+  {
+    "phrase": "trouve une image qui commence par le son :",
+    "character": "mochi",
+    "file": "mission-find-one-start-sound-2ba34cc9e3d3.wav",
+    "prompt_hash": "2ba34cc9e3d3",
+    "available": true
+  },
+  {
+    "phrase": "tu",
+    "character": "mochi",
+    "file": "syllable-tu-585ce41f0ec3.wav",
+    "prompt_hash": "585ce41f0ec3",
+    "available": true
+  },
+  {
+    "phrase": "tu peux rejouer pour gagner plus d'étoiles.",
+    "character": "yuki",
+    "file": "math-praise-replay-7fe4f9a56807.wav",
+    "prompt_hash": "7fe4f9a56807",
+    "available": true
+  },
+  {
+    "phrase": "tu peux rejouer toutes les missions pour gagner encore plus d'étoiles!",
+    "character": "mochi",
+    "file": "story-mochi-tu-peux-rejouer-toutes-les-missions-6d614967c528.wav",
+    "prompt_hash": "6d614967c528",
+    "available": true
+  },
+  {
+    "phrase": "tulipe",
+    "character": "mochi",
+    "file": "image-tulipe-5fc3b325e8e8.wav",
+    "prompt_hash": "5fc3b325e8e8",
+    "available": true
+  },
+  {
+    "phrase": "u",
+    "character": "mochi",
+    "file": "syllable-u-ac23fb72d2e4.wav",
+    "prompt_hash": "ac23fb72d2e4",
+    "available": true
+  },
+  {
+    "phrase": "un",
+    "character": "yuki",
+    "file": "math-number-01-un-5537ab41a03b.wav",
+    "prompt_hash": "5537ab41a03b",
+    "available": true
+  },
+  {
+    "phrase": "un démon a cassé le mot ! écoute le mot, et trouve la syllabe qui manque.",
+    "character": "mochi",
+    "file": "mission-missing-8022bb12a9a6.wav",
+    "prompt_hash": "8022bb12a9a6",
+    "available": true
+  },
+  {
+    "phrase": "un démon lézard a caché la lettre l dans le parc!",
+    "character": "mochi",
+    "file": "story-mochi-un-demon-lezard-a-cache-la-lettre-l-dans-le-parc-a78351-52432d7cf356.wav",
+    "prompt_hash": "52432d7cf356",
+    "available": true
+  },
+  {
+    "phrase": "un pirate-poulpe a volé la lettre p dans son bateau!",
+    "character": "mochi",
+    "file": "story-mochi-un-pirate-poulpe-a-vole-la-lettre-p-dans-son-bateau-56d1ac-76a4d64928af.wav",
+    "prompt_hash": "76a4d64928af",
+    "available": true
+  },
+  {
+    "phrase": "univers",
+    "character": "mochi",
+    "file": "image-univers-b56db0154f56.wav",
+    "prompt_hash": "b56db0154f56",
+    "available": true
+  },
+  {
+    "phrase": "usine",
+    "character": "mochi",
+    "file": "image-usine-383508f15320.wav",
+    "prompt_hash": "383508f15320",
+    "available": true
+  },
+  {
+    "phrase": "v",
+    "character": "mochi",
+    "file": "letter-v-c927cd755aa5.wav",
+    "prompt_hash": "c927cd755aa5",
+    "available": true
+  },
+  {
+    "phrase": "v vibre comme une abeille. avec a : va!",
+    "character": "mochi",
+    "file": "story-mochi-v-vibre-comme-une-abeille-avec-a-va-df8ed7-c744054cc1ca.wav",
+    "prompt_hash": "c744054cc1ca",
+    "available": true
+  },
+  {
+    "phrase": "va",
+    "character": "mochi",
+    "file": "syllable-va-a7e3669bbeb5.wav",
+    "prompt_hash": "a7e3669bbeb5",
+    "available": true
+  },
+  {
+    "phrase": "vache",
+    "character": "mochi",
+    "file": "image-vache-503a290867b1.wav",
+    "prompt_hash": "503a290867b1",
+    "available": true
+  },
+  {
+    "phrase": "valise",
+    "character": "mochi",
+    "file": "image-valise-a72cc859653c.wav",
+    "prompt_hash": "a72cc859653c",
+    "available": true
+  },
+  {
+    "phrase": "vampire",
+    "character": "mochi",
+    "file": "image-vampire-a7c35f8b6039.wav",
+    "prompt_hash": "a7c35f8b6039",
+    "available": true
+  },
+  {
+    "phrase": "vé",
+    "character": "mochi",
+    "file": "syllable-ve-3684ac35a754.wav",
+    "prompt_hash": "3684ac35a754",
+    "available": true
+  },
+  {
+    "phrase": "veau",
+    "character": "mochi",
+    "file": "syllable-vo-aa538f451ae6.wav",
+    "prompt_hash": "aa538f451ae6",
+    "available": true
+  },
+  {
+    "phrase": "vélo",
+    "character": "mochi",
+    "file": "image-velo-e5b223f03edf.wav",
+    "prompt_hash": "e5b223f03edf",
+    "available": true
+  },
+  {
+    "phrase": "vidéo",
+    "character": "mochi",
+    "file": "image-video-f7f968bf6d5c.wav",
+    "prompt_hash": "f7f968bf6d5c",
+    "available": true
+  },
+  {
+    "phrase": "vie",
+    "character": "mochi",
+    "file": "syllable-vi-5c4aed27eaea.wav",
+    "prompt_hash": "5c4aed27eaea",
+    "available": true
+  },
+  {
+    "phrase": "vingt",
+    "character": "yuki",
+    "file": "math-number-20-vingt-ea73e6d771f4.wav",
+    "prompt_hash": "ea73e6d771f4",
+    "available": true
+  },
+  {
+    "phrase": "vipère",
+    "character": "mochi",
+    "file": "image-vipere-c21f6ca35e0d.wav",
+    "prompt_hash": "c21f6ca35e0d",
+    "available": true
+  },
+  {
+    "phrase": "virus",
+    "character": "mochi",
+    "file": "image-virus-9790f835100b.wav",
+    "prompt_hash": "9790f835100b",
+    "available": true
+  },
+  {
+    "phrase": "voiture",
+    "character": "mochi",
+    "file": "image-voiture-5ab50e62b61c.wav",
+    "prompt_hash": "5ab50e62b61c",
+    "available": true
+  },
+  {
+    "phrase": "vous",
+    "character": "mochi",
+    "file": "syllable-vou-d7ecc6215e27.wav",
+    "prompt_hash": "d7ecc6215e27",
+    "available": true
+  },
+  {
+    "phrase": "vu",
+    "character": "mochi",
+    "file": "syllable-vu-ab5517ec1085.wav",
+    "prompt_hash": "ab5517ec1085",
+    "available": true
+  },
+  {
+    "phrase": "Yuki",
+    "character": "mochi",
+    "file": "character-name-yuki-6d0ae18819a4.wav",
+    "prompt_hash": "6d0ae18819a4",
+    "available": true
+  },
+  {
+    "phrase": "Zélane",
+    "character": "mochi",
+    "file": "character-name-zelane-f057111252a0.wav",
+    "prompt_hash": "f057111252a0",
+    "available": true
+  },
+  {
+    "phrase": "zéro",
+    "character": "yuki",
+    "file": "math-number-00-zero-d774838cacf3.wav",
+    "prompt_hash": "d774838cacf3",
+    "available": true
+  }
+]

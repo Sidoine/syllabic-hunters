@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Line } from "../data/chapter";
+import { dialogueAudioFile } from "../data/dialogue";
 import { SAY } from "../data/syllables";
 import { speak, stopSpeech } from "../lib/speech";
 
@@ -37,9 +38,11 @@ export function DialogScreen({
 	const { autoRead, hero } = useGame();
 	const line = lines[i];
 	const text = playerText(line.text, hero);
+	const masculineHero = hero === "milo";
+	const character = line.who === "hero" ? (masculineHero ? "hero_male" : "hero_female") : line.who;
 	const speechOptions = useMemo(
-		() => ({ recordedText: text, ...(line.who === "hero" ? { masculine: hero === "milo" } : {}) }),
-		[line.who, text, hero],
+		() => ({ recordedText: text, character, file: dialogueAudioFile(line, masculineHero), masculine: masculineHero }),
+		[line, character, masculineHero, text],
 	);
 	const info = line.who === "hero" ? HERO_INFO[hero] ?? HERO_INFO.hana : SPEAKER_INFO[line.who] ?? SPEAKER_INFO.mochi;
 	const left = line.who !== "king";

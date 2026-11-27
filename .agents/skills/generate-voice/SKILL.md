@@ -7,7 +7,7 @@ description: Génère et régénère les répliques vocales françaises du jeu a
 
 Les voix du jeu sont générées avec **Qwen3-TTS 1.7B Base**, en clonant une référence audio propre à chaque personnage. Les références et leurs transcriptions sont définies dans [voice_profiles.json](voice_profiles.json) et stockées dans `assets/input/references/voice/`. Le générateur réutilise le même profil pour toutes les répliques d'un personnage. Les références manquantes sont créées avec **VoiceDesign**, puis les répliques sont synthétisées par **Base**.
 
-Le catalogue [voices.json](voices.json) est généré depuis les dialogues de `src/data/` et les associations de sons du jeu. Après toute modification des dialogues ou des sons préenregistrés, le reconstruire avec `npm run voice:catalog`. Voice Review et ce skill utilisent ce même catalogue : il indique les textes, profils et fichiers attendus, y compris ceux qui restent à générer.
+Le catalogue de génération [voices.json](voices.json) est construit directement depuis `src/data/reading-chapters.json`, `src/data/math-chapters.json` et les autres sons utilisés par le jeu. Il contient le nom de sortie avec un hash du prompt complet. Les dialogues restent déclarés dans leurs chapitres, dont chaque ligne porte ses `audio_files` par personnage; `src/data/voices.json` ne répète que les sons transversaux, avec leur phrase, personnage, fichier et hash. Reconstruire les catalogues après une modification avec `npm run voice:catalog`. Le jeu ne prononce que les fichiers déclarés par les chapitres ou `src/data/voices.json` et n’utilise pas la synthèse vocale du navigateur.
 
 Le script `scripts/generate_voice.py` réutilise le venv de ComfyUI et une surcouche Python isolée (transformers 4.57.3 + `qwen-tts`). Il ne modifie pas le venv de ComfyUI. Les modèles sont conservés dans `<ComfyUI>/models/qwen-tts/`.
 
@@ -55,7 +55,7 @@ Options : `--speaker`, `--only a,b`, `--force`, `--variants N`, `--seed N`, `--t
 
 `voice_profiles.json` relie un identifiant de profil à une référence audio et à sa transcription exacte. Ne remplace pas une référence validée sans écouter les nouveaux candidats. Les profils `default`, `hana`, `yuki`, `mia`, `mochi`, `king`, `hero-masculine` et `hero-feminine` ont chacun une identité stable.
 
-Les textes peuvent contenir `[masculin|féminin]`. Le manifeste crée alors les deux fichiers suffixés `-masculine.wav` et `-feminine.wav` et assigne chaque variante à son profil vocal dédié. À la lecture, l'application choisit le fichier selon le genre explicite du personnage.
+Les répliques du héros produisent deux fichiers, l’un pour `hero_male`, l’autre pour `hero_female`, avec le hash de chaque prompt en suffixe. Les deux profils vocaux dédiés sont affectés dans `audio_files`; à la lecture, l’application choisit le fichier du héros sélectionné.
 
 Pour une nouvelle réplique de scène, l’ajouter aux structures de dialogue dans `src/data/` ; le catalogue crée les fichiers attendus pour Voice Review et le générateur. Pour un son de jeu hors dialogue, ajouter son texte et son fichier à `RECORDED_LINES` dans `src/data/recordedVoiceLines.ts`, puis reconstruire le catalogue. Les répliques genrées du héros déclarent `who: "hero"` et produisent les deux profils.
 

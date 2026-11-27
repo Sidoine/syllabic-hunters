@@ -282,7 +282,7 @@ export function MathResultScreen({
 				: ["Mission réussie !", "Tu peux rejouer pour gagner plus d'étoiles."];
 		const resultDialogue = dialogue("yuki", phrases);
 		const timer = window.setTimeout(
-			() => void speakSeq(resultDialogue.map((line) => line.text)),
+			() => void speakSeq(resultDialogue.map((line) => ({ text: line.text, character: line.who }))),
 			400,
 		);
 		return () => window.clearTimeout(timer);

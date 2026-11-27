@@ -12,6 +12,12 @@ export const heroSceneSpeaker = (masculine: boolean): SceneSpeaker =>
 export interface DialogueLine {
 	who: DialogueCharacter;
 	text: string;
+	audio_files?: Partial<Record<"hero_male" | "hero_female" | Exclude<DialogueCharacter, "hero">, string>>;
+}
+
+export function dialogueAudioFile(line: DialogueLine, masculine: boolean) {
+	const character = line.who === "hero" ? (masculine ? "hero_male" : "hero_female") : line.who;
+	return line.audio_files?.[character];
 }
 
 export function dialogue(

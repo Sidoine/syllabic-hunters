@@ -40,7 +40,7 @@ const milo = assetUrl("final/milo.png");
 const luna = assetUrl("final/luna.png");
 const zelane = assetUrl("final/zelane.png");
 const yuki = assetUrl("final/yuki.png");
-import { heroSceneSpeaker, type DialogueLine } from "../data/dialogue";
+import { dialogueAudioFile, heroSceneSpeaker, type DialogueLine } from "../data/dialogue";
 import type { MissionType } from "../data/reading";
 import type { Speaker } from "../data/chapter";
 import type { HeroId } from "../lib/storage";
@@ -429,7 +429,11 @@ export function MissionFrame({
   // Keep the spoken sequence stable when callers recreate equivalent dialogue lines.
   // biome-ignore lint/correctness/useExhaustiveDependencies: The content key intentionally prevents duplicate speech on rerenders.
   const seq = useMemo(
-    () => dialogue.map(({ text }) => playerText(text, h)),
+    () => dialogue.map((line) => ({
+      text: playerText(line.text, h),
+      character: line.who === "hero" ? (h === "milo" ? "hero_male" : "hero_female") : line.who,
+      file: dialogueAudioFile(line, h === "milo"),
+    })),
     [dialogueKey, h],
   );
   const hasReadInitial = useRef(false);
