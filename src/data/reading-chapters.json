@@ -1,0 +1,813 @@
+[
+  {
+    "id": 0,
+    "label": "A I O",
+    "letters": [],
+    "title": "Le réveil des voyelles",
+    "boss": "Grignoton",
+    "hue": 0,
+    "color": "#ff4fa3",
+    "introVideo": "/videos/king-chuuut-arrival.webm",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Le Roi Chuuut a envoyé Grignoton voler les voyelles. Sans elles, les mots perdent leur voix !"
+      },
+      {
+        "who": "hero",
+        "text": "Avec toi, Mochi, je vais retrouver les voyelles et libérer les mots !"
+      },
+      {
+        "who": "demon",
+        "text": "Ha, ha ! J'ai caché les voyelles : a, i, o, u, é et ou. Vous ne les retrouverez jamais !"
+      },
+      {
+        "who": "mochi",
+        "text": "Grignoton les garde dans son repaire. Écoutons bien chaque son pour les récupérer !"
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Oh non, je suis vaincu ! Je rends les voyelles : a, i, o, u, é et ou. Elles sont à vous !"
+      },
+      {
+        "who": "mochi",
+        "text": "Bravo ! Les voyelles sont libres. Mais les démons du Roi Chuuut ont aussi volé les syllabes."
+      },
+      {
+        "who": "hero",
+        "text": "Alors partons les reprendre, une syllabe après l'autre !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": -47,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 1,
+    "label": "L",
+    "letters": [
+      "l"
+    ],
+    "title": "La lettre L",
+    "boss": "Lézardo le Lugubre",
+    "hue": 90,
+    "color": "#7ddc4a",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Lézardo le Lugubre a volé toutes les syllabes en L pour le Roi Chuuut."
+      },
+      {
+        "who": "hero",
+        "text": "Lézardo, rends les syllabes ! Nous allons les libérer."
+      },
+      {
+        "who": "demon",
+        "text": "La, li, lo, lu, lé, lou ! Je les garde toutes. Les mots ne les retrouveront jamais !"
+      },
+      {
+        "who": "mochi",
+        "text": "Retrouvons le son L et déjouons les pièges de Lézardo."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Tu m'as battu ! Je rends les syllabes en L : la, li, lo, lu, lé, lou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en L sont libres ! Elles vont retrouver leur place dans les mots."
+      },
+      {
+        "who": "hero",
+        "text": "Le Roi Chuuut a d'autres démons. Continuons notre aventure !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 147,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 2,
+    "label": "M",
+    "letters": [
+      "m"
+    ],
+    "title": "La lettre M",
+    "boss": "Maître Moustache",
+    "hue": 300,
+    "color": "#ff7ad9",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Maître Moustache a volé les syllabes en M et les cache dans le marché."
+      },
+      {
+        "who": "hero",
+        "text": "On va les retrouver et les rendre aux mots !"
+      },
+      {
+        "who": "demon",
+        "text": "Ma, mi, mo, mu, mé, mou ! Ces syllabes sont à moi. Le Roi Chuuut sera fier !"
+      },
+      {
+        "who": "mochi",
+        "text": "Écoutons les sons et suivons les indices de Maître Moustache."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Mince, je suis vaincu ! Je rends ma, mi, mo, mu, mé et mou. Prenez-les !"
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en M sont libres. Les mots vont pouvoir les retrouver."
+      },
+      {
+        "who": "hero",
+        "text": "Encore un démon du Roi Chuuut à déjouer. En route !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": -48,
+        "distance": 11.8
+      },
+      "actors": {
+        "mochi": {
+          "x": 0,
+          "z": 0,
+          "rotation": -7
+        },
+        "demon": {
+          "x": -0.9,
+          "z": 0.6,
+          "rotation": 0
+        }
+      }
+    }
+  },
+  {
+    "id": 3,
+    "label": "R",
+    "letters": [
+      "r"
+    ],
+    "title": "La lettre R",
+    "boss": "Rakoro le Rat-Démon",
+    "hue": 30,
+    "color": "#ff9a2e",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Rakoro le Rat-Démon a volé les syllabes en R et les garde près de la rivière."
+      },
+      {
+        "who": "hero",
+        "text": "Rakoro, nous venons reprendre ce que tu as volé !"
+      },
+      {
+        "who": "demon",
+        "text": "Ra, ri, ro, ru, ré, rou ! Je les ai cachées. Vous ne lirez plus ces syllabes !"
+      },
+      {
+        "who": "mochi",
+        "text": "Suivons les traces de Rakoro et retrouvons les syllabes en R."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Je rends les syllabes en R : ra, ri, ro, ru, ré et rou. Ne le dites pas au Roi Chuuut !"
+      },
+      {
+        "who": "mochi",
+        "text": "Bien joué ! Les syllabes en R sont de retour dans les mots."
+      },
+      {
+        "who": "hero",
+        "text": "Nous continuerons jusqu'à ce que tous les sons soient libres !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 4,
+    "label": "S",
+    "letters": [
+      "s"
+    ],
+    "title": "La lettre S",
+    "boss": "Serpentine",
+    "hue": 150,
+    "color": "#34c3ff",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Serpentine a sifflé les syllabes en S hors des mots et les a enfermées dans son studio."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons ouvrir la cage et rendre les syllabes au monde !"
+      },
+      {
+        "who": "demon",
+        "text": "Ssssa, sssi, sssso, ssssu, sssé, ssssou ! Elles sont à moi !"
+      },
+      {
+        "who": "mochi",
+        "text": "Écoutons bien les sifflements pour retrouver les syllabes volées."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Sssstop ! Je rends les syllabes en S : sa, si, so, su, sé et sou."
+      },
+      {
+        "who": "mochi",
+        "text": "La cage est ouverte ! Les syllabes en S sont libres."
+      },
+      {
+        "who": "hero",
+        "text": "Un autre coffre du Roi Chuuut nous attend. Allons-y !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 5,
+    "label": "P",
+    "letters": [
+      "p"
+    ],
+    "title": "La lettre P",
+    "boss": "Pirata Poulpe",
+    "hue": 200,
+    "color": "#b36bff",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Pirata Poulpe a volé les syllabes en P et les a cachées dans son bateau."
+      },
+      {
+        "who": "hero",
+        "text": "Pirata Poulpe, rends-les ! Mochi et moi allons les récupérer."
+      },
+      {
+        "who": "demon",
+        "text": "Pa, pi, po, pu, pé, pou ! Ces syllabes sont mon trésor !"
+      },
+      {
+        "who": "mochi",
+        "text": "Alors, à l'abordage ! Repérons les sons en P pour retrouver son trésor."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Plouf ! Je rends les syllabes en P : pa, pi, po, pu, pé et pou."
+      },
+      {
+        "who": "mochi",
+        "text": "Le trésor est libéré : les syllabes en P retournent dans les mots."
+      },
+      {
+        "who": "hero",
+        "text": "Cap sur le prochain démon du Roi Chuuut !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 6,
+    "label": "T",
+    "letters": [
+      "t"
+    ],
+    "title": "La lettre T",
+    "boss": "Tornado Toto",
+    "hue": 60,
+    "color": "#ffd23f",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Tornado Toto fait tournoyer les syllabes en T au sommet de sa tour."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons arrêter la tornade et libérer ces syllabes !"
+      },
+      {
+        "who": "demon",
+        "text": "Ta, ti, to, tu, té, tou ! La tornade les emporte loin de vous !"
+      },
+      {
+        "who": "mochi",
+        "text": "Écoutons les sons en T et suivons le tourbillon jusqu'à Tornado Toto."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "La tornade s'arrête ! Je rends ta, ti, to, tu, té et tou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en T sont libres. La tour peut enfin retrouver son calme."
+      },
+      {
+        "who": "hero",
+        "text": "Le Roi Chuuut n'a pas fini d'envoyer ses démons. Continuons !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 7,
+    "label": "N",
+    "letters": [
+      "n"
+    ],
+    "title": "La lettre N",
+    "boss": "Ninja Nuit-Noire",
+    "hue": 260,
+    "color": "#8f7bff",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Le Ninja Nuit-Noire a dérobé les syllabes en N et se cache dans les nuages."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons le démasquer et reprendre les syllabes !"
+      },
+      {
+        "who": "demon",
+        "text": "Na, ni, no, nu, né, nou ! Vous ne me trouverez jamais dans la nuit !"
+      },
+      {
+        "who": "mochi",
+        "text": "Tendons l'oreille et suivons sa voix pour retrouver les syllabes en N."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Vous m'avez trouvé ! Je rends les syllabes en N : na, ni, no, nu, né et nou."
+      },
+      {
+        "who": "mochi",
+        "text": "Le brouillard se lève. Les syllabes en N peuvent revenir dans les mots."
+      },
+      {
+        "who": "hero",
+        "text": "Un démon de moins ! En route pour la suite."
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 8,
+    "label": "D",
+    "letters": [
+      "d"
+    ],
+    "title": "La lettre D",
+    "boss": "Dragonito",
+    "hue": 120,
+    "color": "#2ee0a0",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Dragonito a enfermé les syllabes en D dans sa grotte de diamants."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons traverser les flammes et les libérer !"
+      },
+      {
+        "who": "demon",
+        "text": "Da, di, do, du, dé, dou ! Mes diamants brillent, et ces syllabes sont à moi !"
+      },
+      {
+        "who": "mochi",
+        "text": "Repérons les sons en D pour trouver le coffre de Dragonito."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Je n'ai plus de feu ! Je rends da, di, do, du, dé et dou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en D sont libérées. Le coffre ne gardera plus les mots prisonniers."
+      },
+      {
+        "who": "hero",
+        "text": "Nous nous rapprochons du Roi Chuuut. Continuons !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 9,
+    "label": "B",
+    "letters": [
+      "b"
+    ],
+    "title": "La lettre B",
+    "boss": "Baba Boubou",
+    "hue": 180,
+    "color": "#ff4fa3",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Baba Boubou a enfermé les syllabes en B dans des bulles géantes."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons faire éclater les bulles et libérer les syllabes !"
+      },
+      {
+        "who": "demon",
+        "text": "Ba, bi, bo, bu, bé, bou ! Mes bulles les emporteront jusqu'au Roi Chuuut !"
+      },
+      {
+        "who": "mochi",
+        "text": "Cherchons les sons en B et éclatons les bulles une par une."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Mes bulles ont éclaté ! Je rends ba, bi, bo, bu, bé et bou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en B sont libres. Elles vont retrouver leur place dans les mots."
+      },
+      {
+        "who": "hero",
+        "text": "Bravo, Mochi ! Un autre démon nous attend."
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 10,
+    "label": "F",
+    "letters": [
+      "f"
+    ],
+    "title": "La lettre F",
+    "boss": "Fifi Fantôme",
+    "hue": 220,
+    "color": "#7ddc4a",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Fifi Fantôme a soufflé les syllabes en F au fond de la forêt."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons retrouver leur piste et les ramener aux mots."
+      },
+      {
+        "who": "demon",
+        "text": "Fa, fi, fo, fu, fé, fou ! Vous ne les rattraperez pas, je m'envole !"
+      },
+      {
+        "who": "mochi",
+        "text": "Écoutons le vent et suivons Fifi Fantôme."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Pfiou, je suis rattrapé ! Je rends fa, fi, fo, fu, fé et fou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en F sont de retour. La forêt retrouve sa voix."
+      },
+      {
+        "who": "hero",
+        "text": "Ensemble, nous rendrons toutes les syllabes au monde !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 11,
+    "label": "V",
+    "letters": [
+      "v"
+    ],
+    "title": "La lettre V",
+    "boss": "Vampirou",
+    "hue": 330,
+    "color": "#b36bff",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Vampirou a pris les syllabes en V et les cache dans le volcan violet."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons entrer dans le volcan et les récupérer !"
+      },
+      {
+        "who": "demon",
+        "text": "Va, vi, vo, vu, vé, vou ! Ces syllabes vibrent dans mon volcan !"
+      },
+      {
+        "who": "mochi",
+        "text": "Suivons les sons en V jusqu'à la cachette de Vampirou."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Mon volcan s'éteint ! Je rends va, vi, vo, vu, vé et vou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en V sont libres. Le volcan peut se rendormir."
+      },
+      {
+        "who": "hero",
+        "text": "Nous avons encore des syllabes à retrouver. En route !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 12,
+    "label": "CH",
+    "letters": [
+      "ch"
+    ],
+    "title": "Le son CH",
+    "boss": "Chachat Noir",
+    "hue": 280,
+    "color": "#ff7ad9",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Chachat Noir a volé les syllabes en CH et s'est caché dans la nuit."
+      },
+      {
+        "who": "hero",
+        "text": "Deux lettres peuvent faire un seul son. Nous allons retrouver les syllabes en CH !"
+      },
+      {
+        "who": "demon",
+        "text": "Cha, chi, cho, chu, ché, chou ! Vous n'entendrez plus jamais ce son !"
+      },
+      {
+        "who": "mochi",
+        "text": "Écoutons ce son discret pour retrouver Chachat et libérer les syllabes."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Vous m'avez démasqué ! Je rends cha, chi, cho, chu, ché et chou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en CH sont libres. Deux lettres, un seul son retrouvé !"
+      },
+      {
+        "who": "hero",
+        "text": "Nous approchons du repaire du Roi Chuuut. Continuons !"
+      }
+    ],
+    "tip": "C + H = un seul son : « ch ».",
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 13,
+    "label": "J",
+    "letters": [
+      "j"
+    ],
+    "title": "La lettre J",
+    "boss": "Jojo le Jongleur",
+    "hue": 40,
+    "color": "#ffd23f",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Jojo le Jongleur a volé les syllabes en J et les a cachées parmi ses jouets."
+      },
+      {
+        "who": "hero",
+        "text": "Jojo, rends-les ! Nous allons retrouver les syllabes cachées."
+      },
+      {
+        "who": "demon",
+        "text": "Ja, ji, jo, ju, jé, jou ! Je jongle avec vos syllabes, vous ne les aurez pas !"
+      },
+      {
+        "who": "mochi",
+        "text": "Écoutons le son J et observons bien les tours de Jojo."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Mes tours sont terminés ! Je rends ja, ji, jo, ju, jé et jou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en J sont libres et les jouets sont sauvés."
+      },
+      {
+        "who": "hero",
+        "text": "Encore un coffre récupéré. Allons libérer les autres syllabes !"
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 14,
+    "label": "C · G",
+    "letters": [
+      "c",
+      "g"
+    ],
+    "title": "Les pièges C et G",
+    "boss": "Capitaine Gorgo",
+    "hue": 100,
+    "color": "#34c3ff",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Capitaine Gorgo a piégé les syllabes en C et en G dans sa grotte."
+      },
+      {
+        "who": "hero",
+        "text": "Nous allons déjouer ses pièges et récupérer les syllabes volées."
+      },
+      {
+        "who": "demon",
+        "text": "Ca, co, cu, cou ! Ga, go, gou ! Ces sons durs sont à moi, capitaine Gorgo !"
+      },
+      {
+        "who": "mochi",
+        "text": "Écoutons bien : C et G gardent ici leur son dur devant a, o, u et ou."
+      }
+    ],
+    "outro": [
+      {
+        "who": "demon",
+        "text": "Capitaine Gorgo capitule ! Je rends ca, co, cu, cou, ga, go et gou."
+      },
+      {
+        "who": "mochi",
+        "text": "Les syllabes en C et en G sont libérées. Tu as déjoué les pièges !"
+      },
+      {
+        "who": "hero",
+        "text": "Tous les démons sont vaincus. Il ne reste que le Roi Chuuut !"
+      }
+    ],
+    "tip": "C et G sont durs devant a, o, u, ou (ca, go). Devant e et i, C se lit « s » et G se lit « j » : on les verra plus tard.",
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 15,
+    "label": "★",
+    "letters": [],
+    "title": "Le Grand Défi",
+    "boss": "Le Roi Chuuut",
+    "hue": 0,
+    "color": "#ffd23f",
+    "intro": [
+      {
+        "who": "mochi",
+        "text": "Nous avons libéré les syllabes de tous les démons. Le Roi Chuuut garde encore le dernier coffre !"
+      },
+      {
+        "who": "hero",
+        "text": "Roi Chuuut, rends les dernières syllabes. Nous ne te laisserons plus voler les mots !"
+      },
+      {
+        "who": "king",
+        "text": "Jamais ! Je garde le dernier coffre. Si tu veux sauver les mots, il faudra me vaincre !"
+      },
+      {
+        "who": "mochi",
+        "text": "Alors affrontons-le ensemble et rendons leur voix à tous les mots."
+      }
+    ],
+    "outro": [
+      {
+        "who": "king",
+        "text": "Je suis vaincu ! Je rends le dernier coffre et toutes les syllabes volées. Les mots sont libres !"
+      },
+      {
+        "who": "hero",
+        "text": "Les sons et les syllabes sont de retour. Les mots peuvent enfin résonner !"
+      },
+      {
+        "who": "mochi",
+        "text": "Nous avons réussi ensemble ! Le Roi Chuuut ne pourra plus faire taire les mots."
+      }
+    ],
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  }
+]

@@ -38,9 +38,7 @@ function pathThroughStops(stops: { x: number; y: number }[], height: number) {
 
 export function MissionPathScreen({
 	title,
-	place,
 	hero,
-	name,
 	region,
 	missions,
 	award,
@@ -57,9 +55,7 @@ export function MissionPathScreen({
 	onStart,
 }: {
 	title: string;
-	place: string;
 	hero: keyof typeof IMAGES;
-	name: string;
 	region: "reading" | "math";
 	missions: MissionPathItem[];
 	award?: { id: string; stars: number };
@@ -76,6 +72,7 @@ export function MissionPathScreen({
 	onStart: (id: string) => void;
 }) {
 	const [selectedId] = useState(() => missions.find((mission) => mission.unlocked && mission.stars < 3)?.id ?? missions.find((mission) => mission.unlocked)?.id ?? missions[0]?.id ?? "");
+	const [hoveredId, setHoveredId] = useState<string | null>(null);
 	const [viewportHeight, setViewportHeight] = useState(() => window.innerHeight);
 	const [awardAnimating, setAwardAnimating] = useState(Boolean(award));
 	const awardId = award?.id;
@@ -91,7 +88,8 @@ export function MissionPathScreen({
 		const timer = window.setTimeout(() => setAwardAnimating(false), 1900);
 		return () => window.clearTimeout(timer);
 	}, [awardId, awardStars]);
-	const selected = missions.find((mission) => mission.id === selectedId) ?? missions.find((mission) => mission.unlocked) ?? missions[0];
+	const defaultSelected = missions.find((mission) => mission.id === selectedId) ?? missions.find((mission) => mission.unlocked) ?? missions[0];
+	const selected = missions.find((mission) => mission.id === hoveredId) ?? defaultSelected;
 	const rewardReady = rewardUnlocked && rewardAvailable && !rewardComplete;
 	const mapHeight = Math.max(viewportHeight, 820);
 	const stops = missions.map((_, index) => PATH_STOPS[index % PATH_STOPS.length]);
@@ -130,6 +128,10 @@ export function MissionPathScreen({
 									disabled={!mission.unlocked || awardAnimating}
 									aria-label={`${mission.title}, ${mission.stars} étoile${mission.stars === 1 ? "" : "s"} sur 3${mission.unlocked ? "" : ", verrouillée"}${awardAnimating ? ", étoiles en cours d’animation" : ""}`}
 									aria-pressed={isSelected}
+									onMouseEnter={() => setHoveredId(mission.id)}
+									onMouseLeave={() => setHoveredId(null)}
+									onFocus={() => setHoveredId(mission.id)}
+									onBlur={() => setHoveredId(null)}
 									onClick={() => mission.unlocked && onStart(mission.id)}
 									className={`mission-map-step group btn-pop flex w-32 cursor-pointer flex-col items-center gap-1.5 rounded-2xl p-1 text-center focus-visible:outline focus-visible:outline-4 focus-visible:outline-yellow-100 disabled:cursor-not-allowed sm:w-36 ${isSelected ? "z-20 scale-110" : ""} ${!mission.unlocked ? "opacity-75 grayscale-[0.3]" : ""}`}
 								>
@@ -168,8 +170,7 @@ export function MissionPathScreen({
 					</button>
 					<div className="flex min-w-0 flex-1 items-center gap-2 sm:ml-2 sm:gap-3">
 						<span className="hidden h-11 w-11 shrink-0 overflow-hidden rounded-full border-[3px] border-white/90 bg-gradient-to-br from-pink-300 to-violet-700 shadow-[0_2px_12px_rgba(255,119,211,0.45)] sm:block"><img src={IMAGES[hero]} alt="" className="h-full w-full scale-125 object-cover object-top" /></span>
-						<span className="min-w-0">
-							<span className="block truncate text-[10px] font-bold tracking-wider text-white/70 sm:text-[11px]">{place}{name ? ` · ${name}` : ""}</span>
+							<span className="min-w-0">
 							<span className="block truncate text-base font-bold leading-tight text-white drop-shadow-[0_2px_6px_rgba(249,96,209,0.8)] sm:text-xl">{title}</span>
 						</span>
 					</div>

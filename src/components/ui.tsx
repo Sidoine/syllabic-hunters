@@ -23,14 +23,15 @@ const seeSoundIcon = assetUrl("final/missions/see-sound.png");
 const vowelsIcon = assetUrl("final/missions/vowels.png");
 const backIcon = assetUrl("final/ui/back-world-map.png");
 const bookIcon = assetUrl("final/ui/book.png");
+const homeIcon = assetUrl("final/ui/home.png");
 const closeIcon = assetUrl("final/ui/close.png");
 const crownIcon = assetUrl("final/ui/crown.png");
 const lockIcon = assetUrl("final/ui/lock.png");
 const mathIcon = assetUrl("final/ui/math.png");
 const mapIcon = assetUrl("final/ui/map.png");
 const replayIcon = assetUrl("final/ui/replay.png");
-const settingsIcon = assetUrl("final/ui/settings-world-map.png");
-const starIcon = assetUrl("final/ui/star-world-map.png");
+const settingsIcon = assetUrl("final/ui/settings.png");
+const starIcon = assetUrl("final/ui/star.png");
 const hana = assetUrl("final/hana.png");
 const king = assetUrl("final/king.png");
 const mochi = assetUrl("final/mochi.png");
@@ -69,6 +70,7 @@ export const UI_ICONS = {
 	book: bookIcon,
 	close: closeIcon,
 	crown: crownIcon,
+	home: homeIcon,
 	lock: lockIcon,
 	math: mathIcon,
 	map: mapIcon,
@@ -90,6 +92,7 @@ export const SPEAKER_INFO: Record<Speaker, { name: string; img: string; color: s
   hero_female: { name: "Héroïne", img: hana, color: "#ff4fa3" },
   yuki: { name: "Yuki", img: yuki, color: "#34c3ff" },
   mochi: { name: "Mochi", img: mochi, color: "#ffffff" },
+  demon: { name: "Démon", img: demon, color: "#e14a58" },
   king: { name: "Roi Chuuut", img: king, color: "#6b3cff" },
 };
 

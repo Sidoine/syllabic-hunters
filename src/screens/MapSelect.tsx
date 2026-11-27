@@ -4,7 +4,7 @@ import { MATH_CHAPTERS, MATH_MISSIONS, mathChapterMissions, type MathChapter } f
 import { CHAPTERS, MISSIONS, type LetterChapter } from "../data/reading";
 import { WORLD_INTRO_LINES } from "../data/story";
 import { heroSceneSpeaker } from "../data/dialogue";
-import type { Line } from "../data/chapter";
+import type { ChapterStage, Line } from "../data/chapter";
 import { configureSpeech, speak, stopSpeech } from "../lib/speech";
 import { speakable } from "./Dialog";
 import type { Save } from "../lib/storage";
@@ -82,7 +82,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	onReading: (chapter: number) => void; onMath: (chapter: number) => void;
 	onWorldIntro: () => void;
 	onSettings: () => void;
-	intro?: { title: string; lines: Line[] };
+	intro?: { title: string; lines: Line[]; hue?: number; demonName?: string };
 	onIntroEnd?: () => void;
 	backgroundOnly?: boolean;
 }) {
@@ -102,28 +102,6 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 		? { region: "reading", chapter: incompleteReading }
 		: { region: "math", chapter: incompleteMath < 0 ? MATH_CHAPTERS.length - 1 : incompleteMath };
 	const selected = selection ?? initialSelection;
-	useEffect(() => {
-		const lines = selected.region === "intro"
-			? WORLD_INTRO_LINES
-			: selected.region === "math"
-				? MATH_CHAPTERS[selected.chapter]?.intro ?? []
-				: CHAPTERS[selected.chapter]?.intro ?? [];
-	const playerSpeaker = heroSceneSpeaker(save.hero === "milo");
-	const speakers = new Set(lines.map(({ who }) => who === "hero" ? playerSpeaker : who));
-	const models = new Set([...speakers].filter((who) => who !== playerSpeaker).map((who) =>
-		who === "mochi" ? "/models/dialogue/mochi.glb?v=map-assets-optimized-1" : who === "king" ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1" : who === "hero_male" ? "/models/heroes/hero-milo.glb?v=map-assets-optimized-1" : who === "hero_female" ? "/models/heroes/hero-hana.glb?v=map-assets-optimized-1" : who === "yuki" ? "/models/dialogue/yuki.glb?v=dialogue-yuki-1" : `/models/heroes/hero-${who}.glb?v=map-assets-optimized-1`,
-		));
-		for (const url of models) {
-			if (preloadedDialogueModels.current.has(url)) continue;
-			preloadedDialogueModels.current.add(url);
-			void fetch(url, { cache: "force-cache" })
-				.then((response) => {
-					if (!response.ok) throw new Error(`Unable to preload ${url}`);
-					return response.arrayBuffer();
-				})
-				.catch(() => preloadedDialogueModels.current.delete(url));
-		}
-	}, [selected.region, selected.chapter, save.hero]);
 	const [armed, setArmed] = useState(false);
 	const [heroSelectorOpen, setHeroSelectorOpen] = useState(!save.heroChosen);
 	const [pendingHero, setPendingHero] = useState(save.hero);
@@ -135,6 +113,71 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	const [splineElements, setSplineElements] = useState<MapSplineElement[]>([{ id: "river-main", type: "river", points: MAP_RIVER_POINTS.map(([x, z]) => [x, z]) }]);
 	const [splineType, setSplineType] = useState<MapSplineType>("river");
 	const [editorOpen, setEditorOpen] = useState(false);
+	const [chapterDocs, setChapterDocs] = useState({ reading: CHAPTERS, math: MATH_CHAPTERS });
+	const chapterDocsSaved = useRef(chapterDocs);
+	const [dialogueEdit, setDialogueEdit] = useState<{ region: MapRegion; chapter: number; kind: "intro" | "outro" } | null>(null);
+	const [chapterSaveMessage, setChapterSaveMessage] = useState("");
+	useEffect(() => {
+		const lines = selected.region === "intro"
+			? WORLD_INTRO_LINES
+			: selected.region === "math"
+				? chapterDocs.math[selected.chapter]?.intro ?? []
+				: chapterDocs.reading[selected.chapter]?.intro ?? [];
+		const playerSpeaker = heroSceneSpeaker(save.hero === "milo");
+		const speakers = new Set(lines.map(({ who }) => who === "hero" ? playerSpeaker : who));
+		const models = new Set([...speakers].filter((who) => who !== playerSpeaker).map((who) =>
+			who === "demon" ? "/models/dialogue/demon.glb?v=demon-trellis-1" : who === "mochi" ? "/models/dialogue/mochi.glb?v=map-assets-optimized-1" : who === "king" ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1" : who === "hero_male" ? "/models/heroes/hero-milo.glb?v=map-assets-optimized-1" : who === "hero_female" ? "/models/heroes/hero-hana.glb?v=map-assets-optimized-1" : who === "yuki" ? "/models/dialogue/yuki.glb?v=dialogue-yuki-1" : `/models/heroes/hero-${who}.glb?v=map-assets-optimized-1`,
+		));
+		for (const url of models) {
+			if (preloadedDialogueModels.current.has(url)) continue;
+			preloadedDialogueModels.current.add(url);
+			void fetch(url, { cache: "force-cache" })
+				.then((response) => {
+					if (!response.ok) throw new Error(`Unable to preload ${url}`);
+					return response.arrayBuffer();
+				})
+				.catch(() => preloadedDialogueModels.current.delete(url));
+		}
+	}, [selected.region, selected.chapter, save.hero, chapterDocs.math, chapterDocs.reading]);
+	useEffect(() => {
+		if (!import.meta.env.DEV) return;
+		void Promise.all(["reading", "math"].map(async (region) => {
+			const response = await fetch(`/api/dev/chapters/${region}`);
+			if (!response.ok) throw new Error(`HTTP ${response.status}`);
+			return [region, await response.json()] as const;
+		})).then((entries) => { const docs = Object.fromEntries(entries) as typeof chapterDocs; chapterDocsSaved.current = docs; setChapterDocs(docs); }).catch(() => undefined);
+	}, []);
+	const activeEditChapter = dialogueEdit ? chapterDocs[dialogueEdit.region][dialogueEdit.chapter] : null;
+	const dialogueView = activeEditChapter ? {
+		title: `${activeEditChapter.title} · ${dialogueEdit?.kind === "intro" ? "Introduction" : "Victoire"}`,
+		lines: dialogueEdit?.kind === "intro" ? activeEditChapter.intro : activeEditChapter.outro,
+		hue: activeEditChapter.hue,
+		demonName: activeEditChapter.boss,
+	} : intro;
+	const dialogueStage = activeEditChapter?.stage ?? { camera: { orbit: 0, distance: 10 }, actors: {} };
+	const updateDialogueStage = (update: (stage: ChapterStage) => ChapterStage) => {
+		if (!dialogueEdit) return;
+		setChapterDocs((current) => {
+			const chapters = [...current[dialogueEdit.region]];
+			const chapter = chapters[dialogueEdit.chapter];
+			chapters[dialogueEdit.chapter] = { ...chapter, stage: update(chapter.stage ?? { camera: { orbit: 0, distance: 10 }, actors: {} }) };
+			return { ...current, [dialogueEdit.region]: chapters };
+		});
+	};
+	const saveAndExitDialogueEditor = async () => {
+		try {
+			for (const region of ["reading", "math"] as const) {
+				const response = await fetch(`/api/dev/chapters/${region}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(chapterDocs[region]) });
+				if (!response.ok) throw new Error(`${region}: HTTP ${response.status}`);
+			}
+			setChapterSaveMessage("Dialogues et cadrages enregistrés dans les fichiers JSON.");
+			setEditorMessage("Dialogues et cadrages enregistrés dans les fichiers JSON.");
+			chapterDocsSaved.current = chapterDocs;
+			setDialogueEdit(null);
+		} catch (error) {
+			setChapterSaveMessage(`Échec de sauvegarde : ${error instanceof Error ? error.message : "erreur inconnue"}`);
+		}
+	};
 	const [landmarkKey, setLandmarkKey] = useState<keyof typeof MAP_LANDMARKS>("readingTree");
 	const [pendingAssetKey, setPendingAssetKey] = useState<MapLandmarkKey | null>(null);
 	const [editorTarget, setEditorTarget] = useState<MapEditorSelection | null>(null);
@@ -276,9 +319,11 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 		if (!ids.length) return;
 		setErasedDecorations((current) => [...new Set([...current, ...ids])]);
 	};
-	const [introState, setIntroState] = useState<{ title?: string; index: number }>({ title: intro?.title, index: 0 });
+	const [introState, setIntroState] = useState<{ title?: string; index: number }>({ title: dialogueView?.title, index: 0 });
 	const [introExiting, setIntroExiting] = useState(false);
 	const [dialogueBubblePosition, setDialogueBubblePosition] = useState<{ x: number; y: number } | null>(null);
+	const dialogueBubbleRef = useRef<HTMLDivElement>(null);
+	const [dialogueBubbleLayout, setDialogueBubbleLayout] = useState<{ left: number; top: number; arrowX: number; direction: "up" | "down" } | null>(null);
 	const onDialogueBubblePosition = useCallback((position: { x: number; y: number } | null) => {
 		setDialogueBubblePosition((current) => {
 			if (!position || !current) return position;
@@ -286,12 +331,44 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 		});
 	}, []);
 	const exitTimer = useRef<number | null>(null);
-	if (introState.title !== intro?.title) setIntroState({ title: intro?.title, index: 0 });
-	if (!intro && introExiting) setIntroExiting(false);
+	if (introState.title !== dialogueView?.title) setIntroState({ title: dialogueView?.title, index: 0 });
+	if (!dialogueView && introExiting) setIntroExiting(false);
 	useEffect(() => () => { if (exitTimer.current !== null) window.clearTimeout(exitTimer.current); }, []);
 	const introIndex = introState.index;
-	const introLine = intro?.lines[introIndex];
+	const introLine = dialogueView?.lines[introIndex];
 	const introText = introLine ? playerText(introLine.text, save.hero) : undefined;
+	useLayoutEffect(() => {
+		const bubble = dialogueBubbleRef.current;
+		if (!bubble || !dialogueBubblePosition || !dialogueView || !introLine) {
+			setDialogueBubbleLayout(null);
+			return;
+		}
+		const width = bubble.offsetWidth;
+		const height = bubble.offsetHeight;
+		const viewportWidth = document.documentElement.clientWidth || window.innerWidth;
+		const viewportHeight = document.documentElement.clientHeight || window.innerHeight;
+		const margin = 12;
+		const halfWidth = width / 2;
+		const left = Math.min(Math.max(dialogueBubblePosition.x, margin + halfWidth), viewportWidth - margin - halfWidth);
+		const gap = 14;
+		const maxTop = Math.max(margin, viewportHeight - height - margin);
+		let direction: "up" | "down";
+		let top: number;
+		if (dialogueBubblePosition.y - height - gap >= margin) {
+			direction = "down";
+			top = dialogueBubblePosition.y - height - gap;
+		} else if (dialogueBubblePosition.y + gap + height <= viewportHeight - margin) {
+			direction = "up";
+			top = dialogueBubblePosition.y + gap;
+		} else {
+			direction = dialogueBubblePosition.y < margin + height ? "up" : "down";
+			top = Math.min(Math.max(dialogueBubblePosition.y - height - gap, margin), maxTop);
+		}
+		const arrowX = Math.min(Math.max(dialogueBubblePosition.x - (left - halfWidth), 14), width - 14);
+		setDialogueBubbleLayout((current) => current && Math.abs(current.left - left) < 1 && Math.abs(current.top - top) < 1 && Math.abs(current.arrowX - arrowX) < 1 && current.direction === direction
+			? current
+			: { left, top, arrowX, direction });
+	}, [dialogueBubblePosition, dialogueView, introLine]);
 	useEffect(() => {
 		if (introText && save.settings.autoRead) {
 			speak(speakable(introText), { recordedText: introText, ...(introLine?.who === "hero" ? { masculine: save.hero === "milo" } : {}) });
@@ -300,17 +377,19 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	}, [introText, introLine?.who, save.hero, save.settings.autoRead]);
 	const advanceIntro = () => {
 		stopSpeech();
-		if (!intro || !introLine) return;
-		if (introIndex + 1 < intro.lines.length) {
+		if (!dialogueView || !introLine) return;
+		if (introIndex + 1 < dialogueView.lines.length) {
 			const nextIndex = introIndex + 1;
-			setIntroState({ title: intro.title, index: nextIndex });
+			setIntroState({ title: dialogueView.title, index: nextIndex });
+		} else if (dialogueEdit) {
+			return;
 		} else {
 			setIntroExiting(true);
 			exitTimer.current = window.setTimeout(() => onIntroEnd?.(), 560);
 		}
 	};
 	const closeIntro = () => {
-		if (!intro || introExiting) return;
+		if (!dialogueView || introExiting || dialogueEdit) return;
 		stopSpeech();
 		setIntroExiting(true);
 		exitTimer.current = window.setTimeout(() => onIntroEnd?.(), 560);
@@ -356,8 +435,8 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 	const jumpToRegion = (region: MapRegion) => {
 		setArmed(false);
 		const chapter = region === "reading"
-			? incompleteReading < 0 ? CHAPTERS.length - 1 : incompleteReading
-			: incompleteMath < 0 ? MATH_CHAPTERS.length - 1 : incompleteMath;
+			? incompleteReading < 0 ? chapterDocs.reading.length - 1 : incompleteReading
+			: incompleteMath < 0 ? chapterDocs.math.length - 1 : incompleteMath;
 		onSelectStage({ region, chapter });
 		centerOnStage(region, chapter);
 	};
@@ -375,7 +454,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			current: selected.region === "intro",
 			confirming: selected.region === "intro" && armed,
 		},
-		...CHAPTERS.map((chapter, index) => {
+		...chapterDocs.reading.map((chapter, index) => {
 			const missions = chapterMissions(chapter.id);
 			const first = missions[0];
 			return {
@@ -385,13 +464,13 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				title: chapter.title,
 				stars: missions.reduce((sum, mission) => sum + (save.stars[mission.id] ?? 0), 0),
 				maxStars: missions.length * 3,
-				unlocked: first ? isMissionUnlocked(save, first) : false,
+				unlocked: editorOpen || Boolean(first && isMissionUnlocked(save, first)),
 				done: chapterComplete(chapter, save),
 				current: selected.region === "reading" && selected.chapter === chapter.id,
 				confirming: selected.region === "reading" && selected.chapter === chapter.id && armed,
 			};
 		}),
-		...MATH_CHAPTERS.map((chapter, index) => {
+		...chapterDocs.math.map((chapter, index) => {
 			const missions = mathChapterMissions(chapter.id);
 			const first = missions[0];
 			return {
@@ -401,7 +480,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 				title: chapter.title,
 				stars: missions.reduce((sum, mission) => sum + (save.stars[mission.id] ?? 0), 0),
 				maxStars: missions.length * 3,
-				unlocked: first ? isMathMissionUnlocked(save, first) : false,
+				unlocked: editorOpen || Boolean(first && isMathMissionUnlocked(save, first)),
 				done: mathChapterComplete(chapter, save),
 				current: selected.region === "math" && selected.chapter === chapter.id,
 				confirming: selected.region === "math" && selected.chapter === chapter.id && armed,
@@ -417,16 +496,22 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			: editorTarget?.kind === "splinePoint" && editorTarget.splineId
 				? splineElements.find(({ id }) => id === editorTarget.splineId)?.points[editorTarget.index]
 				: editorTarget?.kind === "start" ? sharedStart : null;
+	const openDialogueEditor = (region: MapRegion, chapter: number) => {
+		setDialogueEdit({ region, chapter, kind: "intro" });
+		setIntroExiting(false);
+		setArmed(false);
+	};
 	const onSceneStageClick = (region: MapStageRegion, index: number) => {
+		if (editorOpen) return;
 		if (region === "intro") {
 			chooseStage("intro", 0, onWorldIntro);
 			return;
 		}
 		if (region === "reading") {
-			const chapter = CHAPTERS[index];
+			const chapter = chapterDocs.reading[index];
 			if (chapter) chooseStage(region, chapter.id, () => onReading(chapter.id));
 		} else {
-			const chapter = MATH_CHAPTERS[index];
+			const chapter = chapterDocs.math[index];
 			if (chapter) chooseStage(region, chapter.id, () => onMath(chapter.id));
 		}
 	};
@@ -451,27 +536,27 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			<section
 				ref={scrollRef}
 				aria-label="Carte du monde à explorer"
-				className={`absolute inset-0 overscroll-contain ${intro ? "overflow-hidden" : "overflow-auto cursor-grab active:cursor-grabbing"}`}
+				className={`absolute inset-0 overscroll-contain ${dialogueView ? "overflow-hidden" : "overflow-auto cursor-grab active:cursor-grabbing"}`}
 				onPointerDown={onPointerDown}
 				onPointerMove={onPointerMove}
 				onPointerUp={() => { dragRef.current = null; }}
 				onPointerCancel={() => { dragRef.current = null; }}
 			>
 				<div className="relative" style={{ width: WORLD_PIXEL_WIDTH, height: WORLD_PIXEL_HEIGHT }}>
-					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} pendingAssetKey={pendingAssetKey} stageLayout={stageLayout} sharedStart={sharedStart} splineElements={splineElements} splineType={splineType} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} brushKind={brushKind} brushModel={brushModels[brushKind]} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) { setLandmarkKey(target.key); setPendingAssetKey(null); } }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(intro)} dialogueSpeaker={introLine ? introLine.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : introLine.who : null} dialogueCharacters={intro?.lines.map((line) => line.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : line.who) ?? []} dialogueExiting={introExiting} onDialogueBubblePosition={onDialogueBubblePosition} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
+					<IsoWorldScene containerRef={scrollRef} layoutKey={mapLayoutKey} stageMarkers={stageMarkers} landmarks={landmarks} pendingAssetKey={pendingAssetKey} stageLayout={stageLayout} sharedStart={sharedStart} splineElements={splineElements} splineType={splineType} assetRotations={assetRotations} decorations={decorations} erasedDecorations={erasedDecorations} editorMode={editorOpen} paintMode={paintMode} brushKind={brushKind} brushModel={brushModels[brushKind]} onEditorSelect={(target) => { setEditorTarget(target); if (target?.kind === "asset" && target.key) { setLandmarkKey(target.key); setPendingAssetKey(null); } }} onEditorMove={onEditorMove} onEditorPaint={onEditorPaint} onEditorErase={onEditorErase} hero={save.hero} cinematic={Boolean(dialogueView)} dialogueHue={dialogueView?.hue} dialogueSpeaker={introLine ? introLine.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : introLine.who : null} dialogueCharacters={dialogueView?.lines.map((line) => line.who === "hero" ? heroSceneSpeaker(save.hero === "milo") : line.who) ?? []} dialogueStage={dialogueStage} dialogueEditMode={Boolean(dialogueEdit)} dialogueExiting={introExiting} onDialogueBubblePosition={onDialogueBubblePosition} onStageClick={onSceneStageClick} onLoadProgress={onMapLoadProgress} />
 					<nav className="sr-only" aria-label="Étapes accessibles de la carte">
 						<button type="button" aria-label={`Le carrefour des découvertes, histoire d’introduction${save.seenIntro[-1] ? ", déjà vue" : ""}`} onClick={() => chooseStage("intro", 0, onWorldIntro)}>Le carrefour des découvertes</button>
-					{CHAPTERS.map((chapter) => {
+					{chapterDocs.reading.map((chapter) => {
 						const first = MISSIONS.find((mission) => mission.chapter === chapter.id);
 						const unlocked = first ? isMissionUnlocked(save, first) : false;
 						const current = selected.region === "reading" && selected.chapter === chapter.id;
-						return <MapStop key={`read-${chapter.id}`} chapter={chapter} region="reading" unlocked={unlocked} done={chapterComplete(chapter, save)} current={current} confirming={current && armed} onClick={() => unlocked && chooseStage("reading", chapter.id, () => onReading(chapter.id))} />;
+						return <MapStop key={`read-${chapter.id}`} chapter={chapter} region="reading" unlocked={unlocked || editorOpen} done={chapterComplete(chapter, save)} current={current} confirming={current && armed} onClick={() => (editorOpen ? (setPaintMode("select"), setEditorTarget({ kind: "stage", region: "reading", index: chapter.id })) : unlocked && chooseStage("reading", chapter.id, () => onReading(chapter.id)))} />;
 					})}
-					{MATH_CHAPTERS.map((chapter) => {
+					{chapterDocs.math.map((chapter) => {
 						const first = mathChapterMissions(chapter.id)[0];
 						const unlocked = first ? isMathMissionUnlocked(save, first) : false;
 						const current = selected.region === "math" && selected.chapter === chapter.id;
-						return <MapStop key={`math-${chapter.id}`} chapter={chapter} region="math" unlocked={unlocked} done={mathChapterComplete(chapter, save)} current={current} confirming={current && armed} onClick={() => unlocked && chooseStage("math", chapter.id, () => onMath(chapter.id))} />;
+						return <MapStop key={`math-${chapter.id}`} chapter={chapter} region="math" unlocked={unlocked || editorOpen} done={mathChapterComplete(chapter, save)} current={current} confirming={current && armed} onClick={() => (editorOpen ? (setPaintMode("select"), setEditorTarget({ kind: "stage", region: "math", index: chapter.id })) : unlocked && chooseStage("math", chapter.id, () => onMath(chapter.id)))} />;
 					})}
 					</nav>
 				</div>
@@ -507,7 +592,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 					</div>
 				</div>
 			</header>}
-			{!backgroundOnly && heroSelectorOpen && !showMapLoading && !intro && <div className="absolute inset-0 z-40 grid place-items-center bg-slate-950/45 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="hero-selector-title">
+			{!backgroundOnly && heroSelectorOpen && !showMapLoading && !dialogueView && <div className="absolute inset-0 z-40 grid place-items-center bg-slate-950/45 px-4 py-6 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="hero-selector-title">
 				<section className="glass anim-pop w-full max-w-xl rounded-[2rem] border border-white/35 bg-[#160e2d]/90 px-4 pb-5 pt-4 shadow-[0_20px_70px_rgba(0,0,0,.65)] sm:px-7 sm:pb-7 sm:pt-6">
 					<h2 id="hero-selector-title" className="text-center text-lg font-black tracking-wide text-white sm:text-2xl">Choisis ton personnage</h2>
 					<div className="mx-auto mt-2 max-w-lg">
@@ -544,7 +629,7 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 			{!backgroundOnly && <div className="pointer-events-none absolute bottom-3 right-3 z-30 rounded-full glass bg-[#24163c]/75 px-3 py-1.5 text-[10px] sm:bottom-5 sm:right-5 sm:text-xs">Fais glisser la carte ↔ ↕ pour explorer</div>}
 			{import.meta.env.DEV && !backgroundOnly && <div className="pointer-events-auto absolute bottom-3 left-3 z-40">
 				{!editorOpen && <button type="button" onClick={() => { setEditorOpen(true); setEditorTarget(null); setPendingAssetKey(null); }} className="rounded-xl border border-white/30 bg-slate-950/85 px-3 py-2 text-sm font-bold shadow-xl">Éditer la carte</button>}
-				{editorOpen && <div className="mt-2 max-h-[78vh] w-[min(960px,calc(100vw-1.5rem))] overflow-y-auto rounded-2xl border border-white/20 bg-slate-950/95 p-2 shadow-2xl backdrop-blur">
+				{editorOpen && !dialogueEdit && <div className="mt-2 max-h-[78vh] w-[min(960px,calc(100vw-1.5rem))] overflow-y-auto rounded-2xl border border-white/20 bg-slate-950/95 p-2 shadow-2xl backdrop-blur">
 					<div className={`grid grid-cols-1 gap-2 ${paintMode === "select" ? "md:grid-cols-[220px_220px]" : "md:grid-cols-[220px_minmax(220px,1fr)_220px]"}`}>
 					<div className="rounded-xl border border-white/10 bg-slate-900/60 p-2.5">
 					<p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/50">Outils de carte</p>
@@ -582,8 +667,9 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 						<p className="mb-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white/55">Propriétés de la sélection</p>
 						{paintMode !== "select" && <p className="rounded-lg bg-white/5 px-2 py-2 text-[10px] text-white/50">Passe en mode sélection pour consulter ou modifier les propriétés.</p>}
 						{paintMode === "select" && !editorTarget && <p className="rounded-lg bg-white/5 px-2 py-2 text-[10px] text-white/50">Sélectionne un élément ou une poignée sur la carte.</p>}
-						{paintMode === "select" && editorTarget && <><p className="rounded-lg bg-white/10 px-2 py-1.5 text-xs font-semibold text-amber-100">{editorTarget.kind === "asset" ? MAP_SPECIAL_ASSETS.find(({ key }) => key === editorTarget.key)?.label ?? landmarkKey : editorTarget.kind === "stage" ? `Étape ${editorTarget.index + 1} · ${editorTarget.region === "reading" ? "lecture" : "maths"}` : editorTarget.kind === "splinePoint" ? `${MAP_SPLINE_LABELS[splineElements.find(({ id }) => id === editorTarget.splineId)?.type ?? "river"]} · point ${editorTarget.index + 1}` : "Départ commun"}</p>
+						{paintMode === "select" && editorTarget && <><p className="rounded-lg bg-white/10 px-2 py-1.5 text-xs font-semibold text-amber-100">{editorTarget.kind === "asset" ? MAP_SPECIAL_ASSETS.find(({ key }) => key === editorTarget.key)?.label ?? landmarkKey : editorTarget.kind === "stage" ? editorTarget.region === "reading" ? chapterDocs.reading[editorTarget.index]?.title ?? `Étape ${editorTarget.index + 1} · lecture` : chapterDocs.math[editorTarget.index]?.title ?? `Étape ${editorTarget.index + 1} · maths` : editorTarget.kind === "splinePoint" ? `${MAP_SPLINE_LABELS[splineElements.find(({ id }) => id === editorTarget.splineId)?.type ?? "river"]} · point ${editorTarget.index + 1}` : "Départ commun"}</p>
 							{selectedMapPosition && <p className="mt-1 px-1 text-[10px] tabular-nums text-white/55">Position · X {selectedMapPosition[0].toFixed(1)} / Z {selectedMapPosition[1].toFixed(1)}</p>}
+							{editorTarget.kind === "stage" && editorTarget.region && <button type="button" onClick={() => openDialogueEditor(editorTarget.region!, editorTarget.index)} className="mt-2 w-full rounded-lg bg-cyan-700 px-2 py-2 text-[11px] font-black text-white hover:bg-cyan-600">Éditer les dialogues</button>}
 							{editorTarget.kind === "splinePoint" && editorTarget.splineId && <div className="mt-2 grid grid-cols-2 gap-1.5"><button type="button" onClick={() => addSplineEndpoint(editorTarget.splineId!, true)} className="rounded-lg bg-cyan-900/80 px-2 py-1.5 text-[10px] font-bold">＋ Début de spline</button><button type="button" onClick={() => addSplineEndpoint(editorTarget.splineId!, false)} className="rounded-lg bg-cyan-900/80 px-2 py-1.5 text-[10px] font-bold">＋ Fin de spline</button><button type="button" disabled={(splineElements.find((element) => element.id === editorTarget.splineId)?.points.length ?? 0) <= 2} onClick={() => removeSplinePoint(editorTarget.splineId!, editorTarget.index)} className="rounded-lg bg-rose-900/80 px-2 py-1.5 text-[10px] font-bold disabled:opacity-40">⌫ Supprimer ce point</button><button type="button" onClick={() => removeSpline(editorTarget.splineId!)} className="rounded-lg bg-rose-950 px-2 py-1.5 text-[10px] font-bold">Retirer ce tracé</button></div>}
 							{editorTarget.kind === "asset" && editorTarget.key && <div className="mt-2 flex items-center gap-1.5"><button type="button" aria-label="Tourner à gauche" onClick={()=>setAssetRotations(v=>({...v,[editorTarget.key!]: (v[editorTarget.key!]??0)-Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↶</button><span className="flex-1 text-center text-xs tabular-nums">{((assetRotations[editorTarget.key]??0)*180/Math.PI).toFixed(0)}°</span><button type="button" aria-label="Tourner à droite" onClick={()=>setAssetRotations(v=>({...v,[editorTarget.key!]: (v[editorTarget.key!]??0)+Math.PI/12}))} className="rounded bg-slate-700 px-3 py-1">↷</button><button type="button" aria-label="Retirer cet asset" onClick={()=>{setLandmarks(current=>({...current,[editorTarget.key!]:null}));setEditorTarget(null);}} className="rounded bg-rose-800 px-2 py-1 text-xs">Retirer</button></div>}
 						</>}
@@ -592,43 +678,45 @@ export function MapSelectScreen({ save, selection, onHeroChange, onSelectStage, 
 					</div>
 					{editorMessage && <p className="mt-2 text-xs text-emerald-200">{editorMessage}</p>}
 				</div>}
+				{editorOpen && dialogueEdit && activeEditChapter && <div className="pointer-events-auto flex max-h-[48vh] w-[min(420px,calc(100vw-1.5rem))] flex-col overflow-hidden rounded-2xl border border-white/20 bg-slate-950/95 shadow-2xl backdrop-blur">
+					<div className="shrink-0 px-3 pt-3"><div className="flex items-center justify-between gap-2"><div><p className="text-[10px] font-black uppercase tracking-widest text-cyan-200">Mise en scène du chapitre</p><h2 className="text-sm font-black text-white">{activeEditChapter.title}</h2></div><button type="button" aria-label="Quitter l’éditeur de dialogue" onClick={() => { setChapterDocs(chapterDocsSaved.current); setDialogueEdit(null); setChapterSaveMessage(""); }} className="rounded-lg bg-white/10 px-2 py-1 text-xs font-bold">✕</button></div>
+					<div className="mt-2 grid grid-cols-2 gap-2"><button type="button" aria-pressed={dialogueEdit.kind === "intro"} onClick={() => setDialogueEdit({ ...dialogueEdit, kind: "intro" })} className={`rounded-lg px-3 py-2 text-xs font-bold ${dialogueEdit.kind === "intro" ? "bg-cyan-600 text-white" : "bg-white/10 text-white/70"}`}>Dialogue d’intro</button><button type="button" aria-pressed={dialogueEdit.kind === "outro"} onClick={() => setDialogueEdit({ ...dialogueEdit, kind: "outro" })} className={`rounded-lg px-3 py-2 text-xs font-bold ${dialogueEdit.kind === "outro" ? "bg-cyan-600 text-white" : "bg-white/10 text-white/70"}`}>Dialogue de victoire</button></div></div>
+					<div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3 pt-1">
+					<label className="mt-2 block text-[11px] font-bold text-white/80">Rotation de la caméra · {dialogueStage.camera.orbit}°<input type="range" min="-180" max="180" step="1" value={dialogueStage.camera.orbit} onChange={(event) => updateDialogueStage((stage) => ({ ...stage, camera: { ...stage.camera, orbit: Number(event.target.value) } }))} className="mt-1 w-full accent-cyan-300" /></label>
+					<label className="mt-2 block text-[11px] font-bold text-white/80">Distance de la caméra · {dialogueStage.camera.distance.toFixed(1)}<input type="range" min="6" max="24" step="0.1" value={dialogueStage.camera.distance} onChange={(event) => updateDialogueStage((stage) => ({ ...stage, camera: { ...stage.camera, distance: Number(event.target.value) } }))} className="mt-1 w-full accent-cyan-300" /></label>
+					<div className="mt-3 space-y-2">{[...new Set((dialogueEdit.kind === "intro" ? activeEditChapter.intro : activeEditChapter.outro).map((line) => line.who).filter((speaker) => speaker !== "hero"))].map((speaker) => { const actor = dialogueStage.actors[speaker] ?? { x: 0, z: 0, rotation: 0 }; const rotation = actor.rotation ?? 0; const label = SPEAKER_INFO[speaker as keyof typeof SPEAKER_INFO]?.name ?? speaker; return <div key={speaker} className="rounded-xl bg-white/5 px-2.5 py-2"><p className="mb-1 text-[11px] font-black text-amber-100">{label}</p><label className="block text-[10px] text-white/70">Décalage gauche / droite · {actor.x.toFixed(1)}<input type="range" min="-5" max="5" step="0.1" value={actor.x} onChange={(event) => updateDialogueStage((stage) => ({ ...stage, actors: { ...stage.actors, [speaker]: { ...actor, x: Number(event.target.value) } } }))} className="w-full accent-amber-300" /></label><label className="block text-[10px] text-white/70">Profondeur · {actor.z.toFixed(1)}<input type="range" min="-5" max="5" step="0.1" value={actor.z} onChange={(event) => updateDialogueStage((stage) => ({ ...stage, actors: { ...stage.actors, [speaker]: { ...actor, z: Number(event.target.value) } } }))} className="w-full accent-amber-300" /></label><label className="block text-[10px] text-white/70">Rotation sur lui-même · {rotation}°<input type="range" min="-180" max="180" step="1" value={rotation} onChange={(event) => updateDialogueStage((stage) => ({ ...stage, actors: { ...stage.actors, [speaker]: { ...actor, rotation: Number(event.target.value) } } }))} className="w-full accent-amber-300" /></label></div>; })}</div>
+					</div>
+					<div className="shrink-0 border-t border-white/10 bg-slate-950/95 px-3 pb-3 pt-2"><div className="flex gap-2"><button type="button" onClick={() => void saveAndExitDialogueEditor()} className="flex-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-500">Sauvegarder et quitter</button><button type="button" onClick={() => { setChapterDocs(chapterDocsSaved.current); setDialogueEdit(null); }} className="rounded-xl bg-white/10 px-3 py-2 text-xs font-bold text-white/80">Annuler</button></div>{chapterSaveMessage && <p role="status" className="mt-2 text-[10px] text-emerald-200">{chapterSaveMessage}</p>}</div>
+				</div>}
 			</div>}
-			{intro && introLine && <div className={`pointer-events-none absolute inset-0 z-20 overflow-hidden transition-opacity duration-500 ${introExiting ? "opacity-0" : "opacity-100"}`}>
-				{(() => { const speaker = introLine.who === "hero" ? HERO_INFO[save.hero] ?? HERO_INFO.hana : SPEAKER_INFO[introLine.who] ?? SPEAKER_INFO.mochi; return <>
+			{dialogueView && introLine && <div className={`pointer-events-none absolute inset-0 z-20 overflow-hidden transition-opacity duration-500 ${introExiting ? "opacity-0" : "opacity-100"}`}>
+				{(() => { const speaker = introLine.who === "hero" ? HERO_INFO[save.hero] ?? HERO_INFO.hana : SPEAKER_INFO[introLine.who] ?? SPEAKER_INFO.mochi; const speakerName = introLine.who === "demon" ? dialogueView.demonName ?? "Démon" : speaker.name; const background = introLine.who === "demon" ? `hsl(${dialogueView.hue ?? 0} 66% 38% / 0.92)` : introLine.who === "mochi" ? "#f4edff" : `${speaker.color}e8`; return <>
 				<div className="absolute inset-x-0 top-[5.5rem] text-center sm:top-24">
-					<span className="rounded-full border border-white/30 bg-slate-950/70 px-5 py-2 text-sm font-extrabold text-white shadow-lg backdrop-blur-md sm:text-base">{intro.title}</span>
+					<span className="rounded-full border border-white/30 bg-slate-950/70 px-5 py-2 text-sm font-extrabold text-white shadow-lg backdrop-blur-md sm:text-base">{dialogueView.title}</span>
 				</div>
 				{(() => {
-					const speakers = [...new Set(intro.lines.map(({ who }) => who).filter((who) => who !== "hero"))];
-					const participantCount = speakers.length + 1;
-					const participantIndex = introLine.who === "hero" ? 0 : speakers.indexOf(introLine.who) + 1;
-					const leftSlot = participantCount === 2 ? [0.35, 0.65][participantIndex]
-						: participantCount === 3 ? [0.22, 0.5, 0.78][participantIndex]
-							: 0.15 + 0.7 * participantIndex / Math.max(1, participantCount - 1);
-					const left = window.innerWidth * leftSlot;
-					const top = dialogueBubblePosition ? Math.max(150, dialogueBubblePosition.y - 12) : window.innerHeight * 0.3;
 					const text = introLine.who === "hero" ? playerText(introLine.text, save.hero) : introLine.text;
-					const background = introLine.who === "mochi" ? "#f4edff" : `${speaker.color}e8`;
 					const foreground = introLine.who === "mochi" ? "#321b50" : "#ffffff";
 					return <div
 						key={`${introIndex}-${introLine.who}`}
-						className={`absolute w-[min(88vw,34rem)] rounded-3xl border-2 border-white/90 px-4 py-3 text-center text-base font-bold leading-snug shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md transition-opacity sm:px-5 sm:py-4 sm:text-xl ${dialogueBubblePosition ? "opacity-100" : "opacity-0"}`}
-						style={{ left, top, transform: "translate(-50%, -100%)", backgroundColor: background, color: foreground }}
+						ref={dialogueBubbleRef}
+						className={`absolute w-[min(88vw,34rem)] rounded-3xl border-2 border-white/90 px-4 py-3 text-center text-base font-bold leading-snug shadow-[0_12px_40px_rgba(0,0,0,.55)] backdrop-blur-md transition-opacity sm:px-5 sm:py-4 sm:text-xl ${dialogueBubbleLayout ? "opacity-100" : "opacity-0"}`}
+						style={{ left: dialogueBubbleLayout?.left ?? window.innerWidth / 2, top: dialogueBubbleLayout?.top ?? 12, transform: "translateX(-50%)", backgroundColor: background, color: foreground }}
 					>
-						<span className="mb-1 block text-xs font-black uppercase tracking-widest opacity-80">{speaker.name}</span>
+						<span className="mb-1 block text-xs font-black uppercase tracking-widest opacity-80">{speakerName}</span>
 						{text}
-						<span className="absolute -bottom-2 left-1/2 h-4 w-4 -translate-x-1/2 rotate-45 border-b-2 border-r-2 border-white/90" style={{ backgroundColor: background }} />
+						<span className={`absolute h-4 w-4 -translate-x-1/2 rotate-45 border-white/90 ${dialogueBubbleLayout?.direction === "up" ? "-top-2 border-l-2 border-t-2" : "-bottom-2 border-b-2 border-r-2"}`} style={{ left: dialogueBubbleLayout?.arrowX ?? "50%", backgroundColor: background }} />
 						<span className="pointer-events-auto absolute -right-3 -top-3"><SpeakButton text={speakable(text)} speechOptions={{ masculine: introLine.who === "hero" ? save.hero === "milo" : undefined, recordedText: text }} size="sm" /></span>
 					</div>;
 				})()}
 				</>; })()}
 				<div className="pointer-events-auto absolute inset-x-0 bottom-3 flex items-center justify-center gap-3 sm:bottom-5">
-					<span className="rounded-full border border-white/30 bg-slate-950/75 px-3 py-2 text-xs font-bold text-white shadow-lg">{introIndex + 1} / {intro.lines.length}</span>
-					<BigButton color="yellow" onClick={advanceIntro} className="!px-5 !py-2.5 !text-base sm:!px-6 sm:!py-3 sm:!text-lg">{introIndex + 1 < intro.lines.length ? "Suivant ▶" : "C'est parti ! ⚡"}</BigButton>
-					<button type="button" onClick={closeIntro} className="rounded-full bg-black/55 px-3 py-2 text-xs font-semibold text-white/80 underline underline-offset-2">Passer</button>
+					<span className="rounded-full border border-white/30 bg-slate-950/75 px-3 py-2 text-xs font-bold text-white shadow-lg">{introIndex + 1} / {dialogueView.lines.length}</span>
+					<BigButton color="yellow" onClick={advanceIntro} className="!px-5 !py-2.5 !text-base sm:!px-6 sm:!py-3 sm:!text-lg">{introIndex + 1 < dialogueView.lines.length ? "Suivant ▶" : dialogueEdit ? "Dernière réplique" : "C'est parti ! ⚡"}</BigButton>
+					{!dialogueEdit && <button type="button" onClick={closeIntro} className="rounded-full bg-black/55 px-3 py-2 text-xs font-semibold text-white/80 underline underline-offset-2">Passer</button>}
 				</div>
 			</div>}
-			{showMapLoading && !intro && <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#101b22]/90 px-6 backdrop-blur-md" role="status" aria-live="polite">
+			{showMapLoading && !dialogueView && <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#101b22]/90 px-6 backdrop-blur-md" role="status" aria-live="polite">
 				<div className="w-full max-w-sm rounded-[1.75rem] border border-white/20 bg-slate-950/75 p-6 text-center shadow-[0_20px_70px_rgba(0,0,0,0.55)]">
 					<div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-amber-100/50 bg-gradient-to-br from-fuchsia-500/40 to-cyan-400/30 text-3xl shadow-[0_0_28px_rgba(227,71,168,0.35)]" aria-hidden="true">✦</div>
 					<p className="text-xs font-bold tracking-[0.18em] text-cyan-100">LE MONDE DES DÉCOUVERTES</p>

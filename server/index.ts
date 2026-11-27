@@ -25,6 +25,29 @@ const viteUrl = process.env.VITE_URL ?? "http://localhost:5174";
 app.use(express.json({ limit: "4mb" }));
 
 const mapLayoutFile = path.join(projectRoot, "src", "data", "map-layout.json");
+const chapterFiles = {
+  reading: path.join(projectRoot, "src", "data", "reading-chapters.json"),
+  math: path.join(projectRoot, "src", "data", "math-chapters.json"),
+} as const;
+app.get("/api/dev/chapters/:region", async (request, response) => {
+  if (isProduction) { response.sendStatus(404); return; }
+  const file = chapterFiles[request.params.region as keyof typeof chapterFiles];
+  if (!file) { response.status(400).json({ error: "Région inconnue." }); return; }
+  try { response.json(JSON.parse(await readFile(file, "utf8"))); }
+  catch { response.status(500).json({ error: "Impossible de lire les chapitres." }); }
+});
+app.put("/api/dev/chapters/:region", async (request, response) => {
+  if (isProduction) { response.sendStatus(404); return; }
+  const file = chapterFiles[request.params.region as keyof typeof chapterFiles];
+  const chapters = request.body as Array<Record<string, unknown>>;
+  if (!file || !Array.isArray(chapters) || chapters.some((chapter) =>
+    typeof chapter.id !== "number" || typeof chapter.title !== "string" ||
+    !Array.isArray(chapter.intro) || !Array.isArray(chapter.outro) ||
+    !chapter.stage || typeof chapter.stage !== "object"
+  )) { response.status(400).json({ error: "Données de chapitre invalides." }); return; }
+  try { await writeFile(file, `${JSON.stringify(chapters, null, 2)}\n`); response.json({ ok: true }); }
+  catch { response.status(500).json({ error: "Impossible d’enregistrer les chapitres." }); }
+});
 app.get("/api/dev/map-layout", async (_request, response) => {
   if (isProduction) { response.sendStatus(404); return; }
   try { response.json(JSON.parse(await readFile(mapLayoutFile, "utf8"))); }

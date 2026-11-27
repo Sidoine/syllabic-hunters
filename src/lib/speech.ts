@@ -62,7 +62,7 @@ for (const voice of generatedVoices) {
 function voiceContext(file: string) {
   const speaker = generatedSpeaker.get(file);
   if (speaker?.startsWith("hero-")) return "Dialogue du héros sélectionné";
-  if (speaker && ["king", "mochi", "yuki"].includes(speaker)) return `Dialogue · ${speaker}`;
+  if (speaker && ["demon", "king", "mochi", "yuki"].includes(speaker)) return `Dialogue · ${speaker}`;
   if (file.startsWith("hero-")) return "Réplique du héros choisi";
   if (file.startsWith("story-")) {
     const character = file.split("-")[1];

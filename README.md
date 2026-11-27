@@ -22,6 +22,11 @@ Les assets ne sont pas versionnés dans Git. Ils résident dans la bibliothèque
 - `npm run assets:status` compare les fichiers locaux et distants.
 - Ajouter `-- --force` à `assets:pull` ou `assets:push` pour remplacer aussi les fichiers de même taille.
 
+  Le hook Git `pre-push` synchronise les assets vers Seafile avant chaque `git push`. Il est installé automatiquement
+  par `npm install` (script `prepare`). Pour l’installer manuellement dans un clone existant, exécuter
+  `npm run hooks:install` après avoir configuré `SEAFILE_TOKEN` dans `.env`. Si la synchronisation échoue, le push
+  est interrompu afin d’éviter d’envoyer le code sans ses assets.
+
 Faire `assets:pull` après un clone pour disposer des références ImageGen et des médias de travail. La commande `npm run build` télécharge automatiquement `assets/final` avant la compilation.
 
 Le workflow GitHub Actions transmet le secret du dépôt `SEAFILE_TOKEN` à Dokku. Le build Dokku récupère ensuite `assets/final` depuis Seafile. Ajouter ce secret dans **Settings → Secrets and variables → Actions** du dépôt GitHub.

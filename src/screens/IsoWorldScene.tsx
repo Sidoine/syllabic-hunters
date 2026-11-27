@@ -2,7 +2,7 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
-import type { Speaker } from "../data/chapter";
+import type { ChapterStage, Speaker } from "../data/chapter";
 import { heroSceneSpeaker } from "../data/dialogue";
 import type { HeroId } from "../lib/storage";
 import { assetUrl } from "../lib/assets";
@@ -2157,8 +2157,11 @@ export function IsoWorldScene({
   onEditorErase,
   hero,
   cinematic = false,
+  dialogueHue = 0,
   dialogueSpeaker = null,
   dialogueCharacters = [],
+  dialogueStage,
+  dialogueEditMode = false,
   dialogueExiting = false,
   onDialogueBubblePosition,
   onStageClick,
@@ -2191,8 +2194,11 @@ export function IsoWorldScene({
   onEditorErase: (ids: string[]) => void;
   hero: HeroId;
   cinematic?: boolean;
+  dialogueHue?: number;
   dialogueSpeaker?: Speaker | null;
   dialogueCharacters?: Speaker[];
+  dialogueStage?: ChapterStage;
+  dialogueEditMode?: boolean;
   dialogueExiting?: boolean;
   onDialogueBubblePosition?: (
     position: { x: number; y: number } | null,
@@ -2250,10 +2256,16 @@ export function IsoWorldScene({
   heroRef.current = hero;
   const cinematicRef = useRef(cinematic);
   cinematicRef.current = cinematic;
+  const dialogueHueRef = useRef(dialogueHue);
+  dialogueHueRef.current = dialogueHue;
   const dialogueSpeakerRef = useRef(dialogueSpeaker);
   dialogueSpeakerRef.current = dialogueSpeaker;
   const dialogueCharactersRef = useRef(dialogueCharacters);
   dialogueCharactersRef.current = dialogueCharacters;
+  const dialogueStageRef = useRef(dialogueStage);
+  dialogueStageRef.current = dialogueStage;
+  const dialogueEditModeRef = useRef(dialogueEditMode);
+  dialogueEditModeRef.current = dialogueEditMode;
   const dialogueExitingRef = useRef(dialogueExiting);
   dialogueExitingRef.current = dialogueExiting;
   const stageClickRef = useRef(onStageClick);
@@ -2265,6 +2277,8 @@ export function IsoWorldScene({
     refreshRef.current?.();
   });
   useEffect(() => {
+    // Recreate the WebGL scene when the external hot-reload revision changes.
+    void sceneHmrRevision;
     const host = hostRef.current;
     const scroll = containerRef.current;
     if (!host || !scroll) return;
@@ -2718,8 +2732,9 @@ export function IsoWorldScene({
         // screen-space spacing. The rightmost character faces inward.
         const facesCamera = cast.length > 1 && index === 0;
         const depthOffset = facesCamera ? 4 : 0;
-        const stagedX = x + dialogueForward.x * depthOffset;
-        const stagedZ = z + dialogueForward.z * depthOffset;
+        const actorOffset = dialogueStageRef.current?.actors[key] ?? { x: 0, z: 0 };
+        const stagedX = x + dialogueForward.x * (depthOffset + actorOffset.z) + dialogueRight.x * actorOffset.x;
+        const stagedZ = z + dialogueForward.z * (depthOffset + actorOffset.z) + dialogueRight.z * actorOffset.x;
         anchor.position.set(
           stagedX,
           terrainHeight(stagedX, stagedZ) + 0.05,
@@ -2730,13 +2745,15 @@ export function IsoWorldScene({
           : dialogueRight.clone().negate();
         // Dialogue models have a local forward offset of -PI/2.
         anchor.rotation.y =
-          Math.atan2(lookDirection.x, lookDirection.z) + Math.PI / 2;
+          Math.atan2(lookDirection.x, lookDirection.z) + Math.PI / 2 + (actorOffset.rotation ?? 0) * Math.PI / 180;
         anchor.visible = true;
         anchor.scale.setScalar(1);
         if (loadedDialogueCharacters.has(key)) return;
         loadedDialogueCharacters.add(key);
         const modelUrl =
-          key === "mochi"
+          key === "demon"
+            ? "/models/dialogue/demon.glb?v=demon-trellis-1"
+            : key === "mochi"
             ? "/models/dialogue/mochi.glb?v=map-assets-optimized-1"
             : key === "king"
               ? "/models/dialogue/king-chuuut.glb?v=map-assets-optimized-1"
@@ -2802,6 +2819,7 @@ export function IsoWorldScene({
                 : clonedMaterials[0];
             });
             anchor?.add(model);
+            if (anchor) anchor.userData.dialogueModel = model;
             applyMapFogToObject(model, mapFogState);
             if (anchor) {
               anchor.userData.dialogueMaterials = dialogueMaterials;
@@ -3415,6 +3433,10 @@ export function IsoWorldScene({
     };
     const onCanvasPointerDown = (event: PointerEvent) => {
       if (event.pointerType !== "mouse" || event.button !== 0) return;
+      if (editorModeRef.current && dialogueEditModeRef.current) {
+        event.preventDefault();
+        return;
+      }
       if (editorModeRef.current) {
         if (
           paintModeRef.current !== "select" &&
@@ -3576,7 +3598,8 @@ export function IsoWorldScene({
       const state = stageMarkersRef.current.find(
         (item) => item.region === stage.region && item.index === stage.index,
       );
-      if (state?.unlocked) stageClickRef.current(stage.region, stage.index);
+      if (state?.unlocked || editorModeRef.current)
+        stageClickRef.current(stage.region, stage.index);
     };
     renderer.domElement.addEventListener("pointerdown", onCanvasPointerDown);
     renderer.domElement.addEventListener("pointermove", onCanvasPointerMove);
@@ -3894,13 +3917,21 @@ export function IsoWorldScene({
       }
       camera.updateMatrixWorld();
       anchor.updateWorldMatrix(true, false);
-      const head = anchor.localToWorld(new THREE.Vector3(0, 2.48, 0));
+      const speakingModel = (anchor.userData.dialogueModel as THREE.Object3D | undefined) ?? anchor;
+      speakingModel.updateWorldMatrix(true, true);
+      const bounds = new THREE.Box3().setFromObject(speakingModel);
+      const size = bounds.getSize(new THREE.Vector3());
+      const head = bounds.isEmpty()
+        ? anchor.localToWorld(new THREE.Vector3(0, 2.2, 0))
+        : new THREE.Vector3(
+            (bounds.min.x + bounds.max.x) / 2,
+            bounds.max.y - size.y * 0.06,
+            (bounds.min.z + bounds.max.z) / 2,
+          );
       const projected = head.project(camera);
       if (
         projected.z < -1 ||
-        projected.z > 1 ||
-        Math.abs(projected.x) > 1.15 ||
-        Math.abs(projected.y) > 1.15
+        projected.z > 1
       ) {
         if (lastDialogueBubblePosition) onDialogueBubblePosition?.(null);
         lastDialogueBubblePosition = null;
@@ -3997,8 +4028,8 @@ export function IsoWorldScene({
       camera.updateProjectionMatrix();
       syncEditedLayout();
       for (const handle of riverEditHandles)
-        handle.visible = editorModeRef.current;
-      startEditHandle.visible = editorModeRef.current;
+        handle.visible = editorModeRef.current && !dialogueEditModeRef.current;
+      startEditHandle.visible = editorModeRef.current && !dialogueEditModeRef.current;
       if (paintModeRef.current !== "erase" || !editorModeRef.current)
         eraserCursorOnMap = false;
       eraseBrushOutline.visible =
@@ -4081,16 +4112,22 @@ export function IsoWorldScene({
               focus.z + dialogueRight.z * lineupCenterOffset,
             )
           : mapCameraLookAt;
-      const cameraDirection = new THREE.Vector3(-7.6, 3.2, 5).normalize();
+      const stageCamera = dialogueStageRef.current?.camera;
+      const cameraDirection = new THREE.Vector3(-7.6, 3.2, 5)
+        .normalize()
+        .applyAxisAngle(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(stageCamera?.orbit ?? 0));
       const lineupWidth =
         dialogueSpacing * Math.max(0, dialogueCastCount - 1) + 1.8;
       const horizontalFovTangent =
         Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) *
         Math.max(width / height, 0.25);
-      const cameraDistance = Math.max(
+      const automaticCameraDistance = Math.max(
         9.7,
         lineupWidth / (2 * horizontalFovTangent),
       );
+      const cameraDistance = stageCamera
+        ? automaticCameraDistance * (stageCamera.distance / 10)
+        : automaticCameraDistance;
       const desiredCameraPosition =
         isCinematic && focus
           ? dialogueLookAt
@@ -4183,7 +4220,13 @@ export function IsoWorldScene({
         );
       }
       for (const layer of assetLayers.values()) {
+        if (layer.instancedChunks) {
+          for (const chunk of layer.instancedChunks.values()) {
+            for (const mesh of chunk.meshes) mesh.visible = chunk.indices.some((index) => isNearViewport(layer.placements[index][0], layer.placements[index][1]));
+          }
+        }
         for (const model of layer.models.values()) {
+          setInstanceVisible(model, true);
           const id = model.userData.mapErasableId as string | undefined;
           if (id && erasedScenery.has(id)) setInstanceVisible(model, false);
         }
@@ -4315,6 +4358,9 @@ export function IsoWorldScene({
     assetRotations.readingTree,
     assetRotations.readingTreeLibrary,
     assetRotations.storybookCottage,
+    decorations,
+    splineElements,
+    onDialogueBubblePosition,
     sceneHmrRevision,
   ]);
 

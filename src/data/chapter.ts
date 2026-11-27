@@ -3,6 +3,11 @@ import type { DialogueLine, SceneSpeaker } from "./dialogue";
 export type Speaker = SceneSpeaker;
 export type Line = DialogueLine;
 
+export interface ChapterStage {
+	camera: { orbit: number; distance: number };
+	actors: Record<string, { x: number; z: number; rotation?: number }>;
+}
+
 export interface Chapter {
 	id: number;
 	title: string;
@@ -15,4 +20,5 @@ export interface Chapter {
 	outro: Line[];
 	introVideo?: string;
 	victoryVideo?: string;
+	stage?: ChapterStage;
 }

@@ -192,9 +192,7 @@ export function ChapterScreen({
 	return (
 		<MissionPathScreen
 			title={chapter.title}
-			place={chapter.title}
 			hero={save.hero}
-			name={save.name}
 			region="reading"
 			award={award}
 			rewardComplete={Boolean(save.rewards?.[`reading-coloring-${chapter.id}`])}

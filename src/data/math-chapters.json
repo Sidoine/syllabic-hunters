@@ -1,0 +1,182 @@
+[
+  {
+    "id": 0,
+    "title": "Les étoiles jusqu'à 5",
+    "label": "1–5",
+    "color": "#ff4fa3",
+    "boss": "Grignoton des étoiles",
+    "hue": 330,
+    "tip": "Compte les étoiles une à une, jusqu'à cinq.",
+    "intro": [
+      {
+        "who": "yuki",
+        "text": "Oh là là, les étoiles se sont éparpillées ! Comptons-les ensemble, une à une."
+      }
+    ],
+    "outro": [
+      {
+        "who": "yuki",
+        "text": "Cinq étoiles brillent de nouveau ! Le premier rang du boulier est rallumé."
+      }
+    ],
+    "skill": "addition",
+    "limit": 5,
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 1,
+    "title": "Les additions jusqu'à 10",
+    "label": "+10",
+    "color": "#34c3ff",
+    "boss": "Additionneur lumineux",
+    "hue": 190,
+    "tip": "Pour additionner, avance dans la suite des nombres.",
+    "intro": [
+      {
+        "who": "yuki",
+        "text": "L’Additionneur a mélangé les étoiles. Ajoutons-les pour découvrir combien il y en a en tout !"
+      }
+    ],
+    "outro": [
+      {
+        "who": "yuki",
+        "text": "Bien joué ! En avançant dans les nombres, nous avons retrouvé le total."
+      }
+    ],
+    "skill": "addition",
+    "limit": 10,
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 2,
+    "title": "Les soustractions jusqu'à 10",
+    "label": "−10",
+    "color": "#b36bff",
+    "boss": "Golem des échos",
+    "hue": 270,
+    "tip": "Pour soustraire, recule dans la suite des nombres.",
+    "intro": [
+      {
+        "who": "yuki",
+        "text": "Le Golem emporte des étoiles. Comptons celles qui restent quand il en prend quelques-unes."
+      }
+    ],
+    "outro": [
+      {
+        "who": "yuki",
+        "text": "Le Golem nous rend les étoiles restantes. Le boulier recommence à bouger !"
+      }
+    ],
+    "skill": "subtraction",
+    "limit": 10,
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 3,
+    "title": "Les compléments à 10",
+    "label": "10",
+    "color": "#ffd23f",
+    "boss": "Gardienne des dix",
+    "hue": 45,
+    "tip": "Cherche le nombre qui complète dix.",
+    "intro": [
+      {
+        "who": "yuki",
+        "text": "La Gardienne veut dix étoiles dans son panier. Combien en manque-t-il ?"
+      }
+    ],
+    "outro": [
+      {
+        "who": "yuki",
+        "text": "Dix étoiles réunies : nous avons complété le panier et rallumé une nouvelle rangée."
+      }
+    ],
+    "skill": "complement",
+    "limit": 10,
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 4,
+    "title": "Les additions jusqu'à 20",
+    "label": "+20",
+    "color": "#2ee0a0",
+    "boss": "Gardien des vingtaines",
+    "hue": 145,
+    "tip": "Additionne sans dépasser vingt.",
+    "intro": [
+      {
+        "who": "yuki",
+        "text": "Le pont s’allume avec des additions. Avançons sans dépasser vingt pour traverser !"
+      }
+    ],
+    "outro": [
+      {
+        "who": "yuki",
+        "text": "Nous avons traversé ! Les étoiles jusqu’à vingt brillent maintenant sur la montagne."
+      }
+    ],
+    "skill": "addition",
+    "limit": 20,
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  },
+  {
+    "id": 5,
+    "title": "Les calculs mélangés",
+    "label": "±20",
+    "color": "#ff7ad9",
+    "boss": "Roi du calcul",
+    "hue": 315,
+    "tip": "Observe le signe pour savoir s'il faut ajouter ou retirer.",
+    "intro": [
+      {
+        "who": "yuki",
+        "text": "Le Roi du calcul a caché les signes. Observons chaque opération pour savoir s’il faut ajouter ou retirer."
+      }
+    ],
+    "outro": [
+      {
+        "who": "yuki",
+        "text": "Le boulier des étoiles tourne à nouveau ! Grâce à toi, les nombres ont retrouvé leur place."
+      }
+    ],
+    "skill": "mixed",
+    "limit": 20,
+    "stage": {
+      "camera": {
+        "orbit": 0,
+        "distance": 10
+      },
+      "actors": {}
+    }
+  }
+]

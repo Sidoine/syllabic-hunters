@@ -1,4 +1,4 @@
-export type DialogueCharacter = "king" | "mochi" | "yuki" | "hero";
+export type DialogueCharacter = "king" | "demon" | "mochi" | "yuki" | "hero";
 
 /** Runtime actors use a gendered hero key; authored dialogue keeps the generic `hero`. */
 export type SceneSpeaker =

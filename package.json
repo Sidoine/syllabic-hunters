@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prepare": "node scripts/install-git-hooks.mjs",
     "dev": "concurrently \"tsx watch server/index.ts\" \"vite\"",
     "prebuild": "npm run assets:pull:final",
     "build": "npm run build:server && vite build",
@@ -13,6 +14,7 @@
 	"assets:push": "npm run assets:seafile -- push",
 	"assets:pull": "npm run assets:seafile -- pull",
 	"assets:pull:final": "npm run assets:seafile -- pull-final",
+	"hooks:install": "node scripts/install-git-hooks.mjs",
 	"voice:catalog": "tsx .agents/skills/generate-voice/scripts/build_voice_catalog.ts",
     "lint": "biome lint .",
 	"test:map": "tsx --test tests/map-layout.test.ts",

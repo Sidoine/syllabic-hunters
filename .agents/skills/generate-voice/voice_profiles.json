@@ -48,6 +48,13 @@
     "tone_text": "Roi méchant de dessin animé, dramatique avec un ricanement bref. Garder la phonologie et la mélodie du français de France, sans intonation anglaise.",
     "seed": 27
   },
+  "demon": {
+    "reference_file": "../../../assets/input/references/voice/demon.wav",
+    "reference_text": "Ha, ha, ha ! Ces syllabes sont à moi ! La, li, lo, lu, lé, lou. Vous ne les retrouverez jamais !",
+    "voice_text": "Voix masculine de créature démoniaque de dessin animé, jeune adulte, grave, râpeuse et malicieuse, locuteur natif du français de France, articulation claire.",
+    "tone_text": "Voix de petit démon fanfaron, ricanement bref, énergie malicieuse, diction nette en français de France.",
+    "seed": 31
+  },
   "hero-masculine": {
     "reference_file": "../../../assets/input/references/voice/hero-masculine.wav",
     "reference_text": "Salut, c'est moi ! Je suis prêt à partir en mission. Écoute le son, trouve la bonne syllabe, et nous allons réussir ensemble !",

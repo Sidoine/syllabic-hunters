@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+repository_root=$(git rev-parse --show-toplevel)
+cd "$repository_root"
+
+printf '%s\n' 'Synchronisation des assets vers Seafile avant le push...'
+node scripts/seafile-assets.mjs push

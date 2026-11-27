@@ -197,7 +197,7 @@ export default function App() {
     else go({ name: "map-outro-chapter", region, ch, replay: true });
   };
 
-  const renderMap = (intro?: { title: string; lines: Line[]; onEnd: () => void }, backgroundOnly = false) => (
+  const renderMap = (intro?: { title: string; lines: Line[]; onEnd: () => void; hue?: number; demonName?: string }, backgroundOnly = false) => (
     <MapSelectScreen
       save={save}
       selection={mapStage}
@@ -212,7 +212,7 @@ export default function App() {
       onMath={openMathChapter}
       onWorldIntro={() => go({ name: "map-intro-world" })}
       onSettings={() => setShowSettings(true)}
-      intro={intro ? { title: intro.title, lines: intro.lines } : undefined}
+      intro={intro ? { title: intro.title, lines: intro.lines, hue: intro.hue, demonName: intro.demonName } : undefined}
       onIntroEnd={intro?.onEnd}
       backgroundOnly={backgroundOnly}
     />
@@ -280,7 +280,7 @@ export default function App() {
   }
 
   let content: React.ReactNode = null;
-  let mapIntro: { title: string; lines: Line[]; onEnd: () => void } | undefined;
+  let mapIntro: { title: string; lines: Line[]; onEnd: () => void; hue?: number; demonName?: string } | undefined;
   switch (screen.name) {
     case "title":
       content = (
@@ -301,6 +301,8 @@ export default function App() {
       mapIntro = {
         title: chapter.title,
         lines: chapter.intro,
+        hue: chapter.hue,
+        demonName: chapter.boss,
         onEnd: () => {
           setSave((current) => ({ ...current, seenIntro: { ...current.seenIntro, [storyKey]: true } }));
           go(screen.region === "math" ? { name: "math-chapter", ch: screen.ch } : { name: "chapter", ch: screen.ch });
@@ -312,8 +314,10 @@ export default function App() {
       const chapter = screen.region === "math" ? MATH_CHAPTERS[screen.ch] : CHAPTERS[screen.ch];
       const storyKey = screen.region === "math" ? mathStoryKey(screen.ch) : screen.ch;
       mapIntro = {
-        title: "Victoire !",
+        title: `${chapter.title} · Victoire !`,
         lines: chapter.outro,
+        hue: chapter.hue,
+        demonName: chapter.boss,
         onEnd: () => {
           setSave((current) => ({ ...current, seenOutro: { ...current.seenOutro, [storyKey]: true } }));
           if (screen.replay) {

@@ -9,13 +9,14 @@ import { pipeline } from "node:stream/promises";
 const baseUrl = (process.env.SEAFILE_URL ?? "https://seafile.sidoine.net").replace(/\/$/, "");
 const libraryName = process.env.SEAFILE_LIBRARY_NAME ?? "Hunters";
 const requestedCommand = process.argv[2];
-const finalOnly = requestedCommand === "pull-final";
+const finalOnly = ["status-final", "pull-final", "push-final"].includes(requestedCommand);
 const localRoot = path.resolve("assets", finalOnly ? "final" : "");
 const remoteRootBase = (process.env.SEAFILE_ASSET_PATH ?? "/assets").replace(/\/$/, "") || "/";
 const remoteRoot = `${remoteRootBase}${finalOnly ? "/final" : ""}`;
 const token = (process.env.SEAFILE_TOKEN ?? "").trim().replace(/^(?:Bearer|Token)\s+/i, "");
 const force = process.argv.includes("--force");
-const command = finalOnly ? "pull" : requestedCommand;
+const onlyPath = process.argv.find((argument) => argument.startsWith("--only="))?.slice("--only=".length).replaceAll("\\", "/");
+const command = requestedCommand === "pull-final" ? "pull" : requestedCommand === "push-final" ? "push" : requestedCommand === "status-final" ? "status" : requestedCommand;
 
 function requireConfig() {
 	if (!token) throw new Error("SEAFILE_TOKEN est absent. Ajoute-le au fichier .env local.");
@@ -150,16 +151,20 @@ async function pushFile(file, uploadLinks) {
 
 async function main() {
 	requireConfig();
-	if (!["status", "push", "pull", "pull-final"].includes(requestedCommand)) {
-		throw new Error("Usage: npm run assets:seafile -- status|push|pull|pull-final [--force]");
+	if (!["status", "status-final", "push", "push-final", "pull", "pull-final"].includes(requestedCommand)) {
+		throw new Error("Usage: npm run assets:seafile -- status|status-final|push|push-final|pull|pull-final [--force]");
 	}
 	await verifyLibrary();
-	const localFiles = await listLocalFiles();
+	let localFiles = await listLocalFiles();
 	const localByPath = new Map(localFiles.map((file) => [file.path, file]));
 	let remoteFiles = [];
 	try { remoteFiles = await listRemoteFiles(); }
 	catch (error) {
 		if (!(error instanceof Error) || !/HTTP 404/.test(error.message)) throw error;
+	}
+	if (onlyPath) {
+		localFiles = localFiles.filter((file) => file.path === onlyPath);
+		remoteFiles = remoteFiles.filter((file) => file.path === onlyPath);
 	}
 	const remoteByPath = new Map(remoteFiles.map((file) => [file.path, file]));
 

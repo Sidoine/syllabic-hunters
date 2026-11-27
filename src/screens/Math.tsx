@@ -153,9 +153,7 @@ export function MathChapterScreen({
 	return (
 		<MissionPathScreen
 			title={chapter.title}
-			place={chapter.title}
 			hero={save.hero}
-			name={save.name}
 			region="math"
 			award={award}
 			onStory={onStory}
